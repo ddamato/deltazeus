@@ -1,6 +1,6 @@
 import { Router } from 'lambda-router';
 
-const NETLIFY_FUNCTIONS = '/.netlify/functions/api'
+const NETLIFY_FUNCTIONS = '/.netlify/functions/'
 let paths = {
   DEFAULT_GET: '/',
 };
