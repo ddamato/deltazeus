@@ -20,7 +20,6 @@
   "homepage": "https://github.com/ddamato/deltazeus#readme",
   "devDependencies": {},
   "dependencies": {
-    "lambda-router": "^2.9.1",
     "netlify-lambda": "^1.6.3"
   }
 }
