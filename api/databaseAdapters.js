@@ -2,7 +2,7 @@ import Airtable from 'airtable';
 import { concatCoords, fixedCoords } from './utils.js';
 const tables = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_TABLE_BASE);
 
-async function parseAirtable(records) {
+function parseAirtable(records) {
   return records.map(({fields}) => fields);
 }
 

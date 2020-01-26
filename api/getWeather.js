@@ -33,8 +33,7 @@ function parseDarkskyResponse(response) {
   } = daily.data.shift();
 
   return {
-    latitude,
-    longitude,
+    ...fixedCoords(latitude, longitude),
     precipProbability,
     precipAccumulation,
     apparentTemperatureHigh,
