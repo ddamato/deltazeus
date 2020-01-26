@@ -1,8 +1,6 @@
-import Router from '../api/router.js';
+import Router from 'lambda-router';
 
-const router = Router({
-  prefix: './netlify/functions/api'
-});
+const router = Router();
 
 router.get('/', async () => {
   return { message: 'Success' };
