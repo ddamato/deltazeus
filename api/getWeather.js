@@ -3,13 +3,6 @@ import { fixedCoords } from './utils.js';
 import { getToday, postToday } from './databaseAdapters.js';
 const darksky = new DarkSky(process.env.DARKSKY_API_SECRET);
 
-/**
- * Get weather from the application at specific coords and time
- * @param {Object} options A configuration object
- * @param {String} options.latitude Latitude to get weather from
- * @param {String} options.longitude Longitude to get weather from
- * @param {String} options.time ISO8601 format of the day to get the time from
- */
 export default async function getWeather(options) {
   const { latitude, longitude, ...time } = options;
   const config = { time, ...fixedCoords(latitude, longitude) };
@@ -21,13 +14,6 @@ export default async function getWeather(options) {
   return records;
 }
 
-/**
- * Get weather from the Dark Sky API, should only be called once the DB has been checked for the same values
- * @param {Object} options A configuration object
- * @param {String} options.latitude Latitude to get weather from
- * @param {String} options.longitude Longitude to get weather from
- * @param {String} options.time ISO8601 format of the day to get the time from
- */
 async function getDarkskyWeather(options) {
   const forecast = await darksky.options(options).get();
   return parseDarkskyResponse(forecast);
@@ -44,7 +30,7 @@ function parseDarkskyResponse(response) {
     humidity,
     windSpeed,
     cloudCover,
-  } = daily;
+  } = daily.data.shift();
 
   return {
     latitude,
