@@ -1,24 +1,19 @@
-import { Router } from 'lambda-router';
+import Router from '../api/router.js';
 
-const NETLIFY_FUNCTIONS = '/.netlify/functions/'
-let paths = {
-  DEFAULT_GET: '/',
-};
-const router = Router({ logger: console });
-Object.keys(paths).forEach((path) => paths[path] = NETLIFY_FUNCTIONS + path);
-
-router.get(paths.DEFAULT_GET, () => {
-  return { message: 'success' }
+const router = Router({
+  prefix: './netlify/functions/api'
 });
-router.unknown((event, { response }, path) => {
-  return response(404, {
+
+router.get('/', async () => {
+  return { message: 'Success' };
+});
+router.unknown((x, y, path) => {
+  return {
     message: `You dun screwed up, now. ${path} doesn't exist!`
-  })
+  };
 })
 
-export async function handler (lambdaEvent, context) {
-  context.callbackWaitsForEmptyEventLoop = false
-  let result = await router.route(lambdaEvent, context)
- 
+export async function handler (event, context) {
+  const result = await router.route(event, context);
   return result.response;
 }
