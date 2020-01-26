@@ -1,16 +1,18 @@
-import faunadb, { query } from 'faunadb';
+import Airtable from 'airtable';
 import { concatCoords, fixedCoords } from './utils.js';
-const db = new faunadb.Client({ secret: process.env.FUANADB_API_SECRET });
+const tables = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_TABLE_BASE);
 
 export async function getToday({ latitude, longitude }) {
   const coords = fixedCoords(latitude, longitude);
-  const dbRequest = query.Get(query.Match(query.Index('coords'), concatCoords(coords)));
-  return await db.query(dbRequest);
+  const { records } = await tables('dz_today').select({
+    filterByFormula: `{concat} = ${concatCoords(coords)}`
+  });
+  return records;
 }
 
 export async function postToday(forecast) {
   const coords = fixedCoords(latitude, longitude);
-  const data = { concat: concatCoords(coords), ...forecast };
-  const dbRequest = query.Create(query.Collection(`dz_today`), { data });
-  return await db.query(dbRequest);
+  const fields = { concat: concatCoords(coords), ...forecast };
+  const { records } = await tables('dz_today').create([{ fields }]);
+  return records;
 }

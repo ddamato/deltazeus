@@ -20,9 +20,8 @@
   "homepage": "https://github.com/ddamato/deltazeus#readme",
   "devDependencies": {},
   "dependencies": {
+    "airtable": "^0.8.1",
     "dark-sky": "^1.1.5",
-    "encoding": "^0.1.12",
-    "faunadb": "^2.11.1",
     "netlify-lambda": "^1.6.3"
   }
 }
