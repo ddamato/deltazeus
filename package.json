@@ -4,7 +4,7 @@
   "description": "Changing the weather",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf ./dist && cp -r ./src ./dist",
+    "build": "echo \"Warning: no build specified\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,8 +17,8 @@
     "url": "https://github.com/ddamato/deltazeus/issues"
   },
   "homepage": "https://github.com/ddamato/deltazeus#readme",
-  "devDependencies": {
-    "esm": "^3.2.25",
-    "rollup": "^1.29.1"
+  "devDependencies": {},
+  "dependencies": {
+    "netlify-lambda": "^1.6.3"
   }
 }
