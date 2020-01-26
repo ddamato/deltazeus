@@ -1,6 +1,6 @@
 import faunadb, { query } from 'faunadb';
 import { concatCoords, fixedCoords } from './utils.js';
-const db = new faunadb.Client({ secret: process.env.NETLIFY_SERVER_KEY });
+const db = new faunadb.Client({ secret: process.env.FUANADB_API_SECRET });
 
 export async function getToday({ latitude, longitude }) {
   const coords = fixedCoords(latitude, longitude);
