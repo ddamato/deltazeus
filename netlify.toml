@@ -4,5 +4,5 @@
   publish = "web"
 
 [[redirects]]
-  from = "/api"
-  to = "/.netlify/functions/api"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
