@@ -18,7 +18,7 @@ export async function getToday({ latitude, longitude }) {
 export async function postToday(forecast) {
   const { latitude, longitude } = forecast;
   const coords = fixedCoords(latitude, longitude);
-  const fields = { concat: concatCoords(coords), ...forecast };
+  const fields = { concat: concatCoords(coords), requests: 1, ...forecast };
   const records = await tables('dz_today').create([{ fields }]);
   return parseAirtable(records);
 }
