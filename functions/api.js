@@ -10,6 +10,11 @@ Object.keys(paths).forEach((path) => paths[path] = NETLIFY_FUNCTIONS + path);
 router.get(paths.DEFAULT_GET, () => {
   return { message: 'success' }
 });
+router.unknown((event, { response }, path) => {
+  return response(404, {
+    message: `You dun screwed up, now. ${path} doesn't exist!`
+  })
+})
 
 export async function handler (lambdaEvent, context) {
   context.callbackWaitsForEmptyEventLoop = false
