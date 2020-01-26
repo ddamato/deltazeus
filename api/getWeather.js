@@ -1,4 +1,5 @@
 import DarkSky from 'dark-sky';
+import { fixedCoords } from './utils.js';
 import { getToday, postToday } from './databaseAdapters.js';
 const darksky = new DarkSky(process.env.DARKSKY_API_SECRET);
 
@@ -10,14 +11,14 @@ const darksky = new DarkSky(process.env.DARKSKY_API_SECRET);
  * @param {String} options.time ISO8601 format of the day to get the time from
  */
 export default async function getWeather(options) {
-  // Check the database for weather
-  let record = await getToday(options);
-  if (!record) {
+  const { latitude, longitude, ...time } = options;
+  const config = { time, ...fixedCoords(latitude, longitude) };
+  let records = await getToday(config);
+  if (!records.length) {
     const forecast = await getDarkskyWeather(options);
-    record = await postToday(forecast);
-    console.log('Record created');
+    records = await postToday(forecast);
   }
-  return record;
+  return records;
 }
 
 /**
