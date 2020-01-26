@@ -1,9 +1,13 @@
 import { Router } from 'lambda-router';
-const router = Router({
-  logger: console // uses logger-wrapper.
-})
 
-router.get('/', () => {
+const NETLIFY_FUNCTIONS = '/.netlify/functions/api'
+let paths = {
+  DEFAULT_GET: '/',
+};
+const router = Router({ logger: console });
+Object.keys(paths).forEach((path) => paths[path] = NETLIFY_FUNCTIONS + path);
+
+router.get(paths.DEFAULT_GET, () => {
   return { message: 'success' }
 });
 
