@@ -1,17 +1,19 @@
 import Router from 'lambda-router';
 
-const router = Router();
+const router = Router({ logger: console });
 
 router.get('/', async () => {
   return { message: 'Success' };
 });
-router.unknown((x, y, path) => {
-  return {
+router.unknown((event, { response }, path) => {
+  return response(404, {
     message: `You dun screwed up, now. ${path} doesn't exist!`
-  };
+  })
 })
 
 export async function handler (event, context) {
-  const result = await router.route(event, context);
-  return result.response;
+  context.callbackWaitsForEmptyEventLoop = false;
+  let result = await router.route(event, context)
+
+  return result.response
 }
