@@ -6,7 +6,7 @@ const darksky = new DarkSky(process.env.DARKSKY_API_SECRET);
 
 export default async function getWeather({ latitude, longitude, time }) {
   const coords = new Coords(latitude, longitude);
-  let records = await getRecords('dz_today', `IF({coords} = ${coords}, 1, 0)`);
+  let records = await getRecords('dz_today', `{coords} = "${coords}"`);
   if (!records.length) {
     const forecast = await getDarkskyWeather({ time, ...coords });
     records = await postForecast(forecast);
