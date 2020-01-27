@@ -16,12 +16,12 @@ export async function getToday({ latitude, longitude }) {
 export async function postToday(forecast) {
   const { latitude, longitude } = forecast;
   const coords = new Coords(latitude, longitude);
-  const fields = [{ coords: coords.toString(), requests: 1, ...forecast }];
-  return postAll('dz_today', fields);
+  const fields = { coords: coords.toString(), requests: 1, ...forecast };
+  return postAll('dz_today', [{ fields }]);
 }
 
-export async function postAll(table, fields) {
-  const records = await tables(table).create(fields);
+export async function postAll(table, data) {
+  const records = await tables(table).create(data);
   return parseRecords(records);
 }
 
