@@ -6,27 +6,27 @@ function parseRecords(records) {
   return records.map(({id, fields}) => ({ id, ...fields }));
 }
 
-export async function getToday({ latitude, longitude }) {
-  const filterByFormula = `AND({latitude} = ${latitude}, {longitude} = ${longitude})`;
-  const response = tables('dz_today').select({ filterByFormula });
-  const records = await response.all();
-  return parseRecords(records);
+export function asFields(fields) {
+  return { fields };
 }
 
-export async function postToday(forecast) {
+export async function postForecast(forecast) {
   const { latitude, longitude } = forecast;
   const coords = new Coords(latitude, longitude);
-  const fields = { coords: coords.toString(), requests: 1, ...forecast };
-  return postAll('dz_today', [{ fields }]);
+  const record = { coords: coords.toString(), requests: 1, ...forecast };
+  return postRecords('dz_today', asFields(record));
 }
 
-export async function postAll(table, data) {
+export async function postRecords(table, data) {
   const records = await tables(table).create(data);
   return parseRecords(records);
 }
 
-export async function getAll(table) {
-  const response = tables(table).select();
+export async function getRecords(table, filter) {
+  if (filter) {
+    filter = { filterByFormula: filter };
+  }
+  const response = tables(table).select(filter);
   const records = await response.all();
   return parseRecords(records);
 }

@@ -1,16 +1,10 @@
-import { getAll, postAll, deleteRecords } from './database.js';
+import { getRecords, postRecords, deleteRecords, asFields } from './database.js';
 import getWeather from './weather.js';
+import properties from './properties.js';
 
 const RELATIVE_HOUR_THRESHOLD = 5; // 5 AM local time
 
-function timezoneRecords(records) {
-  return records.filter(({ timezone }) => {
-    const now = getRelativeTime(timezone);
-    return now.getHours() === RELATIVE_HOUR_THRESHOLD;
-  });
-}
-
-function getRelativeTime(timezone) {
+function getZoneTime(timezone) {
   const options = {
     year: 'numeric', month: 'numeric', day: 'numeric',
     hour: 'numeric', minute: 'numeric', second: 'numeric',
@@ -20,20 +14,43 @@ function getRelativeTime(timezone) {
   return new Date(Date.parse(date));
 }
 
-function addTime(record) {
-  const now = getRelativeTime(record.timezone);
+function filterByTimezone(records) {
+  return records.filter(({ timezone }) => {
+    const now = getZoneTime(timezone);
+    return now.getHours() === RELATIVE_HOUR_THRESHOLD;
+  });
+}
+
+function forToday(record) {
+  const now = getZoneTime(record.timezone);
   const time = now.toISOString().replace(/T.*/, '');
   return { time, ...record };
 }
 
-export async function daily() {
-
-  const yesterday = getAll('dz_yeserday').then(timezoneRecords);
-  await deleteRecords('dz_yesterday', yesterday);
-
-  const today = getAll('dz_today').then(timezoneRecords);
-  const requested = today.filter(({requests}) => requests);
-  await postAll('dz_yesterday', requested);
+export default async function daily() {
+  const today = getRecords('dz_today').then(filterByTimezone);
+  const delta =  getRecords('dz_delta').then(filterByTimezone);
+  const previousWeather = today.filter(({ requests }) => requests);
   await deleteRecords('dz_today', today);
-  await Promise.all(requested.map(addTime).map(getWeather));
+  await deleteRecords('dz_delta', delta);
+  const newWeather = await Promise.all(previousWeather.map(forToday).map(getWeather));
+  const deltas = createDeltas(previousWeather, newWeather);
+  await postRecords('dz_delta', deltas);
+}
+
+function createDeltas(oldRecords, newRecords) {
+  return oldRecords.reduce((acc, oldRecord) => {
+    const newRecord = newRecords.find((newRecord) => newRecord.coords === oldRecord.coords);
+    const delta = createDelta(oldRecord, newRecord);
+    return acc.concat(asFields(delta));
+  }, []);
+}
+
+function createDelta(oldRecord, newRecord) {
+  return Object.keys(oldRecord).reduce((acc, key) => {
+    if (key in properties) {
+      return {...acc, [key]: Number(newRecord[key]) - Number(oldRecord[key]) }
+    }
+    return acc;
+  }, {});
 }
