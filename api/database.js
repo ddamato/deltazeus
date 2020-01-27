@@ -32,7 +32,7 @@ export async function getAll(table) {
 }
 
 export async function deleteRecords(table, records) {
-  const promises = records.splice(0, 10).map(({ id }) => await tables(table).destroy(id));
+  const promises = records.splice(0, 10).map(async ({ id }) => await tables(table).destroy(id));
   if (records.length) {
     return await deleteRecords(records);
   }
