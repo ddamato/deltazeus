@@ -5,7 +5,6 @@ import properties from './properties.js';
 const darksky = new DarkSky(process.env.DARKSKY_API_SECRET);
 
 export default async function getWeather({ latitude, longitude, time }) {
-  return { latitude, longitude, time };
   const coords = new Coords(latitude, longitude);
   let records = await getRecords(tableNames.DZ_TODAY, `{coords} = "${coords}"`);
   if (!records.length) {
