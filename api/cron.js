@@ -30,7 +30,7 @@ function forToday(record) {
 export default async function daily() {
   const today = await getRecords(tableNames.DZ_TODAY).then(filterByTimezone);
   if (!today.length) {
-    return;
+    return [];
   }
 
   const delta =  await getRecords(tableNames.DZ_DELTA).then(filterByTimezone);
