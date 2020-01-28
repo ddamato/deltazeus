@@ -7,6 +7,10 @@ export async function handler ({ queryStringParameters }) {
   let coords;
   if (postal) {
     coords = await getCoordsByPostal(postal);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(coords);
+    };
   }
 
   if (latitude && longitude) {
