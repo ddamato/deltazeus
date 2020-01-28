@@ -7,6 +7,6 @@ export default async function getCoordsByPostal(postal) {
     const { data } = await axios.get(`${base}&locate=${postal}&json=1`);
     return new Coords(data.latt, data.longt);
   } catch (err) {
-    return null;
+    throw new Error(err);
   }
 }
