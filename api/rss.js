@@ -2,10 +2,12 @@ import AWS from 'aws-sdk';
 import axios from 'axios';
 import convert from 'xml-js';
 
+const { AWS_KEY_ID, AWS_SECRET_KEY } = process.env;
+
 const config = {
   region: 'us-east-1',
-  accessKeyId: process.env.AWS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_KEY,
+  accessKeyId: AWS_KEY_ID,
+  secretAccessKey: AWS_SECRET_KEY,
 };
 
 AWS.config.update(config);
