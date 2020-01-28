@@ -1,23 +1,33 @@
-import path from 'path';
-import fs from 'fs-extra';
+import S3 from 'aws-s3';
+import axios from 'axios';
 import convert from 'xml-js';
+ 
+const S3Client = new S3({
+  bucketName: 'www.deltazeus.com',
+  dirName: 'rss',
+  region: 'us-east-1',
+  accessKeyId: process.env.AWS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+});
 
 const GENERAL_RSS_DESCRIPTION = 'The difference in weather between the posted date and the day before, updated when signifigant.';
 
 export default async function feedContents(coords, content) {
   const filePath = getPath(coords);
-  if (!fs.existsSync(filePath)) {
-    bootstrapFeed(coords);
+  let rssJs;
+  try {
+    xml = await axios.get(filePath);
+    rssJs = convert.xml2js(xml, { compact: true });
+  } catch (err) {
+    rssJs = bootstrapFeed(coords);
   }
 
   if (content) {
-    const xml = fs.readFileSync(filePath, 'utf8');
-    const rssJs = convert.xml2js(xml, { compact: true });
     const entry = prepareItem(coords, content);
     rssJs.rss.channel.item = [].concat(rssJs.rss.channel.item, entry).filter(Boolean);
-    writeXML(filePath, rssJs);
   }
-  
+
+  writeXML(coords, rssJs);
   return getRssLink(coords);
 }
 
@@ -55,12 +65,11 @@ function getAtomLink(coords) {
 }
 
 function bootstrapFeed(coords) {
-  const rssJs = {
+  return {
     _declaration: { _attributes: { version: '1.0' } },
     _instruction: { 'xml-stylesheet': 'type="text/css" href="style.css"' },
     rss: getRss(coords),
   };
-  writeXML(getPath(coords), rssJs);
 }
 
 function getRss(coords) {
@@ -101,8 +110,7 @@ function getRequiredTags({ title, link, description, coords }) {
   }
 }
 
-function writeXML(path, rssJs) {
+async function writeXML(coords, rssJs) {
   const contents = convert.js2xml(rssJs, { compact: true });
-  fs.ensureFileSync(path);
-  fs.writeFileSync(path, contents);
+  await S3Client.uploadFile(contents, `${coords}.xml`);
 }
