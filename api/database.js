@@ -41,7 +41,7 @@ export async function getRecords(table, filter) {
 }
 
 export async function incrementRequest(records) {
-  increments = [].concat(records).map((id, requests) => { 
+  const increments = [].concat(records).map((id, requests) => { 
     return { id, ...asFields({ requests: requests + 1 }) };
    });
   const response = await tables(tableNames.DZ_TODAY).update(increments);
