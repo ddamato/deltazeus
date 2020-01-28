@@ -1,4 +1,4 @@
-import { getRecords, postRecords, deleteRecords, asFields, tableNames } from './database.js';
+import { getRecords, postRecords, deleteRecords, tableNames } from './database.js';
 import getWeather from './weather.js';
 import properties from './properties.js';
 
@@ -10,7 +10,7 @@ function getZoneTime(timezone) {
     hour: 'numeric', minute: 'numeric', second: 'numeric',
     hour12: true, timeZone: timezone,
   };
-  const date = new Intl.DateTimeFormat('en-US', options).format(now);
+  const date = new Intl.DateTimeFormat('en-US', options).format(new Date());
   return new Date(Date.parse(date));
 }
 
@@ -28,12 +28,17 @@ function forToday(record) {
 }
 
 export default async function daily() {
-  const today = getRecords(tableNames.DZ_TODAY).then(filterByTimezone);
-  const delta =  getRecords(tableNames.DZ_DELTA).then(filterByTimezone);
+  const today = await getRecords(tableNames.DZ_TODAY).then(filterByTimezone);
+  if (!today.length) {
+    return;
+  }
+
+  const delta =  await getRecords(tableNames.DZ_DELTA).then(filterByTimezone);
   const previousWeather = today.filter(({ requests }) => requests);
   await deleteRecords(tableNames.DZ_TODAY, today);
   await deleteRecords(tableNames.DZ_DELTA, delta);
-  const newWeather = await Promise.all(previousWeather.map(forToday).map(getWeather));
+  const response = await Promise.all(previousWeather.map(forToday).map(getWeather));
+  const newWeather = response.reduce((acc, record) => acc.concat(record), []);
   const deltas = createDeltas(previousWeather, newWeather);
   return await postRecords(tableNames.DZ_DELTA, deltas);
 }
@@ -42,7 +47,9 @@ function createDeltas(oldRecords, newRecords) {
   return oldRecords.reduce((acc, oldRecord) => {
     const newRecord = newRecords.find((newRecord) => newRecord.coords === oldRecord.coords);
     const delta = createDelta(oldRecord, newRecord);
-    return acc.concat(asFields(delta));
+    delete delta.id;
+    delta.requests = 0;
+    return acc.concat(delta);
   }, []);
 }
 
@@ -52,5 +59,5 @@ function createDelta(oldRecord, newRecord) {
       return {...acc, [key]: Number(newRecord[key]) - Number(oldRecord[key]) }
     }
     return acc;
-  }, {});
+  }, oldRecord);
 }

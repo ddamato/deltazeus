@@ -1,6 +1,7 @@
 import getWeather from '../api/weather.js';
 import getCoordsByPostal from '../api/postal.js';
 import Coords from '../api/coords.js';
+import feedContents from '../api/rss.js';
 
 export async function handler ({ queryStringParameters }) {
   const { latitude, longitude, postal, time } = queryStringParameters || {};
@@ -14,11 +15,15 @@ export async function handler ({ queryStringParameters }) {
   }
 
   if (coords && time) {
-    const weather = await getWeather({ ...coords, time });
-    return {
-      statusCode: 200,
-      body: JSON.stringify(weather)
-    };
+    const records = await getWeather({ ...coords, time });
+    if (records.length) {
+      const contents = 'No weather changes yet, sync this feed with a RSS service for updates.';
+      const link = await feedContents(coords, contents);
+      return {
+        statusCode: 200,
+        body: link,
+      };
+    }
   }
 
   return {

@@ -27,6 +27,9 @@ export async function postForecast(forecast) {
 }
 
 export async function postRecords(table, data) {
+  if (Array.isArray(data)) {
+    data = data.map(asFields);
+  }
   const response = await tables(table).create(data);
   return parseRecords(response);
 }
