@@ -4,8 +4,7 @@ const tables = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(proce
 
 export const tableNames = {
   DZ_TODAY: 'dz_today',
-  DZ_DELTA: 'dz_delta',
-  DZ_THRESHOLD: 'dz_threshold',
+  DZ_THRESHOLDS: 'dz_thresholds',
 }
 
 function parseRecords(records) {

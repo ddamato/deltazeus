@@ -33,14 +33,15 @@ export default async function daily() {
     return [];
   }
 
-  const delta =  await getRecords(tableNames.DZ_DELTA).then(filterByTimezone);
   const previousWeather = today.filter(({ requests }) => requests);
   await deleteRecords(tableNames.DZ_TODAY, today);
-  await deleteRecords(tableNames.DZ_DELTA, delta);
   const response = await Promise.all(previousWeather.map(forToday).map(getWeather));
   const newWeather = response.reduce((acc, record) => acc.concat(record), []);
   const deltas = createDeltas(previousWeather, newWeather);
-  return await postRecords(tableNames.DZ_DELTA, deltas);
+
+  // TODO: Create feeds from deltas
+
+  return [];
 }
 
 function createDeltas(oldRecords, newRecords) {
