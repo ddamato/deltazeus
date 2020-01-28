@@ -108,5 +108,6 @@ dist
 # Local Netlify folder
 .netlify
 
-# Test RSS Feeds
-web/rss/**.xml
+# Test function
+index.js
+

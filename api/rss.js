@@ -1,19 +1,19 @@
-import S3 from 'aws-s3';
+import AWS from 'aws-sdk';
 import axios from 'axios';
 import convert from 'xml-js';
- 
-const S3Client = new S3({
-  bucketName: 'www.deltazeus.com',
-  dirName: 'rss',
+
+const config = {
   region: 'us-east-1',
   accessKeyId: process.env.AWS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_KEY,
-});
+};
+
+AWS.config.update(config);
+const s3 = new AWS.S3();
 
 const GENERAL_RSS_DESCRIPTION = 'The difference in weather between the posted date and the day before, updated when signifigant.';
 
 export default async function feedContents(coords, content) {
-  const filePath = getPath(coords);
   let rssJs;
   try {
     xml = await axios.get(filePath);
@@ -48,10 +48,6 @@ function prepareItem(coords, description) {
 
 function asText(text) {
   return { _text: text };
-}
-
-function getPath(coords) {
-  return path.resolve(__dirname, '..', 'web', 'rss', `${coords}.xml`);
 }
 
 function getAtomLink(coords) {
@@ -112,5 +108,10 @@ function getRequiredTags({ title, link, description, coords }) {
 
 async function writeXML(coords, rssJs) {
   const contents = convert.js2xml(rssJs, { compact: true });
-  await S3Client.uploadFile(contents, `${coords}.xml`);
+  await s3.putObject({
+    Bucket: 'www.deltazeus.com',
+    Key: `rss/${coords}.xml`,
+    ContentType: 'application/xml',
+    Body: Buffer.from(contents, 'binary')
+  }).promise();
 }
