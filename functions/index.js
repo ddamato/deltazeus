@@ -9,7 +9,7 @@ export async function handler ({ queryStringParameters }) {
     coords = await getCoordsByPostal(postal);
     return {
       statusCode: 200,
-      body: JSON.stringify(coords),
+      body: JSON.stringify(coords)
     };
   }
 
