@@ -20,11 +20,12 @@ export async function postForecast(forecast) {
   const { latitude, longitude } = forecast;
   const coords = new Coords(latitude, longitude);
   const record = { coords: coords.toString(), requests: 1, ...forecast };
-  return postRecords(tableNames.DZ_TODAY, asFields(record));
+  return await postRecords(tableNames.DZ_TODAY, record);
 }
 
 export async function postRecords(table, data) {
-  const records = await tables(table).create(data);
+  const { fields } = await tables(table).create(data);
+  const records = [].concat(fields);
   return parseRecords(records);
 }
 
