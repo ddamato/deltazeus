@@ -6,7 +6,7 @@ export async function handler ({ queryStringParameters }) {
   const { latitude, longitude, postal, time } = queryStringParameters || {};
   let coords;
   if (postal) {
-    coords = getCoordsByPostal(postal);
+    coords = await getCoordsByPostal(postal);
   }
 
   if (latitude && longitude) {
@@ -14,10 +14,10 @@ export async function handler ({ queryStringParameters }) {
   }
 
   if (coords && time) {
-    // const weather = await getWeather({ ...coords, time });
+    const weather = await getWeather({ ...coords, time });
     return {
       statusCode: 200,
-      body: JSON.stringify(coords)
+      body: JSON.stringify(weather)
     };
   }
 
