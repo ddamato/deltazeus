@@ -38,6 +38,15 @@ export async function getRecords(table, filter) {
   return parseRecords(records);
 }
 
+export async function incrementRequest(records) {
+  increments = [].concat(records).map((id, requests) => { 
+    return { id, ...asFields({ requests: requests + 1 }) };
+   });
+  const response = await tables(tableNames.DZ_TODAY).update(increments);
+  const records = [].concat(response);
+  return parseRecords(response);
+}
+
 export async function deleteRecords(table, records) {
   const promises = records.splice(0, 10).map(async ({ id }) => await tables(table).destroy(id));
   if (records.length) {
