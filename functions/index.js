@@ -13,7 +13,7 @@ export async function handler ({ queryStringParameters }) {
     coords = new Coords(latitude, longitude);
   }
 
-  if (coords) {
+  if (coords && time) {
     const weather = await getWeather({ ...coords, time });
     return {
       statusCode: 200,
