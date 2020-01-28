@@ -4,13 +4,13 @@ import Coords from '../api/coords.js';
 
 export async function handler ({ queryStringParameters }) {
   const { latitude, longitude, postal, time } = queryStringParameters || {};
+  return {
+    statusCode: 200,
+    body: JSON.stringify(queryStringParameters)
+  };
   let coords;
   if (postal) {
     coords = await getCoordsByPostal(postal);
-    return {
-      statusCode: 200,
-      body: JSON.stringify(coords)
-    };
   }
 
   if (latitude && longitude) {
