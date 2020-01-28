@@ -9,11 +9,16 @@ export async function feedContents(coords, content) {
   if (!fs.existsSync(filePath)) {
     bootstrapFeed(coords);
   }
-  const xml = fs.readFileSync(filePath, 'utf8');
-  const rssJs = convert.xml2js(xml, { compact: true });
-  const entry = prepareItem(coords, content);
-  rssJs.rss.channel.item = [].concat(rssJs.rss.channel.item, entry).filter(Boolean);
-  writeXML(filePath, rssJs);
+
+  if (content) {
+    const xml = fs.readFileSync(filePath, 'utf8');
+    const rssJs = convert.xml2js(xml, { compact: true });
+    const entry = prepareItem(coords, content);
+    rssJs.rss.channel.item = [].concat(rssJs.rss.channel.item, entry).filter(Boolean);
+    writeXML(filePath, rssJs);
+  }
+  
+  return getRssLink(coords);
 }
 
 function getGuid() {
@@ -71,13 +76,17 @@ function getRss(coords) {
   }
 }
 
+function getRssLink(coords) {
+  return `https://www.deltazeus.com/rss/${coords}.xml`;
+}
+
 function getRequiredTags({ title, link, description, coords }) {
   if (coords && !title) {
     title = `deltazeus weather for ${coords.latitude}, ${coords.longitude}`
   }
 
   if (coords && !link) {
-    link = `https://www.deltazeus.com/rss/${coords}.xml`;
+    link = getRssLink(coords);
   }
 
   if (typeof description === 'string') {
