@@ -1,9 +1,29 @@
 import getWeather from '../api/weather.js';
+import getCoordsByPostal from '../api/postal.js';
+import Coords from '../api/coords.js';
 
-export async function handler ({ path, httpMethod, queryStringParameters, body }, context) {
-  const weather = await getWeather({latitude: 40.7181, longitude: -73.8448, time: '2020-01-26T12:00:00.000Z'});
+export async function handler ({ queryStringParameters }) {
+  const { latitude, longitude, postal, time } = queryStringParameters || {};
+  let coords;
+  if (postal) {
+    coords = getCoordsByPostal(postal);
+  }
+
+  if (latitude && longitude) {
+    coords = new Coords(latitude, longitude);
+  }
+
+  if (coords) {
+    const weather = await getWeather({ ...coords, time });
+    return {
+      statusCode: 200,
+      body: JSON.stringify(weather)
+    };
+  }
+
   return {
-    statusCode: 200,
-    body: JSON.stringify(weather)
+    statusCode: 300,
+    body: 'Incomplete query'
   };
+  
 }

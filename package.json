@@ -24,6 +24,7 @@
     "dark-sky": "^1.1.5",
     "fs-extra": "^8.1.0",
     "netlify-lambda": "^1.6.3",
+    "node-fetch": "^2.6.0",
     "xml-js": "^1.6.11"
   }
 }
