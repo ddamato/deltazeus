@@ -4,7 +4,7 @@ import convert from 'xml-js';
 
 const GENERAL_RSS_DESCRIPTION = 'The difference in weather between the posted date and the day before, updated when signifigant.';
 
-export async function feedContents(coords, content) {
+export default async function feedContents(coords, content) {
   const filePath = getPath(coords);
   if (!fs.existsSync(filePath)) {
     bootstrapFeed(coords);
