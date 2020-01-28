@@ -24,8 +24,8 @@ export async function postForecast(forecast) {
 }
 
 export async function postRecords(table, data) {
-  const { fields } = await tables(table).create(data);
-  const records = [].concat(fields);
+  const response = await tables(table).create(data);
+  const records = [].concat(response);
   return parseRecords(records);
 }
 
