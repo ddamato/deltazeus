@@ -63,7 +63,7 @@ function getAtomLink(coords) {
 function bootstrapFeed(coords) {
   return {
     _declaration: { _attributes: { version: '1.0' } },
-    _instruction: { 'xml-stylesheet': 'type="text/css" href="style.css"' },
+    _instruction: { 'xml-stylesheet': 'type="text/css" href="https://www.deltazeus.com/style.rss.css"' },
     rss: getRss(coords),
   };
 }
@@ -112,6 +112,6 @@ async function writeXML(coords, rssJs) {
     Bucket: 'www.deltazeus.com',
     Key: `rss/${coords}.xml`,
     ContentType: 'application/xml',
-    Body: Buffer.from(contents, 'binary')
+    Body: Buffer.from(`${contents}`, 'utf8')
   }).promise();
 }
