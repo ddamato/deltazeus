@@ -10,4 +10,3 @@
 [[redirects]]
   from = "/rss/*"
   to = "http://www.deltazeus.com.s3-website-us-east-1.amazonaws.com/:splat"
-  status = 200
