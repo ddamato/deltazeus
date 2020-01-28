@@ -9,7 +9,10 @@ export const tableNames = {
 }
 
 function parseRecords(records) {
-  return records.map(({id, fields}) => ({ id, ...fields }));
+  return []
+    .concat(records)
+    .filter(Boolean)
+    .map(({id, fields}) => ({ id, ...fields }));
 }
 
 export function asFields(fields) {
@@ -25,8 +28,7 @@ export async function postForecast(forecast) {
 
 export async function postRecords(table, data) {
   const response = await tables(table).create(data);
-  const records = [].concat(response);
-  return parseRecords(records);
+  return parseRecords(response);
 }
 
 export async function getRecords(table, filter) {
@@ -43,7 +45,6 @@ export async function incrementRequest(records) {
     return { id, ...asFields({ requests: requests + 1 }) };
    });
   const response = await tables(tableNames.DZ_TODAY).update(increments);
-  const records = [].concat(response);
   return parseRecords(response);
 }
 
