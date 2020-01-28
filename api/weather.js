@@ -1,6 +1,6 @@
 import DarkSky from 'dark-sky';
 import Coords from './coords.js';
-import { getRecords, postForecast, tableNames, incrementRequest } from './database.js';
+import { getRecords, postForecast, tableNames, incrementRequests } from './database.js';
 import properties from './properties.js';
 const darksky = new DarkSky(process.env.DARKSKY_API_SECRET);
 
@@ -11,7 +11,7 @@ export default async function getWeather({ latitude, longitude, time }) {
     const forecast = await getDarkskyWeather({ time, ...coords });
     records = await postForecast(forecast);
   } else {
-    await incrementRequest(records);
+    records = await incrementRequests(records);
   }
   return records;
 }

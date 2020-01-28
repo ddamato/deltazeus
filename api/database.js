@@ -40,11 +40,19 @@ export async function getRecords(table, filter) {
   return parseRecords(records);
 }
 
-export async function incrementRequest(records) {
+export async function incrementRequests(records) {
   const increments = [].concat(records).map(({ id, requests }) => { 
     return { id, ...asFields({ requests: requests + 1 }) };
    });
   const response = await tables(tableNames.DZ_TODAY).update(increments);
+  return parseRecords(response);
+}
+
+export async function resetRequests(records) {
+  const resets = [].concat(records).map(({ id }) => { 
+    return { id, ...asFields({ requests: 0 }) };
+   });
+  const response = await tables(tableNames.DZ_TODAY).update(resets);
   return parseRecords(response);
 }
 
