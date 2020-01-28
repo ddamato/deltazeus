@@ -14,11 +14,10 @@ export async function handler ({ queryStringParameters }) {
   }
 
   if (coords && time) {
-    const { latitude, longitude } = coords;
-    const weather = await getWeather({ latitude, longitude, time });
+    // const weather = await getWeather({ ...coords, time });
     return {
       statusCode: 200,
-      body: JSON.stringify(weather)
+      body: JSON.stringify(coords)
     };
   }
 
