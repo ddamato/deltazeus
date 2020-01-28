@@ -35,7 +35,7 @@ export default async function daily() {
   await deleteRecords(tableNames.DZ_DELTA, delta);
   const newWeather = await Promise.all(previousWeather.map(forToday).map(getWeather));
   const deltas = createDeltas(previousWeather, newWeather);
-  await postRecords(tableNames.DZ_DELTA, deltas);
+  return await postRecords(tableNames.DZ_DELTA, deltas);
 }
 
 function createDeltas(oldRecords, newRecords) {
