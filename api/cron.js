@@ -1,4 +1,4 @@
-import { getRecords, postRecords, deleteRecords, asFields } from './database.js';
+import { getRecords, postRecords, deleteRecords, asFields, tableNames } from './database.js';
 import getWeather from './weather.js';
 import properties from './properties.js';
 
@@ -28,14 +28,14 @@ function forToday(record) {
 }
 
 export default async function daily() {
-  const today = getRecords('dz_today').then(filterByTimezone);
-  const delta =  getRecords('dz_delta').then(filterByTimezone);
+  const today = getRecords(tableNames.DZ_TODAY).then(filterByTimezone);
+  const delta =  getRecords(tableNames.DZ_DELTA).then(filterByTimezone);
   const previousWeather = today.filter(({ requests }) => requests);
-  await deleteRecords('dz_today', today);
-  await deleteRecords('dz_delta', delta);
+  await deleteRecords(tableNames.DZ_TODAY, today);
+  await deleteRecords(tableNames.DZ_DELTA, delta);
   const newWeather = await Promise.all(previousWeather.map(forToday).map(getWeather));
   const deltas = createDeltas(previousWeather, newWeather);
-  await postRecords('dz_delta', deltas);
+  await postRecords(tableNames.DZ_DELTA, deltas);
 }
 
 function createDeltas(oldRecords, newRecords) {

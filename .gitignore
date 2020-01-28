@@ -107,3 +107,6 @@ dist
 .vscode-test
 # Local Netlify folder
 .netlify
+
+# Test RSS Feeds
+web/rss/**.xml
