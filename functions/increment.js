@@ -3,17 +3,16 @@ import { getRecords, incrementRequests, tableNames } from '../api/database.js';
 export async function handler({ queryStringParameters }) {
   const { coords } = queryStringParameters || {};
   if (coords) {
-    const records = await increment(coords);
+    await increment(coords);
     return {
       statusCode: 301,
-      body: JSON.stringify(records),
       headers: {
         Location: `https://rss.deltazeus.com/${coords}.xml`,
       }
     }
   }
   return {
-    statusCode: 200,
+    statusCode: 404,
     body: JSON.stringify(queryStringParameters),
   }
 }
