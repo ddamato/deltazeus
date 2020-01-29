@@ -111,3 +111,6 @@ dist
 # Test function
 index.js
 
+# Lambda build folder
+lambda
+

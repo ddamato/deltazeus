@@ -1,34 +1,68 @@
+import convert from 'convert-units';
+
 export default {
   precipProbability: {
     human: 'precipitation probabilty',
-    type: '%',
+    units: percent,
   },
   precipAccumulation: {
     human: 'accumulation of precipition',
-    type: 'in',
+    units: inches,
+    convert: centimeters,
   },
   apparentTemperatureHigh: {
     human: 'high temperature',
-    type: 'F',
+    units: fahrenheit,
+    convert: celcius,
   },
   apparentTemperatureLow: {
     human: 'low temperature',
-    type: 'F',
+    units: fahrenheit,
+    convert: celcius,
   },
   dewPoint: {
     human: 'dew point',
-    type: '%',
+    units: percent,
   },
   humidity: {
     human: 'humidity',
-    type: null,
+    units: percent,
   },
   windSpeed: {
     human: 'wind speed',
-    type: 'm/h',
+    units: mph,
+    convert: kph,
   },
   cloudCover: {
     human: 'cloud cover',
-    type: '%',
+    units: percent,
   },
+}
+
+function percent(decimal) {
+  return `${decimal * 100}%`;
+}
+
+function inches(value) {
+  return `${value}in`
+}
+
+function fahrenheit(value) {
+  return `${value}°F`
+}
+
+function mph(value) {
+  return `${value}m/h`;
+}
+
+function celcius(value) {
+  return `${convert(value).from('F').to('C')}°C`;
+}
+
+function centimeters(value) {
+  return `${convert(value).from('in').to('cm')}cm`;
+}
+
+function kph(value) {
+  return `${convert(value).from('m/h').to('km/h')}km/h`;
 }

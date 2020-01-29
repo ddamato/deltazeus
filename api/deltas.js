@@ -9,10 +9,11 @@ export default function computeDeltas(previousRecords, incomingRecords, threshol
     }
     const deltas = traverseProperties(previous, incoming, threshold);
     if (Object.keys(deltas).length) {
-      acc[previous.coords] = deltas;
+      const { latitude, longitude, timezone } = previous;
+      acc.push({ latitude, longitude, timezone, deltas });
     }
     return acc;
-  }, {});
+  }, []);
 }
 
 function traverseProperties(previous, incoming, threshold) {
@@ -22,6 +23,7 @@ function traverseProperties(previous, incoming, threshold) {
     const isIncreased = Boolean(~(delta / abs));
     if (abs > threshold[prop]) {
       acc[prop] = {
+        delta,
         previous: previous[prop],
         current: incoming[prop],
         isIncreased,

@@ -15,7 +15,7 @@ const s3 = new AWS.S3();
 
 const GENERAL_RSS_DESCRIPTION = 'The difference in weather between the posted date and the day before, updated when signifigant.';
 
-export default async function getFeed(coords, content) {
+export default async function getFeed(coords, content, title) {
   const rssLink = getRssLink(coords);
   let rssJs;
   try {
@@ -26,7 +26,7 @@ export default async function getFeed(coords, content) {
   }
 
   if (content) {
-    const entry = prepareItem(coords, content);
+    const entry = prepareItem(coords, content, title);
     rssJs.rss.channel.item = [].concat(rssJs.rss.channel.item, entry).filter(Boolean);
   }
 
@@ -42,14 +42,14 @@ function getGuid() {
   }
 }
 
-function prepareItem(coords, description) {
+function prepareItem(coords, description, title) {
   return {
     guid: getGuid(),
-    ...getRequiredTags({ coords, description })
+    ...getRequiredTags({ coords, description, title })
   };
 }
 
-function asText(text) {
+export function asText(text) {
   return { _text: text };
 }
 

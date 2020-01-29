@@ -1,6 +1,7 @@
 import { getRecords, postRecords, deleteRecords, tableNames } from './database.js';
 import getWeather from './weather.js';
 import computeDeltas from './deltas.js';
+import getFeed, { asText } from './rss.js';
 
 const RELATIVE_HOUR_THRESHOLD = 5; // 5 AM local time
 
@@ -38,27 +39,44 @@ export default async function hourlyCron() {
   const response = await Promise.all(previousWeather.map(forToday).map(getWeather));
   const newWeather = response.reduce((acc, record) => acc.concat(record), []);
   const thresholds = await getRecords(tableNames.DZ_THRESHOLDS);
-  const deltas = computeDeltas(previousWeather, newWeather, thresholds);
-  if (Object.keys(deltas).length) {
-    // write the feed for each
-  }
+  const updates = computeDeltas(previousWeather, newWeather, thresholds);
+  const promises = updates.map(async (update) => {
+    const { latitude, longitude, timezone, delta } = update;
+    const { time } = forToday(update);
+    const title = `deltazeus update for ${latitude}, ${longitude} on ${time} (${timezone})`;
+    const coords = new Coords(latitude, longitude);
+    const content = deltaResponse(delta, timezone);
+    return await getFeed(coords, content, title);
+  })
 
-  return [];
+  const updatedFeeds = await Promise.all(promises);
+  return updatedFeeds;
 }
 
 
-function deltaResponse({ prop, time, isIncreased, delta }) {
-  const byPercent = ['precipProbability', 'cloudCover'];
-  const byDegrees = ['apparentTemperatureHigh', 'apparentTemperatureLow', 'dewPoint'];
+function deltaResponse(changes) {
+  const responses = Object.keys(changes).reduce((acc, prop) => {
+    const { human, units, convert } = properties[prop];
+    const { delta, previous, current, isIncreased } = changes[prop];
+    const changed = isIncreased ? 'increased' : 'decreased';
 
-  if (byPercent.includes(prop)) {
-    delta = `${delta*100}%`;
+    const difference = createResponse(delta, units, convert);
+    const previousAmount = createResponse(previous, units, convert);
+    const currentAmount = createResponse(current, units, convert);
+
+    const response = `The forecast of the ${human} has ${changed} by ${difference} from ${previousAmount} to ${currentAmount} according to our records.`;
+    return acc.concat(asText(response));
+  }, []);
+
+  if (responses.length) {
+    return {
+      ul: { li: responses }
+    };
   }
+  return [];
+}
 
-  if (byDegrees.includes(prop)) {
-    delta = `${delta} degrees`;
-  }
-
-  const direction = isIncreased ? 'increased' : 'decreased';
-  return `The forecast of the ${properties[prop]} for ${time} has ${direction} by ${delta} since the last update.`;
+function createResponse(value, units, convert) {
+  const converted = convert ? ` (${convert(value)})` : '';
+  return `${units(value)}${converted}`;
 }
