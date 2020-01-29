@@ -15,10 +15,11 @@ const s3 = new AWS.S3();
 
 const GENERAL_RSS_DESCRIPTION = 'The difference in weather between the posted date and the day before, updated when signifigant.';
 
-export default async function feedContents(coords, content) {
+export default async function getFeed(coords, content) {
+  const rssLink = getRssLink(coords);
   let rssJs;
   try {
-    xml = await axios.get(filePath);
+    const xml = await axios.get(rssLink);
     rssJs = convert.xml2js(xml, { compact: true });
   } catch (err) {
     rssJs = bootstrapFeed(coords);
@@ -30,7 +31,7 @@ export default async function feedContents(coords, content) {
   }
 
   writeXML(coords, rssJs);
-  return getRssLink(coords);
+  return rssLink;
 }
 
 function getGuid() {
@@ -57,7 +58,7 @@ function getAtomLink(coords) {
     _attributes: {
       rel: 'self',
       type: 'application/rss+xml',
-      href: `https://www.deltazeus.com/rss/${coords}.xml`,
+      href: getRssLink(coords),
     }
   }
 }
