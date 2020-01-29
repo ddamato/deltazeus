@@ -1,7 +1,7 @@
-import daily from '../api/cron.js';
+import hourlyCron from '../api/cron.js';
 
 export async function handler() {
-  const records = await daily();
+  const records = await hourlyCron();
   return {
     statusCode: 200,
     body: JSON.stringify(records),

@@ -27,7 +27,7 @@ function forToday(record) {
   return { time, ...record };
 }
 
-export default async function daily() {
+export default async function hourlyCron() {
   const today = await getRecords(tableNames.DZ_TODAY).then(filterByTimezone);
   if (!today.length) {
     return [];
