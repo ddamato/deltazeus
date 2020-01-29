@@ -1,19 +1,15 @@
 import { getRecords, incrementRequests } from '../api/database.js';
 
 export async function handler({ queryStringParameters }) {
-  const { xml } = queryStringParameters;
-  const response = {
+  const { coords } = queryStringParameters;
+  // increment(coords);
+  return {
     statusCode: 302,
     body: queryStringParameters,
-  }
-  // if (xml) {
-  //   const coords = xml.split('.').shift();
-  //   increment(coords);
-  //   response.headers = {
-  //     Location: `https://rss.deltazeus.com/${coords}.xml`
-  //   };
-  // }
-  return response;
+    headers: {
+      Location: `https://rss.deltazeus.com/${coords}.xml`
+    }
+  };
 }
 
 async function increment(coords) {
