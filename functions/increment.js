@@ -1,4 +1,4 @@
-import { getRecords, incrementRequests } from '../api/database.js';
+import { getRecords, incrementRequests, tableNames } from '../api/database.js';
 
 export async function handler({ queryStringParameters }) {
   const { coords } = queryStringParameters || {};
