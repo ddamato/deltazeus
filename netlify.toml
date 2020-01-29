@@ -9,6 +9,6 @@
   status = 200
 
 [[redirects]]
-  from = "/rss/:xml"
-  to = "/.netlify/functions/increment?xml=:xml"
+  from = "/rss/*"
+  to = "/.netlify/functions/increment?xml=:splat"
   status = 200
