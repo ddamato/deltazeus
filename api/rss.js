@@ -112,7 +112,7 @@ function getRequiredTags({ title, link, description, coords }) {
 async function writeXML(coords, rssJs) {
   const contents = convert.js2xml(rssJs, { compact: true });
   await s3.putObject({
-    Bucket: 'deltazeus',
+    Bucket: 'rss.deltazeus.com',
     Key: `${coords}.xml`,
     ContentType: 'application/xml',
     Body: Buffer.from(`${contents}`, 'utf8')

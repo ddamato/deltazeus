@@ -3,7 +3,7 @@ import { getRecords, incrementRequests } from '../api/database.js';
 export async function handler({ queryStringParameters }) {
   return {
     statusCode: 200,
-    body: 'cool',
+    body: JSON.stringify(queryStringParameters),
   }
 }
 
