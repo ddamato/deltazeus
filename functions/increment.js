@@ -6,7 +6,7 @@ export async function handler({ queryStringParameters }) {
   return {
     statusCode: 302,
     headers: {
-      Location: `https://www.deltazeus.com/rss/${coords}.xml`
+      Location: `https://rss.deltazeus.com/${coords}.xml`
     }
   };
 }
