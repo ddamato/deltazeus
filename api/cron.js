@@ -1,6 +1,6 @@
 import { getRecords, postRecords, deleteRecords, tableNames } from './database.js';
 import getWeather from './weather.js';
-import properties from './properties.js';
+import computeDeltas from './deltas.js';
 
 const RELATIVE_HOUR_THRESHOLD = 5; // 5 AM local time
 
@@ -21,7 +21,7 @@ function filterByTimezone(records) {
   });
 }
 
-function forToday(record) {
+export function forToday(record) {
   const now = getZoneTime(record.timezone);
   const time = now.toISOString().replace(/T.*/, '');
   return { time, ...record };
@@ -37,28 +37,28 @@ export default async function hourlyCron() {
   await deleteRecords(tableNames.DZ_TODAY, today);
   const response = await Promise.all(previousWeather.map(forToday).map(getWeather));
   const newWeather = response.reduce((acc, record) => acc.concat(record), []);
-  const deltas = createDeltas(previousWeather, newWeather);
-
-  // TODO: Create feeds from deltas
+  const thresholds = await getRecords(tableNames.DZ_THRESHOLDS);
+  const deltas = computeDeltas(previousWeather, newWeather, thresholds);
+  if (Object.keys(deltas).length) {
+    // write the feed for each
+  }
 
   return [];
 }
 
-function createDeltas(oldRecords, newRecords) {
-  return oldRecords.reduce((acc, oldRecord) => {
-    const newRecord = newRecords.find((newRecord) => newRecord.coords === oldRecord.coords);
-    const delta = createDelta(oldRecord, newRecord);
-    delete delta.id;
-    delta.requests = 0;
-    return acc.concat(delta);
-  }, []);
-}
 
-function createDelta(oldRecord, newRecord) {
-  return Object.keys(oldRecord).reduce((acc, key) => {
-    if (key in properties) {
-      return {...acc, [key]: Number(newRecord[key]) - Number(oldRecord[key]) }
-    }
-    return acc;
-  }, oldRecord);
+function deltaResponse({ prop, time, isIncreased, delta }) {
+  const byPercent = ['precipProbability', 'cloudCover'];
+  const byDegrees = ['apparentTemperatureHigh', 'apparentTemperatureLow', 'dewPoint'];
+
+  if (byPercent.includes(prop)) {
+    delta = `${delta*100}%`;
+  }
+
+  if (byDegrees.includes(prop)) {
+    delta = `${delta} degrees`;
+  }
+
+  const direction = isIncreased ? 'increased' : 'decreased';
+  return `The forecast of the ${properties[prop]} for ${time} has ${direction} by ${delta} since the last update.`;
 }

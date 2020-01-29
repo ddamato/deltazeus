@@ -10,8 +10,6 @@ export default async function getWeather({ latitude, longitude, time }) {
   if (!records.length) {
     const forecast = await getDarkskyWeather({ time, ...coords });
     records = await postForecast(forecast);
-  } else {
-    records = await incrementRequests(records);
   }
   return records;
 }
