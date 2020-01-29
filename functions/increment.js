@@ -3,10 +3,13 @@ import { getRecords, incrementRequests } from '../api/database.js';
 export async function handler({ queryStringParameters }) {
   const { coords } = queryStringParameters || {};
   if (coords) {
-    increment(coords);
+    const records = await increment(coords);
     return {
       statusCode: 301,
-      body: `https://rss.deltazeus.com/${coords}.xml`,
+      body: JSON.stringify(records),
+      headers: {
+        Location: `https://rss.deltazeus.com/${coords}.xml`,
+      }
     }
   }
   return {
@@ -17,5 +20,5 @@ export async function handler({ queryStringParameters }) {
 
 async function increment(coords) {
   let records = await getRecords(tableNames.DZ_TODAY, `{coords} = "${coords}"`);
-  incrementRequests(records);
+  return incrementRequests(records);
 }

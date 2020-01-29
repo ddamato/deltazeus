@@ -85,7 +85,7 @@ function getRss(coords) {
 }
 
 function getRssLink(coords) {
-  return `https://www.deltazeus.com/rss/${coords}.xml`;
+  return `https://www.deltazeus.com/rss/${coords}`;
 }
 
 function getRequiredTags({ title, link, description, coords }) {
