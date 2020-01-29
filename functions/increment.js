@@ -6,13 +6,13 @@ export async function handler({ queryStringParameters }) {
     statusCode: 302,
     body: queryStringParameters,
   }
-  if (xml) {
-    const coords = xml.split('.').shift();
-    increment(coords);
-    response.headers = {
-      Location: `https://rss.deltazeus.com/${coords}.xml`
-    };
-  }
+  // if (xml) {
+  //   const coords = xml.split('.').shift();
+  //   increment(coords);
+  //   response.headers = {
+  //     Location: `https://rss.deltazeus.com/${coords}.xml`
+  //   };
+  // }
   return response;
 }
 
