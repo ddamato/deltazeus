@@ -1,15 +1,10 @@
 import { getRecords, incrementRequests } from '../api/database.js';
 
 export async function handler({ queryStringParameters }) {
-  const { coords } = queryStringParameters;
-  // increment(coords);
   return {
-    statusCode: 302,
-    body: queryStringParameters,
-    headers: {
-      Location: `https://rss.deltazeus.com/${coords}.xml`
-    }
-  };
+    statusCode: 200,
+    body: 'cool',
+  }
 }
 
 async function increment(coords) {
