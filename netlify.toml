@@ -8,7 +8,7 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
-[[redirects]]
-  from = "/rss/*"
-  to = "https://www.deltazeus.com.s3-website-us-east-1.amazonaws.com/:splat"
-  status = 200
+# [[redirects]]
+#   from = "/rss/*"
+#   to = "https://www.deltazeus.com.s3-website-us-east-1.amazonaws.com/rss/:splat"
+#   status = 200

@@ -112,7 +112,7 @@ async function writeXML(coords, rssJs) {
   const contents = convert.js2xml(rssJs, { compact: true });
   await s3.putObject({
     Bucket: 'www.deltazeus.com',
-    Key: `${coords}.xml`,
+    Key: `rss/${coords}.xml`,
     ContentType: 'application/xml',
     Body: Buffer.from(`${contents}`, 'utf8')
   }).promise();
