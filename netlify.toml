@@ -9,6 +9,6 @@
   status = 200
 
 [[redirects]]
-  from = "/rss/:xml"
-  to = "https://www.deltazeus.com.s3-website-us-east-1.amazonaws.com/rss/:xml"
+  from = "/rss/*"
+  to = "https://www.deltazeus.com.s3-website-us-east-1.amazonaws.com/:splat"
   status = 200
