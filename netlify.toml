@@ -8,7 +8,19 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# [[redirects]]
+#   from = "/rss/*"
+#   to = "https://deltazeus.s3.amazonaws.com/rss/:splat"
+#   status = 200
+
 [[redirects]]
-  from = "/rss/*"
-  to = "https://deltazeus.s3.amazonaws.com/rss/:splat"
+  from = "/rss/:coords.xml"
+  to = "https://deltazeus.s3.amazonaws.com/rss/:coords.xml"
   status = 200
+  force = false
+
+[[redirects]]
+  from = "/rss/:coords"
+  to = "/.netlify/functions/increment?coords=:coords"
+  status = 301
+  force = false
