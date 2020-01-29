@@ -10,4 +10,4 @@
 
 [[redirects]]
   from = "/rss/*"
-  to = "/.netlify/functions/increment?coords=:splat"
+  to = "/api/rss?coords=:splat"
