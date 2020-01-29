@@ -11,4 +11,3 @@
 [[redirects]]
   from = "/rss/*"
   to = "/.netlify/functions/increment?xml=:splat"
-  status = 200
