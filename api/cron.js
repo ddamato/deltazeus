@@ -1,7 +1,8 @@
-import { getRecords, postRecords, deleteRecords, tableNames } from './database.js';
+import { getRecords, deleteRecords, tableNames } from './database.js';
 import getWeather from './weather.js';
 import computeDeltas from './deltas.js';
 import getFeed, { asText } from './rss.js';
+import Coords from './coords.js';
 
 const RELATIVE_HOUR_THRESHOLD = 5; // 5 AM local time
 
