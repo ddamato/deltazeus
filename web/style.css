@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Cinzel+Decorative|Krona+One|Megrim|Sulphur+Point&display=swap');
-
 * {
   box-sizing: border-box;
 }
@@ -17,32 +15,43 @@ body {
   margin: 0;
   background: rgb(0, 0, 150);
   color: #fff;
-  font-family: 'Sulphur Point', sans-serif;
+  font-family: 'Ubuntu', sans-serif;
 }
 
-section {
-  position: relative;
-}
-
-section:first-child {
+header {
   min-height: 100vh;
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
 }
 
 .dz-logomark {
   fill: var(--accent-rgb);
   max-width: 600px;
-  width: 30vh;
+  width: 14rem;
+  margin-left: 1rem;
+  position: absolute;
+  align-self: center;
 }
 
 h1 {
-  font-size: 4rem;
-  margin: 1rem 0 0;
+  --letter-spacing: 2rem;
+  font-size: 5rem;
+  margin: 1rem calc(var(--letter-spacing) * -1) 0 0;
   text-shadow: .3rem .3rem 0 var(--accent-rgb);
-  position: absolute;
-  letter-spacing: 1rem;
+  letter-spacing: var(--letter-spacing);
+  z-index: 1;
+  text-align: center;
+  transform: scaleY(.9);
+}
+
+section {
+  background-color: #333;
+}
+
+article {
+  margin: -1rem 1rem;
+  background-color: #fff;
+  color: #000;
 }
