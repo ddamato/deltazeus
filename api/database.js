@@ -21,7 +21,7 @@ export function asFields(fields) {
 export async function postForecast(forecast) {
   const { latitude, longitude } = forecast;
   const coords = new Coords(latitude, longitude);
-  const record = { coords: coords.toString(), requests: 1, ...forecast };
+  const record = { coords: coords.toString(), requests: 0, ...forecast };
   return await postRecords(tableNames.DZ_TODAY, record);
 }
 

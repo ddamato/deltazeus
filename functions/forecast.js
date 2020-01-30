@@ -15,7 +15,7 @@ export async function handler ({ queryStringParameters }) {
   }
 
   if (coords && time) {
-    const records = await getWeather({ ...coords, time });
+    const records = await getWeather({ ...coords, time, requests: 1 });
     if (records.length) {
       const contents = 'No weather changes yet, sync this feed with a RSS service for updates.';
       const link = await getFeed(coords, contents);

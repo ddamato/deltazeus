@@ -4,12 +4,15 @@ import { getRecords, postForecast, tableNames, incrementRequests } from './datab
 import properties from './properties.js';
 const darksky = new DarkSky(process.env.DARKSKY_API_SECRET);
 
-export default async function getWeather({ latitude, longitude, time }) {
+export default async function getWeather({ latitude, longitude, time, requests }) {
   const coords = new Coords(latitude, longitude);
   let records = await getRecords(tableNames.DZ_TODAY, `{coords} = "${coords}"`);
   if (!records.length) {
     const forecast = await getDarkskyWeather({ time, ...coords });
     records = await postForecast(forecast);
+    if (requests) {
+      await incrementRequests(records);
+    }
   }
   return records;
 }

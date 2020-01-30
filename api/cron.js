@@ -29,31 +29,40 @@ export function forToday(record) {
   return { time, ...record };
 }
 
+function filterByRequests(acc, record) {
+  if (record.requests) {
+    record.requests = 0;
+    return acc.concat(record);
+  }
+  return acc;
+}
+
 export default async function hourlyCron() {
   const today = await getRecords(tableNames.DZ_TODAY).then(filterByTimezone);
   if (!today.length) {
     return [];
   }
 
-  const previousWeather = today.filter(({ requests }) => requests);
+  const previousWeather = today.reduce(filterByRequests, []);
   await deleteRecords(tableNames.DZ_TODAY, today);
   const response = await Promise.all(previousWeather.map(forToday).map(getWeather));
   const newWeather = response.reduce((acc, record) => acc.concat(record), []);
   const thresholds = await getRecords(tableNames.DZ_THRESHOLDS);
   const updates = computeDeltas(previousWeather, newWeather, thresholds);
-  const promises = updates.map(async (update) => {
-    const { latitude, longitude, timezone, delta } = update;
-    const { time } = forToday(update);
-    const title = `deltazeus update for ${latitude}, ${longitude} on ${time} (${timezone})`;
-    const coords = new Coords(latitude, longitude);
-    const content = deltaResponse(delta, timezone);
-    return await getFeed(coords, content, title);
-  })
+  const promises = updates.map(prepareUpdate);
 
   const updatedFeeds = await Promise.all(promises);
   return updatedFeeds;
 }
 
+async function prepareUpdate(update) {
+  const { latitude, longitude, timezone, delta } = update;
+  const { time } = forToday(update);
+  const title = `deltazeus update for ${latitude}, ${longitude} on ${time} (${timezone})`;
+  const coords = new Coords(latitude, longitude);
+  const content = deltaResponse(delta);
+  return await getFeed(coords, content, title);
+}
 
 function deltaResponse(changes) {
   const responses = Object.keys(changes).reduce((acc, prop) => {
