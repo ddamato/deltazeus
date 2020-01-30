@@ -15,31 +15,34 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
   background: rgb(0, 0, 150);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
   color: #fff;
   font-family: 'Sulphur Point', sans-serif;
 }
 
+section {
+  position: relative;
+}
+
+section:first-child {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .dz-logomark {
-  fill: currentColor;
+  fill: var(--accent-rgb);
   max-width: 600px;
   width: 30vh;
-  filter: drop-shadow(.7rem .4rem 6px var(--accent-rgba));
-  animation: bounce 2s ease-in-out infinite alternate;
 }
 
 h1 {
   font-size: 4rem;
   margin: 1rem 0 0;
-  text-shadow: .2rem .2rem 6px var(--accent-rgba);
-}
-
-@keyframes bounce {
-  from { transform: translateY(.5rem); }
-  to { transform: translateY(-.5rem); }
+  text-shadow: .3rem .3rem 0 var(--accent-rgb);
+  position: absolute;
+  letter-spacing: 1rem;
 }
