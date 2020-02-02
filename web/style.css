@@ -2,76 +2,155 @@
   box-sizing: border-box;
 }
 
-:root {
-  --accent-r: 74;
-  --accent-g: 20;
-  --accent-b: 140;
-  --accent-a: .7;
-  --accent-rgb: rgb(var(--accent-r), var(--accent-g), var(--accent-b));
-  --accent-rgba: rgb(var(--accent-r), var(--accent-g), var(--accent-b), var(--accent-a));
-  --offset: 4rem;
-}
-
 body {
   margin: 0;
   background: rgb(0, 0, 150);
   color: #fff;
-  font-family: 'Ubuntu', sans-serif;
-}
-
-header {
-  min-height: calc(100vh - var(--offset));
-  position: relative;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
+  font-family: europa, sans-serif;
+  min-height: 100vh;
 }
 
 .dz-logomark {
-  fill: var(--accent-rgb);
-  max-width: 600px;
-  width: 14rem;
-  margin-left: 1rem;
+  fill: currentcolor;
+  width: 12rem;
+  filter: drop-shadow(12px 8px 0 #ff6f00);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  border: 30px solid #020f59;
+
+}
+
+header:before,
+header:after {
+  content: '';
+  background-image: url(clouds.png);
+  background-size: 700px 100%;
   position: absolute;
-  align-self: center;
+  width: 100vw;
+  left: 0;
+  top: 50%;
+  background-position: 0%;
+  height: 50%;
+}
+
+header::before {
+  transform: translateY(-50%);
+  animation: drift 120s linear infinite;
+  opacity: .05;
+  margin-top: -1rem;
+}
+
+header:after {
+  transform: translateY(-50%) scaleY(-1);
+  animation: drift 210s -66s linear infinite;
+  opacity: .1;
+  margin-top: 1rem;
+}
+
+@keyframes drift {
+  from { background-position: 0%;}
+  to { background-position: -700px ;}
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 2rem;
+  max-width: 400px;
+  position: relative;
+  z-index: 3;
 }
 
 h1 {
-  --letter-spacing: 2rem;
-  font-size: 5rem;
-  margin: 1rem calc(var(--letter-spacing) * -1) 0 0;
-  text-shadow: .3rem .3rem 0 var(--accent-rgb);
-  letter-spacing: var(--letter-spacing);
-  z-index: 1;
-  text-align: center;
-  transform: scaleY(.9);
+  margin: 0;
+  font-size: 4rem;
+  line-height: 0.75;
+  letter-spacing: 0.5rem;
+}
+
+.inputWrapper {
+  background: #fff;
+  border-radius: 3px;
+  display: inline-flex;
+  margin-top: 2rem;
+  padding: 8px;
+}
+
+.postalCode {
+  background: transparent;
+  color: #000;
+  border: 0;
+  flex: 1;
+  font: inherit;
+  font-size: 1.2rem;
+  padding: 0;
+  width: 12ch;
+  text-indent: 0.5rem;
+  transition: 0.218s ease;
+}
+
+.inputWrapper.geolocation .postalCode {
+  width: 0;
+}
+
+.postalCode:focus {
+  outline: 0;
+}
+
+.getFeed {
+  background-color: #ff6f00;
+  color: #fff;
+  font: inherit;
+  border: 0;
+  border-radius: 3px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.getFeed:focus {
+  outline: 0;
+}
+
+.toggleInput {
+  color: #ff6f00;
+  font: inherit;
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  margin-top: 0.5rem;
+  padding: 0;
+  cursor: pointer;
+  font-size: .8rem;
+}
+
+.toggleInput:focus {
+  outline: 0;
+}
+
+.toggleInput:after {
+  content: " " attr(data-label);
+}
+
+.logo {
+  padding: 2rem;
 }
 
 section {
-  position: relative;
-  margin-bottom: 4rem;
+  background-color: #020f59;
 }
 
-section:before {
-  content: '';
-  background-color: #333;
-  height: calc(100% - var(--offset) * 2);
-  top: var(--offset);
-  width: 100%;
-  position: absolute;
+section h2 {
+  margin: 0;
 }
 
 article {
-  margin: 0 3rem;
-  background-color: #fff;
-  color: #000;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  position: relative;
-  min-height: 100vh;
-  border: 4px solid var(--accent-rgb);
-}
-
-h2 {
-  margin: 0;
+  max-width: 656px;
+  margin: 0 auto;
+  padding: 2rem;
 }
