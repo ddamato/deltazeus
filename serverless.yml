@@ -1,29 +1,31 @@
-service: sls-typescript-rest-api-with-dynamodb
+org: ddamato
+app: deltazeus
+service: deltazeus-lambdas
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
 provider:
   name: aws
   runtime: nodejs12.x
-  region: eu-east-1
+  region: us-east-1
 
 functions:
-  create:
-    handler: functions/rss.handler
-    events:
-      - http:
-          path: rss
-          method: get
-  create:
+  cron:
     handler: functions/cron.handler
     events:
       - http:
           path: cron
           method: get
-  create:
+  forecast:
     handler: functions/forecast.handler
     events:
       - http:
           path: forecast
+          method: get
+  rss:
+    handler: functions/rss.handler
+    events:
+      - http:
+          path: rss
           method: get
 
