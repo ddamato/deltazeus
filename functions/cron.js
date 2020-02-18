@@ -1,9 +1,15 @@
-import hourlyCron from '../api/cron.js';
+// import hourlyCron from '../api/cron.js';
 
-export async function handler() {
-  const records = await hourlyCron();
-  return {
+module.exports.handler = (event, context, callback) => {
+  const message = 'All good';
+
+  const response = {
     statusCode: 200,
-    body: JSON.stringify(records),
-  };
+    body: message,
+    headers: {
+      'Content-Type': 'text/html'
+    }
+  }
+
+  callback(null, response)
 }
