@@ -1,6 +1,6 @@
 org: ddamato
 app: deltazeus
-service: deltazeus-lambdas
+service: deltazeus-service
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
