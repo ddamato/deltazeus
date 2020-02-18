@@ -27,6 +27,7 @@
     "dark-sky": "^1.1.5",
     "fs-extra": "^8.1.0",
     "netlify-lambda": "^1.6.3",
+    "serverless-finch": "^2.5.2",
     "xml-js": "^1.6.11"
   }
 }
