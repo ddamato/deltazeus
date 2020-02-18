@@ -4,9 +4,7 @@
   "description": "Changing the weather",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:lambda",
-    "build:lambda": "netlify-lambda build ./functions",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\""
   },
   "repository": {
     "type": "git",
@@ -25,9 +23,6 @@
     "axios": "^0.19.2",
     "convert-units": "^2.3.4",
     "dark-sky": "^1.1.5",
-    "fs-extra": "^8.1.0",
-    "netlify-lambda": "^1.6.3",
-    "serverless-finch": "^2.5.2",
     "xml-js": "^1.6.11"
   }
 }
