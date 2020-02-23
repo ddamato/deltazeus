@@ -1,11 +1,9 @@
 // This file should be auto-gen from /api
 
-module.exports.handler = ({ queryStringParameters }, context, callback) => {
-  const message = queryStringParameters;
-
+module.exports.handler = (event, context, callback) => {
   const response = {
     statusCode: 200,
-    body: message,
+    body: JSON.stringify(event),
     headers: {
       'Content-Type': 'text/html'
     }
