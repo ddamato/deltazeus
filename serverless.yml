@@ -13,10 +13,10 @@ functions:
   cron:
     handler: functions/cron.handler
     environment:
-      DARKSKY_API_SECRET: '${param:DARKSKY_API_SECRET}'
-      GEOCODEXYZ_API_KEY: '${param:GEOCODEXYZ_API_KEY}'
-      AWS_ACCESS_KEY: '${param:AWS_ACCESS_KEY}'
-      AWS_SECRET_KEY: '${param:AWS_SECRET_KEY}'
+      DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
+      DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'
+      DZ_AWS_ACCESS_KEY: '${param:DZ_AWS_ACCESS_KEY}'
+      DZ_AWS_SECRET_KEY: '${param:DZ_AWS_SECRET_KEY}'
     events:
       - http:
           path: cron
@@ -24,10 +24,10 @@ functions:
   forecast:
     handler: functions/forecast.handler
     environment:
-      DARKSKY_API_SECRET: '${param:DARKSKY_API_SECRET}'
-      GEOCODEXYZ_API_KEY: '${param:GEOCODEXYZ_API_KEY}'
-      AWS_ACCESS_KEY: '${param:AWS_ACCESS_KEY}'
-      AWS_SECRET_KEY: '${param:AWS_SECRET_KEY}'
+      DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
+      DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'
+      DZ_AWS_ACCESS_KEY: '${param:DZ_AWS_ACCESS_KEY}'
+      DZ_AWS_SECRET_KEY: '${param:DZ_AWS_SECRET_KEY}'
     events:
       - http:
           path: forecast
@@ -35,10 +35,10 @@ functions:
   rss:
     handler: functions/rss.handler
     environment:
-      DARKSKY_API_SECRET: '${param:DARKSKY_API_SECRET}'
-      GEOCODEXYZ_API_KEY: '${param:GEOCODEXYZ_API_KEY}'
-      AWS_ACCESS_KEY: '${param:AWS_ACCESS_KEY}'
-      AWS_SECRET_KEY: '${param:AWS_SECRET_KEY}'
+      DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
+      DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'
+      DZ_AWS_ACCESS_KEY: '${param:DZ_AWS_ACCESS_KEY}'
+      DZ_AWS_SECRET_KEY: '${param:DZ_AWS_SECRET_KEY}'
     events:
       - http:
           path: rss
