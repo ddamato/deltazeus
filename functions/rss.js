@@ -1,23 +1,15 @@
-import { getRecords, incrementRequests, tableNames } from '../api/database.js';
+// This file should be auto-gen from /api
 
-export async function handler({ queryStringParameters }) {
-  const { coords } = queryStringParameters || {};
-  if (coords) {
-    await increment(coords);
-    return {
-      statusCode: 301,
-      headers: {
-        Location: `https://rss.deltazeus.com/${coords}.xml`,
-      }
+module.exports.handler = ({ queryStringParameters }, context, callback) => {
+  const message = queryStringParameters;
+
+  const response = {
+    statusCode: 200,
+    body: message,
+    headers: {
+      'Content-Type': 'text/html'
     }
   }
-  return {
-    statusCode: 404,
-    body: JSON.stringify(queryStringParameters),
-  }
-}
 
-async function increment(coords) {
-  let records = await getRecords(tableNames.DZ_TODAY, `{coords} = "${coords}"`);
-  return incrementRequests(records);
+  callback(null, response)
 }

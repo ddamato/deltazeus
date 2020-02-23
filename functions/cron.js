@@ -1,7 +1,7 @@
-// import hourlyCron from '../api/cron.js';
+// This file should be auto-gen from /api
 
-module.exports.handler = (event, context, callback) => {
-  const message = 'All good';
+module.exports.handler = ({ queryStringParameters }, context, callback) => {
+  const message = queryStringParameters;
 
   const response = {
     statusCode: 200,

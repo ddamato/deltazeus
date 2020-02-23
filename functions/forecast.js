@@ -1,34 +1,15 @@
-import getWeather from '../api/weather.js';
-import getCoordsByPostal from '../api/postal.js';
-import Coords from '../api/coords.js';
-import getFeed from '../api/rss.js';
+// This file should be auto-gen from /api
 
-export async function handler ({ queryStringParameters }) {
-  const { latitude, longitude, postal, time } = queryStringParameters || {};
-  let coords;
-  if (postal) {
-    coords = await getCoordsByPostal(postal);
-  }
+module.exports.handler = ({ queryStringParameters }, context, callback) => {
+  const message = queryStringParameters;
 
-  if (latitude && longitude) {
-    coords = new Coords(latitude, longitude);
-  }
-
-  if (coords && time) {
-    const records = await getWeather({ ...coords, time, requests: 1 });
-    if (records.length) {
-      const contents = 'No weather changes yet, sync this feed with a RSS service for updates.';
-      const link = await getFeed(coords, contents);
-      return {
-        statusCode: 200,
-        body: link,
-      };
+  const response = {
+    statusCode: 200,
+    body: message,
+    headers: {
+      'Content-Type': 'text/html'
     }
   }
 
-  return {
-    statusCode: 300,
-    body: 'Incomplete query'
-  };
-  
+  callback(null, response)
 }
