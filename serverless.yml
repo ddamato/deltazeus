@@ -15,8 +15,8 @@ functions:
     environment:
       DARKSKY_API_SECRET: '${param:DARKSKY_API_SECRET}'
       GEOCODEXYZ_API_KEY: '${param:GEOCODEXYZ_API_KEY}'
-      AWS_ACCESS_KEY_ID: '${param:AWS_ACCESS_KEY_ID}'
-      AWS_SECRET_ACCESS_KEY: '${param:AWS_SECRET_ACCESS_KEY}'
+      AWS_ACCESS_KEY: '${param:AWS_ACCESS_KEY}'
+      AWS_SECRET_KEY: '${param:AWS_SECRET_KEY}'
     events:
       - http:
           path: cron
@@ -26,8 +26,8 @@ functions:
     environment:
       DARKSKY_API_SECRET: '${param:DARKSKY_API_SECRET}'
       GEOCODEXYZ_API_KEY: '${param:GEOCODEXYZ_API_KEY}'
-      AWS_ACCESS_KEY_ID: '${param:AWS_ACCESS_KEY_ID}'
-      AWS_SECRET_ACCESS_KEY: '${param:AWS_SECRET_ACCESS_KEY}'
+      AWS_ACCESS_KEY: '${param:AWS_ACCESS_KEY}'
+      AWS_SECRET_KEY: '${param:AWS_SECRET_KEY}'
     events:
       - http:
           path: forecast
@@ -37,8 +37,8 @@ functions:
     environment:
       DARKSKY_API_SECRET: '${param:DARKSKY_API_SECRET}'
       GEOCODEXYZ_API_KEY: '${param:GEOCODEXYZ_API_KEY}'
-      AWS_ACCESS_KEY_ID: '${param:AWS_ACCESS_KEY_ID}'
-      AWS_SECRET_ACCESS_KEY: '${param:AWS_SECRET_ACCESS_KEY}'
+      AWS_ACCESS_KEY: '${param:AWS_ACCESS_KEY}'
+      AWS_SECRET_KEY: '${param:AWS_SECRET_KEY}'
     events:
       - http:
           path: rss
