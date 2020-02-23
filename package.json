@@ -4,6 +4,7 @@
   "description": "Changing the weather",
   "main": "index.js",
   "scripts": {
+    "postinstall": "",
     "test": "echo \"Error: no test specified\""
   },
   "repository": {
@@ -16,13 +17,12 @@
     "url": "https://github.com/ddamato/deltazeus/issues"
   },
   "homepage": "https://github.com/ddamato/deltazeus#readme",
-  "devDependencies": {},
   "dependencies": {
-    "airtable": "^0.8.1",
-    "aws-sdk": "^2.610.0",
     "axios": "^0.19.2",
     "convert-units": "^2.3.4",
     "dark-sky": "^1.1.5",
+    "dynaql": "^2.5.0",
+    "tiny-s3": "0.0.3",
     "xml-js": "^1.6.11"
   }
 }

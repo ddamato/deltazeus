@@ -12,18 +12,33 @@ provider:
 functions:
   cron:
     handler: functions/cron.handler
+    environment:
+      DARKSKY_API_SECRET: '${param:darkskyApiSecret}'
+      GEOCODEXYZ_API_KEY: '${param:geocodexyzApiKey}'
+      AWS_ACCESS_KEY_ID: '${param:awsAccessKeyId}'
+      AWS_SECRET_ACCESS_KEY: '${param:awsSecretAccessKey}'
     events:
       - http:
           path: cron
           method: get
   forecast:
     handler: functions/forecast.handler
+    environment:
+      DARKSKY_API_SECRET: '${param:darkskyApiSecret}'
+      GEOCODEXYZ_API_KEY: '${param:geocodexyzApiKey}'
+      AWS_ACCESS_KEY_ID: '${param:awsAccessKeyId}'
+      AWS_SECRET_ACCESS_KEY: '${param:awsSecretAccessKey}'
     events:
       - http:
           path: forecast
           method: get
   rss:
     handler: functions/rss.handler
+    environment:
+      DARKSKY_API_SECRET: '${param:darkskyApiSecret}'
+      GEOCODEXYZ_API_KEY: '${param:geocodexyzApiKey}'
+      AWS_ACCESS_KEY_ID: '${param:awsAccessKeyId}'
+      AWS_SECRET_ACCESS_KEY: '${param:awsSecretAccessKey}'
     events:
       - http:
           path: rss
