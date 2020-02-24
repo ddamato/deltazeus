@@ -17,7 +17,7 @@ module.exports.handler = async (event, context, callback) => {
     if (exists) {
       await new Records(fields).increment();
       response = {
-        statusCode: 301,
+        statusCode: 302,
         headers: {
           Location: `https://www.deltazeus.com/rss/${coords}.xml`,
         }
