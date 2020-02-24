@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Changing the weather",
   "scripts": {
-    "postinstall": "",
+    "postinstall": "rollup -c",
     "test": ""
   },
   "repository": {
@@ -23,5 +23,12 @@
     "sparkplug": "^0.3.1",
     "tiny-s3": "0.0.3",
     "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-multi-entry": "^3.0.0",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "rollup": "^1.31.1",
+    "rollup-plugin-terser": "^5.2.0"
   }
 }

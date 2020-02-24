@@ -112,7 +112,7 @@ dist
 index.js
 
 # Lambda build folder
-lambda
+functions/
 
 # DS_Store files
 .DS_Store
