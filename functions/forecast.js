@@ -3,7 +3,7 @@
 module.exports.handler = (event, context, callback) => {
   const response = {
     statusCode: 200,
-    body: JSON.stringify(event),
+    body: JSON.stringify(process.versions),
     headers: {
       'Content-Type': 'text/html'
     }
