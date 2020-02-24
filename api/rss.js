@@ -9,7 +9,7 @@ module.exports.handler = async (event, context, callback) => {
     body: JSON.stringify(queryStringParameters),
   }
 
-  if (coords && /_/test(coords)) {
+  if (coords && /_/.test(coords)) {
     const [latitude, longitude] = coords.split('_');
     await new Records({ coords: new Coords(latitude, longitude) }).increment();
     response = {
