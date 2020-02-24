@@ -1,3 +1,4 @@
+const Coords = require('../lib/coords.js');
 const getWeather = require('../lib/weather.js');
 const getCoordsByPostal = require('../lib/postal.js');
 const Rss = require('../lib/rss.js');
@@ -8,7 +9,7 @@ module.exports.handler = async (event, context, callback) => {
   let coords;
   let response = {
     statusCode: 300,
-    body: 'Incomplete query'
+    body: JSON.stringify({message: 'Incomplete query'})
   };
 
   if (postal) {
