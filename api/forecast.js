@@ -9,7 +9,7 @@ module.exports.handler = async (event, context, callback) => {
   let coords;
   let response = {
     statusCode: 300,
-    body: JSON.stringify({message: 'Incomplete query'})
+    body: JSON.stringify({ message: 'Incomplete query' })
   };
 
   if (postal) {
@@ -22,9 +22,14 @@ module.exports.handler = async (event, context, callback) => {
 
   if (coords && time) {
     await getWeather({ ...coords, time });
+    const rss = new Rss(coords);
+    const exists = await rss.exists();
+    if (!exists) {
+      await rss.init();
+    }
     response = {
       statusCode: 200,
-      body: new Rss(coords).getPublicUrl(),
+      body: JSON.stringify({ rss: rss.getPublicUrl() }),
     };
   }
 

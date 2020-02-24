@@ -1,5 +1,6 @@
 const Coords = require('../lib/coords.js');
 const Records = require('../lib/records.js');
+const Rss = require('../lib/rss.js');
 
 module.exports.handler = async (event, context, callback) => {
   const { queryStringParameters } = event;
@@ -11,13 +12,17 @@ module.exports.handler = async (event, context, callback) => {
 
   if (coords && /_/.test(coords)) {
     const [latitude, longitude] = coords.split('_');
-    await new Records({ coords: new Coords(latitude, longitude) }).increment();
-    response = {
-      statusCode: 301,
-      headers: {
-        Location: `https://www.deltazeus.com/rss/${coords}.xml`,
-      }
-    };
+    const fields = { coords: new Coords(latitude, longitude) };
+    const exists = await new Rss(fields.coords).exists();
+    if (exists) {
+      await new Records(fields).increment();
+      response = {
+        statusCode: 301,
+        headers: {
+          Location: `https://www.deltazeus.com/rss/${coords}.xml`,
+        }
+      };
+    }
   }
   callback(null, response);
 }
