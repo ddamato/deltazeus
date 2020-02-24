@@ -1,9 +1,10 @@
-import cron from '../lib/cron.js';
+const cron = require('../lib/cron.js');
 
-export async function handler() {
+module.exports.handler = async (event, context, callback) => {
   const update = await cron();
-  return {
+  const response = {
     statusCode: 200,
     body: JSON.stringify({ update })
-  }
+  };
+  callback(null, response);
 }

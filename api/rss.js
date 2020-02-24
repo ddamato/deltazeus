@@ -1,19 +1,22 @@
-import Coords from '../lib/coords.js';
-import Records from '../lib/records.js';
+const Coords = require('../lib/coords.js');
+const Records = require('../lib/records.js');
 
-export async function handler({ queryStringParameters }) {
+module.exports.handler = async (event, context, callback) => {
+  const { queryStringParameters } = event;
   const { coords } = queryStringParameters || {};
+  let response = {
+    statusCode: 404,
+    body: JSON.stringify(queryStringParameters),
+  }
+
   if (coords) {
     await new Records({ coords: new Coords(coords) }).increment();
-    return {
+    response = {
       statusCode: 301,
       headers: {
         Location: `https://www.deltazeus.com/rss/${coords}.xml`,
       }
-    }
+    };
   }
-  return {
-    statusCode: 404,
-    body: JSON.stringify(queryStringParameters),
-  }
+  callback(null, response);
 }

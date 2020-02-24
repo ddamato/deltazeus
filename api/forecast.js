@@ -1,10 +1,16 @@
-import getWeather from '../lib/weather.js';
-import getCoordsByPostal from '../lib/postal.js';
-import Rss from '../lib/rss.js';
+const getWeather = require('../lib/weather.js');
+const getCoordsByPostal = require('../lib/postal.js');
+const Rss = require('../lib/rss.js');
 
-export async function handler ({ queryStringParameters }) {
+module.exports.handler = async (event, context, callback) => {
+  const { queryStringParameters } = event;
   const { latitude, longitude, postal, time } = queryStringParameters || {};
   let coords;
+  let response = {
+    statusCode: 300,
+    body: 'Incomplete query'
+  };
+
   if (postal) {
     coords = await getCoordsByPostal(postal);
   }
@@ -15,14 +21,11 @@ export async function handler ({ queryStringParameters }) {
 
   if (coords && time) {
     await getWeather({ ...coords, time });
-    return {
+    response = {
       statusCode: 200,
       body: new Rss(coords).getPublicUrl(),
     };
   }
 
-  return {
-    statusCode: 300,
-    body: 'Incomplete query'
-  };
+  callback(null, response);
 }
