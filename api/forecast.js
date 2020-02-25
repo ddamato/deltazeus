@@ -2,6 +2,7 @@ const Coords = require('../lib/coords.js');
 const getWeather = require('../lib/weather.js');
 const getCoordsByPostal = require('../lib/postal.js');
 const Rss = require('../lib/rss.js');
+const headers = require('../lib/headers.js');
 
 module.exports.handler = async (event, context, callback) => {
   const { queryStringParameters } = event;
@@ -9,6 +10,7 @@ module.exports.handler = async (event, context, callback) => {
   let coords;
   let response = {
     statusCode: 300,
+    headers,
     body: JSON.stringify({ message: 'Incomplete query' })
   };
 
@@ -29,6 +31,7 @@ module.exports.handler = async (event, context, callback) => {
     }
     response = {
       statusCode: 200,
+      headers,
       body: JSON.stringify({ rss: rss.getPublicUrl() }),
     };
   }

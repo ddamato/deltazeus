@@ -21,6 +21,7 @@ functions:
       - http:
           path: cron
           method: get
+          cors: true
   forecast:
     handler: functions/forecast.handler
     environment:
@@ -32,6 +33,7 @@ functions:
       - http:
           path: forecast
           method: get
+          cors: true
   rss:
     handler: functions/rss.handler
     environment:
@@ -43,4 +45,5 @@ functions:
       - http:
           path: rss
           method: get
+          cors: true
 
