@@ -20,23 +20,45 @@
           <h1>deltazeus</h1>
           <p>Get notified about significant weather changes in your area every day.</p>
         </div>
-        <div class="inputWrapper geolocation">
+       <div class="controls">
+        <input type="checkbox" class="hiddenCheckbox" id="usePostal"/>
+        <label for="usePostal">Use</label>
+        <div class="inputWrapper">
           <input type="text" class="postalCode" placeholder="Postal Code">
-          <button class="getFeed">Get the feed!</button>
+          <button class="btn getFeed">Get the feed!</button>
         </div>
-        <button class="toggleInput" data-label="postal code">Use</button>
+       </div>
       </div>
-      <div class="logo">
+      <div class="headerLogo">
         <svg class="dz-logomark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 130 176">
           <path d="M130,126L87,51l29-51H0l58,101l14-25l15,25H58H29l43,75l15-25l-15-25H130z M57,51L43,25h29L57,51z"/>
         </svg>
       </div>
     </header>
+    <section class="success">
+      <article>
+        <h2>Here's your ticket to freedom from checking the weather</h2>
+        <div class="feedLink">
+          <button class="feedLinkCopy btn">http://rss.deltazeus.com/40.7_-73.8</button>
+          <span>Copied to the clipboard!</span>
+          <input class="hiddenInput"/>
+        </div>
+        <h3>How to use your link</h3>
+        <p>Seitan mumblecore adaptogen, taxidermy ethical sriracha keytar selvage forage mixtape iPhone cold-pressed pabst. Marfa cold-pressed etsy forage 8-bit, before they sold out heirloom. Butcher williamsburg sriracha kale chips meditation subway tile meggings man bun plaid. Thundercats letterpress portland, kickstarter mustache direct trade raw denim. Normcore palo santo vaporware, selfies 3 wolf moon copper mug glossier echo park before they sold out blog hexagon mustache adaptogen. Seitan readymade ramps church-key taiyaki try-hard DIY lyft venmo.</p>
+      </article>
+    </section>
     <section>
       <article>
         <h2>What is deltazeus</h2>
         <p>Seitan mumblecore adaptogen, taxidermy ethical sriracha keytar selvage forage mixtape iPhone cold-pressed pabst. Marfa cold-pressed etsy forage 8-bit, before they sold out heirloom. Butcher williamsburg sriracha kale chips meditation subway tile meggings man bun plaid. Thundercats letterpress portland, kickstarter mustache direct trade raw denim. Normcore palo santo vaporware, selfies 3 wolf moon copper mug glossier echo park before they sold out blog hexagon mustache adaptogen. Seitan readymade ramps church-key taiyaki try-hard DIY lyft venmo.</p>
       </article>
     </section>
+    <footer>
+      <div class="footerLogo">
+        <svg class="dz-logomark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 130 176">
+          <path d="M130,126L87,51l29-51H0l58,101l14-25l15,25H58H29l43,75l15-25l-15-25H130z M57,51L43,25h29L57,51z"/>
+        </svg>
+      </div>
+    </footer>
   </body>
 </html>

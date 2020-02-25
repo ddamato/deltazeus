@@ -10,7 +10,22 @@ body {
   min-height: 100vh;
 }
 
-.dz-logomark {
+.btn {
+  display: inline-block;
+  background-color: #ff6f00;
+  color: #fff;
+  font: inherit;
+  border: 0;
+  border-radius: 3px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.btn:focus {
+  outline: 0;
+}
+
+.headerLogo .dz-logomark {
   fill: currentcolor;
   width: 12rem;
   filter: drop-shadow(12px 8px 0 #ff6f00);
@@ -21,8 +36,6 @@ header {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  border: 30px solid #020f59;
-
 }
 
 header:before,
@@ -74,6 +87,36 @@ h1 {
   letter-spacing: 0.5rem;
 }
 
+.controls {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.hiddenCheckbox {
+  visibility: hidden;
+}
+
+.controls label {
+  color: #ff6f00;
+  font: inherit;
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  margin-top: 0.5rem;
+  padding: 0;
+  cursor: pointer;
+  font-size: .8rem;
+  user-select: none;
+}
+
+.controls label:after {
+  content: ' postal code'
+}
+
+.hiddenCheckbox:checked ~ label:after {
+  content: ' geolocation'
+}
+
 .inputWrapper {
   background: #fff;
   border-radius: 3px;
@@ -90,51 +133,17 @@ h1 {
   font: inherit;
   font-size: 1.2rem;
   padding: 0;
-  width: 12ch;
+  width: 0;
   text-indent: 0.5rem;
   transition: 0.218s ease;
 }
 
-.inputWrapper.geolocation .postalCode {
-  width: 0;
+.hiddenCheckbox:checked ~ .inputWrapper .postalCode {
+  width: 12ch;
 }
 
 .postalCode:focus {
   outline: 0;
-}
-
-.getFeed {
-  background-color: #ff6f00;
-  color: #fff;
-  font: inherit;
-  border: 0;
-  border-radius: 3px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-.getFeed:focus {
-  outline: 0;
-}
-
-.toggleInput {
-  color: #ff6f00;
-  font: inherit;
-  background: transparent;
-  border: 0;
-  text-decoration: underline;
-  margin-top: 0.5rem;
-  padding: 0;
-  cursor: pointer;
-  font-size: .8rem;
-}
-
-.toggleInput:focus {
-  outline: 0;
-}
-
-.toggleInput:after {
-  content: " " attr(data-label);
 }
 
 .logo {
@@ -145,12 +154,64 @@ section {
   background-color: #020f59;
 }
 
-section h2 {
+.success {
+  background-color: #fff;
+  color: #020f59;
+  display: none;
+}
+
+.success.show {
+  display: block;
+}
+
+.feedLink {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.feedLink span {
+  opacity: 0;
+  padding: 0 1rem;
+  transition: .218s ease;
+}
+
+.feedLinkCopy.copied + span {
+  opacity: 1;
+}
+
+.hiddenInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+h2 {
   margin: 0;
+}
+
+h3 {
+  text-decoration: underline;
 }
 
 article {
   max-width: 656px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+footer {
+  background-color: #020f59;
+  padding: 4rem 2rem;
+}
+
+.footerLogo {
+  display: flex;
+}
+
+.footerLogo .dz-logomark {
+  fill: #000;
+  opacity: .2;
+  width: 6rem;
+  margin: auto;
 }
