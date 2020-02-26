@@ -43,6 +43,7 @@ async function handleClick() {
 
   if (elem.usePostalCheckbox.checked) {
     // use postal
+    elem.controlsContainer.classList.add('is-loading');
     if (postalCodeInput.value) {
       payload = {
         postal: postalCodeInput.value,
@@ -53,6 +54,7 @@ async function handleClick() {
 
   if (navigator.geolocation) {
     // use geolocation
+    elem.controlsContainer.classList.add('is-loading');
     const position = await getPosition();
     if (position) {
       payload = {
@@ -76,7 +78,6 @@ elem.getFeedButton.addEventListener('click', handleClick);
 
 function getFeed(payload) {
   const params = new URLSearchParams(payload).toString();
-  elem.controlsContainer.classList.add('is-loading');
   fetch(`https://api.deltazeus.com/forecast?${params}`)
     .then((response) => response.json())
     .then(handleResponse);
