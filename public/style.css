@@ -205,8 +205,25 @@ footer {
   padding: 4rem 2rem;
 }
 
+footer > div {
+  display: flex;
+  max-width: 656px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+footer a {
+  color: #ff6f00;
+  display: block;
+}
+
+footer h4 {
+  margin: 2rem 0 0;
+}
+
 .footerLogo {
   display: flex;
+  flex: 1;
 }
 
 .footerLogo .dz-logomark {

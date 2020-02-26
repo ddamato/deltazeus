@@ -1,7 +1,9 @@
 const cron = require('../lib/cron.js');
 
 module.exports.handler = async (event, context, callback) => {
-  const update = await cron();
+  const { queryStringParameters } = event;
+  const { force } = queryStringParameters || {};
+  const update = await cron(force);
   const response = {
     statusCode: 200,
     headers: {
