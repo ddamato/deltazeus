@@ -45,7 +45,7 @@ body {
   letter-spacing: 0.5rem;
 }
 
-.h2, .h3 {
+p + .h2, a + .h3 {
   margin-top: 3rem;
 }
 
@@ -240,6 +240,10 @@ footer .a {
 }
 
 @media (max-width: 600px) {
+  .header {
+    padding: 2rem 0;
+  }
+
   .h1 {
     font-size: 10vw;
   }
