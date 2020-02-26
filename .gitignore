@@ -114,6 +114,9 @@ test.js
 # Lambda build folder
 functions/
 
+# Sample Rss folder
+public/rss/
+
 # DS_Store files
 .DS_Store
 web/.DS_Store

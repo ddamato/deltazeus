@@ -11,7 +11,7 @@
 body {
   margin: 0;
   background: var(--dark-color);
-  color: #fff;
+  color: var(--light-color);
   font-family: europa, sans-serif;
   min-height: 100vh;
 }

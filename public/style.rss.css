@@ -1,3 +1,77 @@
+@import url(https://use.typekit.net/kld8gdm.css);
+
 * {
   box-sizing: border-box;
+}
+
+:root {
+  --accent-color: #ff6f00;
+  --light-color: #ffffff;
+  --dark-color: #020f59;
+}
+
+channel {
+  text-align: center;
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--dark-color);
+  font-family: europa, sans-serif;
+  padding: 2rem;
+  color: var(--light-color);
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  margin: 0;  
+}
+
+channel:after{
+	content:"IMPORTANT! If the link you've used to visit this page ends in .XML, your feed will not update tomorrow.  Please do not copy or save links to deltazeus ending in .XML.  It is normal for the page to automatically add .XML after loading.";
+	display: block;
+	margin: 1rem auto;
+	max-width: 600px;
+}
+
+channel > * {
+	display:none;
+}
+
+channel > title{
+	display:inline-block;
+	font-size: 3.2em;
+	color:var(--accent-color);
+	border-bottom: 1px solid var(--accent-color);
+	position: relative;
+	padding-bottom: 1rem;
+}
+
+item{
+	display:none;
+}
+
+item:last-child {
+	display: block;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+item:last-child > *{
+	display: none;
+}
+
+/* content:encoded */
+item:last-child > *:nth-child(3) {
+	display: block;
+	font-size: 2rem;
+	margin-bottom: 1rem;
+	padding: 1rem;
+	white-space: pre-line;
+	text-align: left;
+}
+
+item:last-child > pubDate {
+	display: inline-block;
+	color: var(--accent-color);
+	border-top: 1px solid var(--accent-color);
+	padding-top: 1rem;
 }
