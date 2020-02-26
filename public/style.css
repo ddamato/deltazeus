@@ -63,10 +63,6 @@ body {
   flex: 1;
 }
 
-.flat-bg {
-  background-color: var(--dark-color);
-}
-
 .logo-container {
   align-self: center;
   text-align: right;
@@ -88,10 +84,10 @@ body {
 }
 
 .header {
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 6rem 0;
 }
 
 .clouds:before,
@@ -103,7 +99,7 @@ body {
   position: absolute;
   width: 100vw;
   left: 0;
-  top: 50%;
+  top: 20%;
   background-position: 0%;
   height: 50%;
   pointer-events: none;
@@ -113,14 +109,13 @@ body {
   transform: translateY(-50%);
   animation: drift 120s linear infinite;
   opacity: .05;
-  margin-top: -1rem;
+  margin-top: 10rem;
 }
 
 .clouds:after {
   transform: translateY(-50%) scaleY(-1);
   animation: drift 210s -66s linear infinite;
   opacity: .1;
-  margin-top: 1rem;
 }
 
 @keyframes drift {
@@ -186,6 +181,10 @@ body {
   transition: 0.218s ease;
 }
 
+.controls-input:focus {
+  outline: 0;
+}
+
 .controls-usePostal:checked ~ .controls-inputWrapper .controls-input {
   width: 12ch;
 }
@@ -210,6 +209,7 @@ body {
   visibility: hidden;
 }
 
+.controls.is-loading .controls-input,
 .controls.is-complete .controls-input {
   width: 12ch;
   position: absolute;
