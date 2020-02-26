@@ -107,7 +107,6 @@ body {
   background-position: 0%;
   height: 50%;
   pointer-events: none;
-  display: none;
 }
 
 .clouds:before {
