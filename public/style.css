@@ -49,6 +49,10 @@ p + .h2, a + .h3 {
   margin-top: 3rem;
 }
 
+.accent {
+  color: var(--accent-color)
+}
+
 .max-width {
   max-width: 600px;
   margin: 0 auto;
