@@ -109,7 +109,7 @@ dist
 .netlify
 
 # Test function
-index.js
+test.js
 
 # Lambda build folder
 functions/

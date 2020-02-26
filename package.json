@@ -23,5 +23,6 @@
     "sparkplug": "^0.3.1",
     "tiny-s3": "0.0.3",
     "xml-js": "^1.6.11"
-  }
+  },
+  "devDependencies": {}
 }
