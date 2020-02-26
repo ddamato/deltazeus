@@ -2,18 +2,28 @@
   box-sizing: border-box;
 }
 
+:root {
+  --accent-color: #ff6f00;
+  --light-color: #ffffff;
+  --dark-color: #020f59;
+}
+
 body {
   margin: 0;
-  background: rgb(0, 0, 150);
+  background: var(--dark-color);
   color: #fff;
   font-family: europa, sans-serif;
   min-height: 100vh;
 }
 
-.btn {
+.a {
+  color: var(--accent-color);
+}
+
+.button {
   display: inline-block;
-  background-color: #ff6f00;
-  color: #fff;
+  background-color: var(--accent-color);
+  color: var(--light-color);
   font: inherit;
   border: 0;
   border-radius: 3px;
@@ -21,44 +31,93 @@ body {
   cursor: pointer;
 }
 
-.btn:focus {
+.button:focus {
   outline: 0;
 }
 
-.headerLogo .dz-logomark {
-  fill: currentcolor;
-  width: 12rem;
-  filter: drop-shadow(12px 8px 0 #ff6f00);
+.h1, .h2, .h3 {
+  margin: 0;
 }
 
-header {
+.h1 {
+  font-size: 4rem;
+  line-height: 0.75;
+  letter-spacing: 0.5rem;
+}
+
+.h2, .h3 {
+  margin-top: 3rem;
+}
+
+.max-width {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.flex-split {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
 }
 
-header:before,
-header:after {
+.flex-split > * {
+  flex: 1;
+}
+
+.flat-bg {
+  background-color: var(--dark-color);
+}
+
+.logo-container {
+  align-self: center;
+  text-align: right;
+}
+
+.dz-logomark--header {
+  width: 100%;
+  max-width: 12rem;
+  fill: currentcolor;
+  filter: drop-shadow(.75rem .5rem 0 var(--accent-color));
+}
+
+.dz-logomark--footer {
+  width: 100%;
+  max-width: 6rem;
+  fill: var(--light-color);
+  opacity: .2;
+  margin: auto;
+}
+
+.header {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clouds:before,
+.clouds:after {
   content: '';
+  --image-width: 700px;
   background-image: url(clouds.png);
-  background-size: 700px 100%;
+  background-size: var(--image-width) 100%;
   position: absolute;
   width: 100vw;
   left: 0;
   top: 50%;
   background-position: 0%;
   height: 50%;
+  pointer-events: none;
+  display: none;
 }
 
-header::before {
+.clouds:before {
   transform: translateY(-50%);
   animation: drift 120s linear infinite;
   opacity: .05;
   margin-top: -1rem;
 }
 
-header:after {
+.clouds:after {
   transform: translateY(-50%) scaleY(-1);
   animation: drift 210s -66s linear infinite;
   opacity: .1;
@@ -67,24 +126,12 @@ header:after {
 
 @keyframes drift {
   from { background-position: 0%;}
-  to { background-position: -700px ;}
+  to { background-position: calc(var(--image-width) * -1) ;}
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 2rem;
+.app {
   max-width: 400px;
-  position: relative;
-  z-index: 3;
-}
-
-h1 {
-  margin: 0;
-  font-size: 4rem;
-  line-height: 0.75;
-  letter-spacing: 0.5rem;
+  margin-right: 2rem;
 }
 
 .controls {
@@ -92,12 +139,13 @@ h1 {
   flex-direction: column-reverse;
 }
 
-.hiddenCheckbox {
+.controls-usePostal {
   visibility: hidden;
+  position: absolute;
 }
 
-.controls label {
-  color: #ff6f00;
+.controls-label {
+  color: var(--accent-color);
   font: inherit;
   background: transparent;
   border: 0;
@@ -109,25 +157,26 @@ h1 {
   user-select: none;
 }
 
-.controls label:after {
-  content: ' postal code'
+.controls-usePostal ~ .controls-label:after {
+  content: ' postal code';
 }
 
-.hiddenCheckbox:checked ~ label:after {
-  content: ' geolocation'
+.controls-usePostal:checked ~ .controls-label:after {
+  content: ' geolocation';
 }
 
-.inputWrapper {
-  background: #fff;
+.controls-inputWrapper {
+  background: var(--light-color);
   border-radius: 3px;
   display: inline-flex;
-  margin-top: 2rem;
+  margin-top: 1rem;
   padding: 8px;
+  align-self: flex-start;
 }
 
-.postalCode {
+.controls-input {
   background: transparent;
-  color: #000;
+  color: var(--dark-color);
   border: 0;
   flex: 1;
   font: inherit;
@@ -138,97 +187,75 @@ h1 {
   transition: 0.218s ease;
 }
 
-.hiddenCheckbox:checked ~ .inputWrapper .postalCode {
+.controls-usePostal:checked ~ .controls-inputWrapper .controls-input {
   width: 12ch;
 }
 
-.postalCode:focus {
-  outline: 0;
+.controls-getFeed:after {
+  content: 'Get the feed!';
 }
 
-.logo {
-  padding: 2rem;
+@keyframes loading {
+  0%, 100% { content: 'Please wait... \2581\2582\2583' }
+  25% { content: 'Please wait... \2582\2583\2582' }
+  50% { content: 'Please wait... \2583\2582\2581' }
+  75% { content: 'Please wait... \2582\2581\2582' }
 }
 
-section {
-  background-color: #020f59;
+.controls.is-loading .controls-getFeed:after {
+  animation: loading .5s linear infinite;
 }
 
-.success {
-  background-color: #fff;
-  color: #020f59;
-  display: none;
+.controls.is-loading .controls-label,
+.controls.is-complete .controls-label {
+  visibility: hidden;
 }
 
-.success.show {
-  display: block;
-}
-
-.feedLink {
-  margin: 1rem 0;
-  display: flex;
-  align-items: center;
-}
-
-.feedLink span {
-  opacity: 0;
-  padding: 0 1rem;
-  transition: .218s ease;
-}
-
-.feedLinkCopy.copied + span {
-  opacity: 1;
-}
-
-.hiddenInput {
+.controls.is-complete .controls-input {
+  width: 12ch;
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
 
-h2 {
-  margin: 0;
+.controls.is-complete .controls-getFeed:after {
+  content: attr(data-feed);
 }
 
-h3 {
-  text-decoration: underline;
+.controls-copyMessage {
+  display: none;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
 }
 
-article {
-  max-width: 656px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-footer {
-  background-color: #020f59;
-  padding: 4rem 2rem;
-}
-
-footer > div {
-  display: flex;
-  max-width: 656px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-footer a {
-  color: #ff6f00;
+.controls.is-complete .controls-copyMessage {
   display: block;
 }
 
-footer h4 {
-  margin: 2rem 0 0;
+footer {
+  padding-bottom: 4rem;
 }
 
-.footerLogo {
-  display: flex;
-  flex: 1;
+footer .a {
+  display: block;
 }
 
-.footerLogo .dz-logomark {
-  fill: #000;
-  opacity: .2;
-  width: 6rem;
-  margin: auto;
+@media (max-width: 600px) {
+  .h1 {
+    font-size: 10vw;
+  }
+
+  .clouds:before,
+  .clouds:after {
+    display: none;
+    animation: none;
+  }
+
+  .logo-container {
+    display: none;
+  }
+
+  .flex-split {
+    flex-direction: column;
+  }
 }

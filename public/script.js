@@ -21,75 +21,79 @@ function repeatingLinearGradient() {
 
 repeatingLinearGradient();
 
-const usePostalCheckbox = document.querySelector('.hiddenCheckbox')
-const postalCodeInput = document.querySelector(".postalCode");
-const getFeedButton = document.querySelector('.getFeed');
-const feedLinkButton = document.querySelector('.feedLinkCopy');
-const hiddenInput = document.querySelector('.hiddenInput');
-const successSection = document.querySelector('.success');
+const elem = {
+  controlsContainer: document.querySelector('.controls'),
+  usePostalCheckbox: document.querySelector('.controls-usePostal'),
+  postalCodeInput: document.querySelector('.controls-input'),
+  getFeedButton: document.querySelector('.controls-getFeed'),
+  copyMessageSpan: document.querySelector('.controls-copyMessage'),
+}
 
-getFeedButton.addEventListener('click', () => {
-  if (usePostalCheckbox.checked) {
-    validatePostal();
-  } else {
-    geolocationPermission();
-  }
-});
-
-feedLinkButton.addEventListener('click', () => {
-  hiddenInput.select();
-  document.execCommand('copy');
-  feedLinkButton.classList.add('copied');
-});
-
-function validatePostal() {
-  if (!postalCodeInput.value) {
-    alert('Please enter a postal code');
+async function handleClick() {
+  if (this.dataset.feed) {
+    // click to copy
+    elem.postalCodeInput.select();
+    document.execCommand('copy');
+    elem.copyMessageSpan.textContent = 'Copied!';
     return;
   }
-  getFeed({
-    postal: postalCodeInput.value,
-    time: getDate(),
-  });
-}
+  
+  const time = new Date().toISOString().replace(/T.*/, '');
+  let payload;
 
-function getDate() {
-  return new Date().toISOString().replace(/T.*/, '');
-}
-
-function geolocationPermission() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(({ coords }, err) => {
-      if (err) {
-        alert('We were unable to locate your position, please enter a postal code instead');
-        return;
+  if (elem.usePostalCheckbox.checked) {
+    // use postal
+    if (postalCodeInput.value) {
+      payload = {
+        postal: postalCodeInput.value,
+        time,
       }
-      getFeed({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        time: getDate(),
-      });
-    });
+    }
+  }
+
+  if (navigator.geolocation) {
+    // use geolocation
+    const position = await getPosition();
+    if (position) {
+      payload = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        time,
+      }
+    }
+  }
+
+  if (payload) {
+    getFeed(payload);
   }
 }
+
+function getPosition(options) {
+  return new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, options));
+}
+
+elem.getFeedButton.addEventListener('click', handleClick);
 
 function getFeed(payload) {
   const params = new URLSearchParams(payload).toString();
+  elem.controlsContainer.classList.add('is-loading');
   fetch(`https://api.deltazeus.com/forecast?${params}`)
     .then((response) => response.json())
     .then(handleResponse);
 }
 
 function handleResponse({ rss, message }) {
+  elem.controlsContainer.classList.remove('is-loading');
+  elem.controlsContainer.classList.add('is-complete');
+
   if (message) {
     alert(message);
     return;
   }
 
   if (rss) {
-    feedLinkButton.textContent = rss;
-    hiddenInput.value = rss;
-    successSection.classList.add('show');
-    successSection.scrollIntoView({behavior: 'smooth'});
+    // overload the current postal code input for copying
+    elem.postalCodeInput.value = rss;
+    elem.getFeedButton.dataset.feed = rss;
   }
 }

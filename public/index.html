@@ -14,66 +14,55 @@
     <script type="text/javascript" src="script.js" defer></script>
   </head>
   <body>
-    <header>
-      <div class="form">
-        <div class="text">
-          <h1>deltazeus</h1>
+    <header class="header clouds">
+      <div class="max-width flex-split">
+        <div class="app">
+          <h1 class="h1">deltazeus</h1>
           <p>Get notified about significant weather changes in your area every day.</p>
+          <div class="controls">
+            <input type="checkbox" class="controls-usePostal" id="usePostal">
+            <label for="usePostal" class="controls-label">Use</label>
+            <span class="controls-copyMessage">Click the button to copy to clipboard</span>
+            <div class="controls-inputWrapper">
+              <input type="text" class="controls-input" placeholder="Postal Code">
+              <button class="button controls-getFeed"></button>
+            </div>
+          </div>
         </div>
-       <div class="controls">
-        <input type="checkbox" class="hiddenCheckbox" id="usePostal"/>
-        <label for="usePostal">Use</label>
-        <div class="inputWrapper">
-          <input type="text" class="postalCode" placeholder="Postal Code">
-          <button class="btn getFeed">Get the feed!</button>
+        <div class="logo-container">
+          <svg class="dz-logomark--header" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 130 176">
+            <path d="M130,126L87,51l29-51H0l58,101l14-25l15,25H58H29l43,75l15-25l-15-25H130z M57,51L43,25h29L57,51z"/>
+          </svg>
         </div>
-       </div>
-      </div>
-      <div class="headerLogo">
-        <svg class="dz-logomark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 130 176">
-          <path d="M130,126L87,51l29-51H0l58,101l14-25l15,25H58H29l43,75l15-25l-15-25H130z M57,51L43,25h29L57,51z"/>
-        </svg>
       </div>
     </header>
-    <section class="success">
-      <article>
-        <h2>Here's your ticket to freedom from checking the weather</h2>
-        <div class="feedLink">
-          <button class="feedLinkCopy btn">http://rss.deltazeus.com/40.7_-73.8</button>
-          <span>Copied to the clipboard!</span>
-          <input class="hiddenInput"/>
-        </div>
-        <h3>How to use your link</h3>
-        <p>Updates are only made if there are significant changes.</p>
-      </article>
-    </section>
-    <section>
-      <article>
-        <h2>What is deltazeus?</h2>
+    <section class="flat-bg">
+      <article class="max-width">
+        <h2 class="h2">What is deltazeus?</h2>
         <p>Most of us check to prepare for the day. If the weather never changed, we'd probably never check. But it changes nearly everyday! How do you keep up? That's where <strong>deltazeus</strong> comes in handy.</p>
         <p>After entering in your location above, <strong>deltazeus</strong> will provide a link to an RSS feed for weather updates in your area. The feed will only update if the changes are significant.</p>
-        <h2>What is RSS?</h2>
+        <h2 class="h2">What is RSS?</h2>
         <p>The acronym Really Simple Syndication describes a file format used for providing users with frequently updated content. Content distributors syndicate an RSS feed, thereby allowing users to subscribe a channel for content. For example, most blogs are powered by RSS behind the scenes. You could subscribe to updates via their RSS feed rather than visiting the site and checking for updates.</p>
         <p>There are different services that help subscribe to RSS feeds. Personally, I like to use feedly for news but for <strong>deltazeus</strong>, I'll recommend hooking up your RSS feed to IFTTT as it will allow for email, sms, or push notifications.</p>
-        <h2>What is a significant change?</h2>
+        <h2 class="h2">What is a significant change?</h2>
         <p>At the moment, significant changes are arbitrary based on a few surveys that were ran a long time ago. I expect to have a better system that allows users to suggest what a significant change feels like as it is often a subjective opinion.</p>
         <p>I'll also update this section with what the significant change thresholds are for transparency.</p>
       </article>
     </section>
-    <footer>
-      <div>
-        <div class="built">
-          <h4>Built by</h4>
-          <a href="#">Donnie D'Amato</a>
-          <h4>Built with</h4>
-          <a href="#">Amazon Web Services</a>
-          <a href="#">serverless</a>
-          <a href="#">Dark Sky Weather API</a>
-          <a href="#">Geocode.xyz API</a>
-          <a href="#">Github</a>
+    <footer class="flat-bg">
+      <div class="max-width flex-split">
+        <div>
+          <h3 class="h3">Built by</h3>
+          <a class="a" href="https://donniedamato.info">Donnie D'Amato</a>
+          <h3 class="h3">Built with</h3>
+          <a class="a" href="https://aws.amazon.com/">Amazon Web Services</a>
+          <a class="a" href="https://serverless.com/">serverless</a>
+          <a class="a" href="https://darksky.net/dev">Dark Sky Weather API</a>
+          <a class="a" href="https://geocode.xyz/">Geocode.xyz API</a>
+          <a class="a" href="https://github.com/">Github</a>
         </div>
-        <div class="footerLogo">
-          <svg class="dz-logomark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 130 176">
+        <div class="logo-container">
+          <svg class="dz-logomark--footer" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 130 176">
             <path d="M130,126L87,51l29-51H0l58,101l14-25l15,25H58H29l43,75l15-25l-15-25H130z M57,51L43,25h29L57,51z"/>
           </svg>
         </div>
