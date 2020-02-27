@@ -60,7 +60,7 @@ item:last-child > *{
 }
 
 /* content:encoded */
-item:last-child > *:nth-child(3) {
+item:last-child > :last-child {
 	display: block;
 	font-size: 2rem;
 	margin-bottom: 1rem;
