@@ -62,16 +62,16 @@ item:last-child > *{
 /* content:encoded */
 item:last-child > :last-child {
 	display: block;
-	font-size: 2rem;
+	font-size: 1.2rem;
 	margin-bottom: 1rem;
 	padding: 1rem;
 	white-space: pre-line;
 	text-align: left;
+	line-height: 2;
 }
 
 item:last-child > pubDate {
 	display: inline-block;
 	color: var(--accent-color);
-	border-top: 1px solid var(--accent-color);
 	padding-top: 1rem;
 }
