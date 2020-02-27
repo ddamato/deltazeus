@@ -29,6 +29,7 @@ body {
   border-radius: 3px;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  word-break: break-all;
 }
 
 .button:focus {
@@ -37,12 +38,12 @@ body {
 
 .h1, .h2, .h3 {
   margin: 0;
+  letter-spacing: .05em;
 }
 
 .h1 {
   font-size: 4rem;
   line-height: 0.75;
-  letter-spacing: 0.5rem;
 }
 
 p + .h2, a + .h3 {
@@ -55,6 +56,7 @@ p + .h2, a + .h3 {
 
 .max-width {
   max-width: 600px;
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -195,13 +197,14 @@ p + .h2, a + .h3 {
 
 .controls-getFeed:after {
   content: 'Get the feed!';
+  --please-wait: 'Please wait...';
 }
 
 @keyframes loading {
-  0%, 100% { content: 'Please wait... \2581\2582\2583' }
-  25% { content: 'Please wait... \2582\2583\2582' }
-  50% { content: 'Please wait... \2583\2582\2581' }
-  75% { content: 'Please wait... \2582\2581\2582' }
+  0%, 100% { content: var(--please-wait) ' \2581\2582\2583' }
+  25% { content: var(--please-wait) ' \2582\2583\2582' }
+  50% { content: var(--please-wait) ' \2583\2582\2581' }
+  75% { content: var(--please-wait) ' \2582\2581\2582' }
 }
 
 .controls.is-loading .controls-getFeed:after {
@@ -244,6 +247,10 @@ footer .a {
 }
 
 @media (max-width: 600px) {
+  .app {
+    margin-right: 0;
+  }
+
   .header {
     padding: 2rem 0;
   }
@@ -264,5 +271,13 @@ footer .a {
 
   .flex-split {
     flex-direction: column;
+  }
+
+  .controls-getFeed:after {
+    --please-wait: '';
+  }
+
+  .controls-usePostal:checked ~ .controls-inputWrapper .controls-getFeed:after {
+    content: 'Go!';
   }
 }
