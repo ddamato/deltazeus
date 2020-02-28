@@ -30,7 +30,7 @@ const elem = {
   thresholdContainer: document.querySelector('.thresholds'),
 }
 
-const dzApiUrl = 'https://api.deltazeus.com';
+const DZ_API_URL = 'https://api.deltazeus.com';
 
 async function handleClick() {
   if (this.dataset.feed) {
@@ -81,13 +81,13 @@ elem.getFeedButton.addEventListener('click', handleClick);
 
 function getFeed(payload) {
   const params = new URLSearchParams(payload).toString();
-  fetch(`${dzApiUrl}/forecast?${params}`)
+  fetch(`${DZ_API_URL}/forecast?${params}`)
     .then((response) => response.json())
     .then(handleResponse);
 }
 
 function getThresholds() {
-  fetch(`${dzApiUrl}/thresholds`)
+  fetch(`${DZ_API_URL}/thresholds`)
     .then((response) => response.json())
     .then(handleThresholds);
 }
