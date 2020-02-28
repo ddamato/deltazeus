@@ -12,7 +12,7 @@ module.exports.handler = async (event, context, callback) => {
   }, []);
   const response = {
     statusCode: 200,
-    headers,
+    headers: headers(event),
     body: JSON.stringify({ active }),
   };
   callback(null, response);

@@ -120,6 +120,8 @@ function createLocationQuery(active) {
   return new URLSearchParams({ l: 'map', pt }).toString();
 }
 
+getActive();
+
 function handleThresholds({ thresholds }) {
   elem.thresholdContainer.innerHTML = '';
 

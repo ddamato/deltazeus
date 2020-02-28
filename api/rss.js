@@ -8,7 +8,7 @@ module.exports.handler = async (event, context, callback) => {
   const { coords } = queryStringParameters || {};
   let response = {
     statusCode: 404,
-    headers,
+    headers: headers(event),
     body: JSON.stringify(queryStringParameters),
   }
 
@@ -21,7 +21,7 @@ module.exports.handler = async (event, context, callback) => {
       const Location = `https://www.deltazeus.com/rss/${coords}.xml`;
       response = {
         statusCode: 302,
-        headers: Object.assign(headers, { Location })
+        headers: Object.assign(response.headers, { Location })
       };
     }
   }

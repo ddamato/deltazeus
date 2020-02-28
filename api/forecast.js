@@ -31,7 +31,7 @@ module.exports.handler = async (event, context, callback) => {
     }
     response = {
       statusCode: 200,
-      headers,
+      headers: headers(event),
       body: JSON.stringify({ rss: rss.getPublicUrl() }),
     };
   }
