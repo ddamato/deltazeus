@@ -10,6 +10,18 @@ provider:
   region: us-east-1
 
 functions:
+  active:
+    handler: functions/active.handler
+    environment:
+      DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
+      DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'
+      DZ_AWS_ACCESS_KEY: '${param:DZ_AWS_ACCESS_KEY}'
+      DZ_AWS_SECRET_KEY: '${param:DZ_AWS_SECRET_KEY}'
+    events:
+      - http:
+          path: active
+          method: get
+          cors: true
   cron:
     handler: functions/cron.handler
     environment:
@@ -47,7 +59,7 @@ functions:
           method: get
           cors: true
   thresholds:
-    handler: functions/rss.thresholds
+    handler: functions/thresholds.handler
     environment:
       DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
       DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'
