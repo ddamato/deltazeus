@@ -111,8 +111,8 @@ function handleActive({ active }) {
   const img = document.createElement('img');
   img.src = `${YANDEX_STATIC_MAP_URL}/?${params}`;
 
-  elem.thresholdContainer.appendChild(h2);
-  elem.thresholdContainer.appendChild(img);
+  elem.locationsContainer.appendChild(h2);
+  elem.locationsContainer.appendChild(img);
 }
 
 function createLocationQuery(active) {
