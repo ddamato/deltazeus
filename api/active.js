@@ -5,7 +5,7 @@ const Rss = require('../lib/rss.js');
 
 module.exports.handler = async (event, context, callback) => {
   const records = await new Records().all();
-  const active = Object.keys(records).reduce((acc, { latitude, longitude }) => {
+  const active = records.reduce((acc, { latitude, longitude }) => {
     const coords = new Coords(latitude, longitude);
     const rss = new Rss(coords).getPublicUrl();
     return acc.concat({ latitude, longitude, rss });
