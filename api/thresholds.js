@@ -14,7 +14,7 @@ module.exports.handler = async (event, context, callback) => {
     return acc;
   }, {});
 
-  response = {
+  const response = {
     statusCode: 200,
     headers,
     body: JSON.stringify({ thresholds }),
