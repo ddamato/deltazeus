@@ -101,6 +101,10 @@ function getActive() {
 }
 
 function handleActive({ active }) {
+  if (active.length < 2) {
+    return;
+  }
+
   elem.locationsContainer.innerHTML = '';
 
   const h2 = document.createElement('h2');
