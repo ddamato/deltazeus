@@ -61,7 +61,7 @@ item:last-child > * {
 }
 
 /* content:encoded */
-item:last-child > :last-child {
+item:last-child > encoded {
 	display: block;
 	font-size: 1.2rem;
 	margin-bottom: 1rem;
@@ -69,6 +69,11 @@ item:last-child > :last-child {
 	white-space: pre-line;
 	text-align: left;
 	line-height: 2;
+}
+
+item:last-child > link {
+	display: block;
+	color: var(--accent-color);
 }
 
 item:last-child > pubDate {
