@@ -28,9 +28,11 @@ const elem = {
   getFeedButton: document.querySelector('.controls-getFeed'),
   copyMessageSpan: document.querySelector('.controls-copyMessage'),
   thresholdContainer: document.querySelector('.thresholds'),
+  locationsContainer: document.querySelector('.locations'),
 }
 
 const DZ_API_URL = 'https://api.deltazeus.com';
+const YANDEX_STATIC_MAP_URL = 'https://static-maps.yandex.ru/1.x'
 
 async function handleClick() {
   if (this.dataset.feed) {
@@ -90,6 +92,32 @@ function getThresholds() {
   fetch(`${DZ_API_URL}/thresholds`)
     .then((response) => response.json())
     .then(handleThresholds);
+}
+
+function getActive() {
+  fetch(`${DZ_API_URL}/active`)
+    .then((response) => response.json())
+    .then(handleActive);
+}
+
+function handleActive({ active }) {
+  elem.locationsContainer.innerHTML = '';
+
+  const h2 = document.createElement('h2');
+  h2.classList.add('h2');
+  h2.textContent = 'Current feed locations';
+
+  const params = createLocationQuery(active);
+  const img = document.createElement('img');
+  img.src = `${YANDEX_STATIC_MAP_URL}/?${params}`;
+
+  elem.thresholdContainer.appendChild(h2);
+  elem.thresholdContainer.appendChild(img);
+}
+
+function createLocationQuery(active) {
+  const pt = active.map(({ latitude, longitude }) => `${longitude},${latitude}`).join('~');
+  return new URLSearchParams({ l: 'map', pt }).toString();
 }
 
 function handleThresholds({ thresholds }) {
