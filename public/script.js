@@ -27,7 +27,7 @@ const elem = {
   postalCodeInput: document.querySelector('.controls-input'),
   getFeedButton: document.querySelector('.controls-getFeed'),
   copyMessageSpan: document.querySelector('.controls-copyMessage'),
-  thresholdContainer: document.querySelector('.thresholds');
+  thresholdContainer: document.querySelector('.thresholds'),
 }
 
 const dzApiUrl = 'https://api.deltazeus.com';
