@@ -118,7 +118,7 @@ p + .h2, div > .h2, a + .h3 {
   background-image: url(clouds.png);
   background-size: var(--image-width) 100%;
   position: absolute;
-  width: 100vw;
+  width: 100%;
   left: 0;
   top: 20%;
   background-position: 0%;
