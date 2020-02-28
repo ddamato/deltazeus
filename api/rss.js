@@ -1,14 +1,15 @@
 const Coords = require('../lib/coords.js');
 const Records = require('../lib/records.js');
 const Rss = require('../lib/rss.js');
-const headers = require('../lib/headers.js');
+const headerFn = require('../lib/headers.js');
 
 module.exports.handler = async (event, context, callback) => {
   const { queryStringParameters } = event;
   const { coords } = queryStringParameters || {};
+  const headers = headerFn(event);
   let response = {
     statusCode: 404,
-    headers: headers(event),
+    headers,
     body: JSON.stringify(queryStringParameters),
   }
 
@@ -21,7 +22,7 @@ module.exports.handler = async (event, context, callback) => {
       const Location = `https://www.deltazeus.com/rss/${coords}.xml`;
       response = {
         statusCode: 302,
-        headers: Object.assign(response.headers, { Location })
+        headers: Object.assign(headers, { Location })
       };
     }
   }
