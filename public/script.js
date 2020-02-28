@@ -113,7 +113,7 @@ function handleThresholds({ thresholds }) {
     ths.appendChild(th);
 
     const td = document.createElement('td');
-    td.textContent = thresholds[thresholds];
+    td.textContent = thresholds[threshold];
     tds.appendChild(td);
   });
   table.appendChild(ths);

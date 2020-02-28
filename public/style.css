@@ -192,7 +192,6 @@ p + .h2, div > .h2, a + .h3 {
   background: transparent;
   color: var(--dark-color);
   border: 0;
-  flex: 1;
   font: inherit;
   font-size: 1.2rem;
   padding: 0;
