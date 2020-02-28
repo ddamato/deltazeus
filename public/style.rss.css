@@ -15,14 +15,14 @@ channel {
   display: block;
   width: 100%;
   min-height: 100vh;
-  background: var(--dark-color);
+  background: var(--light-color);
   font-family: europa, sans-serif;
   padding: 2rem;
-  color: var(--light-color);
+  color: var(--dark-color);
   position: relative;
   z-index: 2;
   overflow: hidden;
-  margin: 0;  
+	margin: 0;
 }
 
 channel:after{
@@ -36,16 +36,17 @@ channel > * {
 	display:none;
 }
 
-channel > title{
+channel > title {
 	display:inline-block;
 	font-size: 3.2em;
 	color:var(--accent-color);
 	border-bottom: 1px solid var(--accent-color);
 	position: relative;
 	padding-bottom: 1rem;
+	font-weight: 700;
 }
 
-item{
+item {
 	display:none;
 }
 
@@ -55,7 +56,7 @@ item:last-child {
 	margin: 0 auto;
 }
 
-item:last-child > *{
+item:last-child > * {
 	display: none;
 }
 
