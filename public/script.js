@@ -27,7 +27,10 @@ const elem = {
   postalCodeInput: document.querySelector('.controls-input'),
   getFeedButton: document.querySelector('.controls-getFeed'),
   copyMessageSpan: document.querySelector('.controls-copyMessage'),
+  thresholdContainer: document.querySelector('.thresholds');
 }
+
+const dzApiUrl = 'https://api.deltazeus.com';
 
 async function handleClick() {
   if (this.dataset.feed) {
@@ -78,10 +81,46 @@ elem.getFeedButton.addEventListener('click', handleClick);
 
 function getFeed(payload) {
   const params = new URLSearchParams(payload).toString();
-  fetch(`https://api.deltazeus.com/forecast?${params}`)
+  fetch(`${dzApiUrl}/forecast?${params}`)
     .then((response) => response.json())
     .then(handleResponse);
 }
+
+function getThresholds() {
+  fetch(`${dzApiUrl}/thresholds`)
+    .then((response) => response.json())
+    .then(handleThresholds);
+}
+
+function handleThresholds({ thresholds }) {
+  elem.thresholdContainer.innerHTML = '';
+
+  const h2 = document.createElement('h2');
+  h2.classList.add('h2');
+  h2.textContent = 'Current significant thresholds';
+
+  const table = document.createElement('table');
+  table.classList.add('table');
+  const ths = document.createElement('tr');
+  const tds = document.createElement('tr');
+
+  elem.thresholdContainer.appendChild(h2);
+  elem.thresholdContainer.appendChild(table);
+
+  Object.keys(thresholds).forEach((threshold) => {
+    const th = document.createElement('th');
+    th.textContent = threshold;
+    ths.appendChild(th);
+
+    const td = document.createElement('td');
+    td.textContent = thresholds[thresholds];
+    tds.appendChild(td);
+  });
+  table.appendChild(ths);
+  table.appendChild(tds);
+}
+
+getThresholds();
 
 function handleResponse({ rss, message }) {
   elem.controlsContainer.classList.remove('is-loading');
