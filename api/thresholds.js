@@ -7,9 +7,10 @@ module.exports.handler = async (event, context, callback) => {
   const records = await new Records({ coords: 'default' }, DYNAMO_TABLENAMES.DZ_THRESHOLDS).get();
   const thresholds = Object.keys(records).reduce((acc, prop) => {
     if (prop in properties) {
-      const key = properties[prop].abbr;
-      const value = properties[prop].units(records[prop]);
-      Object.assign(acc, { [key]: value });
+      const { convert, units, abbr } = properties[prop];      
+      const converted = convert ? ` (${convert(records[prop])})` : '';
+      const value = `${units(records[prop])}${converted}`;
+      Object.assign(acc, { [abbr]: value });
     }
     return acc;
   }, {});
