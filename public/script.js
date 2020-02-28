@@ -116,7 +116,7 @@ function handleActive({ active }) {
 }
 
 function createLocationQuery(active) {
-  const pt = active.map(({ latitude, longitude }) => `${longitude},${latitude}`).join('~');
+  const pt = active.map(({ latitude, longitude }) => `${longitude},${latitude},flag`).join('~');
   return new URLSearchParams({ l: 'map', lang: 'en_US', pt }).toString();
 }
 
