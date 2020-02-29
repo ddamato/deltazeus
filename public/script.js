@@ -49,9 +49,9 @@ async function handleClick() {
   if (elem.usePostalCheckbox.checked) {
     // use postal
     elem.controlsContainer.classList.add('is-loading');
-    if (postalCodeInput.value) {
+    if (elem.postalCodeInput.value) {
       payload = {
-        postal: postalCodeInput.value,
+        postal: elem.postalCodeInput.value,
         time,
       }
     }
