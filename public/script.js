@@ -55,9 +55,7 @@ async function handleClick() {
         time,
       }
     }
-  }
-
-  if (navigator.geolocation) {
+  } else if (navigator.geolocation) {
     // use geolocation
     elem.controlsContainer.classList.add('is-loading');
     const position = await getPosition();
@@ -174,5 +172,7 @@ function handleResponse({ rss, message }) {
     // overload the current postal code input for copying
     elem.postalCodeInput.value = rss;
     elem.getFeedButton.dataset.feed = rss;
+    // update the map
+    getActive();
   }
 }

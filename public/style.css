@@ -73,20 +73,17 @@ p + .h2, div > .h2, a + .h3 {
   max-width: 600px;
   width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem 2rem;
 }
 
 .flex-split {
   display: flex;
 }
 
-.flex-split > * {
-  flex: 1;
-}
-
 .logo-container {
   align-self: center;
   text-align: right;
+  margin-left: auto;
 }
 
 .dz-logomark--header {
@@ -108,7 +105,8 @@ p + .h2, div > .h2, a + .h3 {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 6rem 0;
+  padding-top: 6rem;
+  padding-bottom: 2rem;
 }
 
 .clouds:before,
@@ -135,7 +133,7 @@ p + .h2, div > .h2, a + .h3 {
 
 .clouds:after {
   transform: translateY(-50%) scaleY(-1);
-  animation: drift 210s -66s linear infinite;
+  animation: drift 190s -66s linear infinite;
   opacity: .1;
 }
 
@@ -239,7 +237,7 @@ p + .h2, div > .h2, a + .h3 {
 }
 
 .controls.is-complete .controls-getFeed:after {
-  content: attr(data-feed);
+  content: attr(data-feed) !important;
 }
 
 .controls-copyMessage {
@@ -277,7 +275,7 @@ footer .a {
   }
 
   .header {
-    padding: 2rem 0;
+    padding-top: 2rem;
   }
 
   .h1 {
