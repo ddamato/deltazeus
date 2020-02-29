@@ -48,8 +48,8 @@ async function handleClick() {
 
   if (elem.usePostalCheckbox.checked) {
     // use postal
-    elem.controlsContainer.classList.add('is-loading');
     if (elem.postalCodeInput.value) {
+      elem.controlsContainer.classList.add('is-loading');
       payload = {
         postal: elem.postalCodeInput.value,
         time,
@@ -67,6 +67,9 @@ async function handleClick() {
         longitude: position.coords.longitude,
         time,
       }
+    } else {
+      elem.controlsContainer.classList.remove('is-loading');
+      alert('Could not find position, please use postal code instead.');
     }
   }
 
