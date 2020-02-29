@@ -1,9 +1,7 @@
-# deltazeus
+# [deltazeus](https://deltazeus.com)
 Most of us check to prepare for the day. If the weather never changed, we'd probably never check. But it changes nearly everyday! How do you keep up? That's where **deltzeus** comes in handy.
 
-deltazeus.com
-
-This system is built to be serverless, leveraging serverless.com and [AWS](https://aws.amazon.com) for maintaining the infrastructure between services. Static files are hosted on [S3](https://aws.amazon.com/s3/) while API endpoints are done with [Lambda](https://aws.amazon.com/lambda/) functions.
+This system is built to be serverless, leveraging [serverless.com](serverless.com) and [AWS](https://aws.amazon.com) for maintaining the infrastructure between services. Static files are hosted on [S3](https://aws.amazon.com/s3/) while API endpoints are done with [Lambda](https://aws.amazon.com/lambda/) functions.
 
 ## Getting the weather
 This uses the [Dark Sky daily forecast API](https://darksky.net/dev/docs#time-machine-request) to retrieve the weather conditions by latitude and longitude.
