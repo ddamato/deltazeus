@@ -252,7 +252,7 @@ p + .h2, div > .h2, a + .h3 {
   display: block;
 }
 
-.thresholds {
+.thresholds > div {
   overflow-x: auto;
 }
 

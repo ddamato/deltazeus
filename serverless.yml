@@ -11,7 +11,7 @@ provider:
 
 functions:
   active:
-    handler: functions/active.handler
+    handler: api/active.handler
     environment:
       DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
       DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'
@@ -23,7 +23,7 @@ functions:
           method: get
           cors: true
   cron:
-    handler: functions/cron.handler
+    handler: api/cron.handler
     environment:
       DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
       DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'
@@ -35,7 +35,7 @@ functions:
           method: get
           cors: true
   forecast:
-    handler: functions/forecast.handler
+    handler: api/forecast.handler
     environment:
       DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
       DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'
@@ -47,7 +47,7 @@ functions:
           method: get
           cors: true
   rss:
-    handler: functions/rss.handler
+    handler: api/rss.handler
     environment:
       DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
       DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'
@@ -59,7 +59,7 @@ functions:
           method: get
           cors: true
   thresholds:
-    handler: functions/thresholds.handler
+    handler: api/thresholds.handler
     environment:
       DZ_DARKSKY_API_SECRET: '${param:DZ_DARKSKY_API_SECRET}'
       DZ_GEOCODEXYZ_API_KEY: '${param:DZ_GEOCODEXYZ_API_KEY}'

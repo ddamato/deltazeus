@@ -133,13 +133,15 @@ function handleThresholds({ thresholds }) {
   h2.classList.add('h2');
   h2.textContent = 'Current significant thresholds';
 
+  const container = document.createElement('div');
   const table = document.createElement('table');
   table.classList.add('table');
   const ths = document.createElement('tr');
   const tds = document.createElement('tr');
 
+  container.appendChild(table);
   elem.thresholdContainer.appendChild(h2);
-  elem.thresholdContainer.appendChild(table);
+  elem.thresholdContainer.appendChild(container);
 
   Object.keys(thresholds).forEach((threshold) => {
     const th = document.createElement('th');

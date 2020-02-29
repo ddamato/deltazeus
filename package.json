@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Changing the weather",
   "scripts": {
-    "postinstall": "cp -R ./api ./functions",
     "test": ""
   },
   "repository": {
