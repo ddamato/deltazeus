@@ -1,7 +1,7 @@
 const { DYNAMO_TABLENAMES } = require('../lib/aws.js');
 const headers = require('../lib/headers.js');
 const Records = require('../lib/records.js');
-const properties = require('../lib/properties.js');
+const { properties } = require('../lib/properties.js');
 
 module.exports.handler = async (event, context, callback) => {
   const records = await new Records({ coords: 'default' }, DYNAMO_TABLENAMES.DZ_THRESHOLDS).get();
