@@ -74,6 +74,7 @@ item:last-child > encoded {
 item:last-child > link {
 	display: block;
 	color: var(--accent-color);
+	margin-top: 1rem;
 }
 
 item:last-child > pubDate {
