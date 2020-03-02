@@ -3,6 +3,7 @@ const getWeather = require('../lib/weather.js');
 const getCoordsByPostal = require('../lib/postal.js');
 const Rss = require('../lib/rss.js');
 const headers = require('../lib/headers.js');
+const publishFeeds = require('../lib/publish.js');
 
 module.exports.handler = async (event, context, callback) => {
   const { queryStringParameters } = event;
@@ -28,6 +29,7 @@ module.exports.handler = async (event, context, callback) => {
     const exists = await rss.exists();
     if (!exists) {
       await rss.init();
+      await publishFeeds(rss);
     }
     response = {
       statusCode: 200,
