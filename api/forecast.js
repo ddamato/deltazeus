@@ -11,7 +11,7 @@ module.exports.handler = async (event, context, callback) => {
   let coords;
   let response = {
     statusCode: 300,
-    headers,
+    headers: headers(event),
     body: JSON.stringify({ message: 'Incomplete query' })
   };
 
