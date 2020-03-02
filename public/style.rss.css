@@ -72,9 +72,13 @@ item:last-child > encoded {
 }
 
 item:last-child > link {
-	display: block;
-	color: var(--accent-color);
 	margin-top: 1rem;
+	display: inline-block;
+  background-color: var(--accent-color);
+  color: var(--light-color);
+  border-radius: 3px;
+  padding: 0.5rem 1rem;
+  word-break: break-all;
 }
 
 item:last-child > pubDate {
