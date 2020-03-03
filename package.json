@@ -19,6 +19,7 @@
     "axios": "^0.19.2",
     "convert-units": "^2.3.4",
     "dark-sky": "^1.1.5",
+    "form-data": "^3.0.0",
     "sparkplug": "^0.3.1",
     "tiny-s3": "0.0.3",
     "xml-js": "^1.6.11"
