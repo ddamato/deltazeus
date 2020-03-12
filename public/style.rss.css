@@ -7,12 +7,15 @@
 :root {
   --accent-color: #ff6f00;
   --light-color: #ffffff;
-  --dark-color: #020f59;
+	--dark-color: #020f59;
+	--max-width: 800px;
+	font-size: 16px;
 }
 
 channel {
   text-align: center;
-  display: block;
+	display: flex;
+	flex-direction: column;
   width: 100%;
   min-height: 100vh;
   background: var(--light-color);
@@ -28,8 +31,9 @@ channel {
 channel:after{
 	content:"IMPORTANT! If the link you've used to visit this page ends in .XML, your feed will not update tomorrow.  Please do not copy or save links to deltazeus ending in .XML.  It is normal for the page to automatically add .XML after loading.";
 	display: block;
-	margin: 1rem auto;
-	max-width: 600px;
+	margin: auto auto 1.5rem;
+	max-width: var(--max-width);
+	transform: scale(.7);
 }
 
 channel > * {
@@ -43,21 +47,24 @@ channel > title {
 	border-bottom: 1px solid var(--accent-color);
 	position: relative;
 	padding-bottom: 1rem;
+	margin-bottom: 1rem;
 	font-weight: 700;
 }
 
 item {
 	display:none;
+	font-size: 2rem;
 }
 
 item:last-child {
 	display: block;
-	max-width: 600px;
+	max-width: var(--max-width);
 	margin: 0 auto;
 }
 
 item:last-child > * {
 	display: none;
+	font-size: inherit;
 }
 
 /* content:encoded */
@@ -78,7 +85,7 @@ item:last-child > link {
   color: var(--light-color);
   border-radius: 3px;
   padding: 0.5rem 1rem;
-  word-break: break-all;
+	word-break: break-all;
 }
 
 item:last-child > pubDate {
