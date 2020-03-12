@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@master
     - uses: jakejarvis/s3-sync-action@master
       with:
-        args: --acl public-read --follow-symlinks --exclude 'rss/*' --delete
+        args: --acl public-read --follow-symlinks --exclude 'rss/*' --delete --cache-control no-cache
       env:
         AWS_S3_BUCKET: deltazeus
         AWS_ACCESS_KEY_ID: ${{ secrets.DZ_AWS_ACCESS_KEY }}
