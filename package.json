@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/ddamato/deltazeus#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "convert-units": "^2.3.4",
     "dark-sky": "^1.1.5",
     "form-data": "^3.0.0",
