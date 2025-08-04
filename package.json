@@ -9,6 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.12.8"
+    "@netlify/blobs": "^10.0.8",
+    "astro": "^5.12.8",
+    "xml2js": "^0.6.2"
   }
 }
