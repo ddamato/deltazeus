@@ -1,30 +1,14 @@
 {
-  "name": "deltazeus",
-  "version": "1.0.0",
-  "description": "Changing the weather",
+  "name": "",
+  "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "test": ""
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ddamato/deltazeus.git"
-  },
-  "author": "Donnie D'Amato",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ddamato/deltazeus/issues"
-  },
-  "homepage": "https://github.com/ddamato/deltazeus#readme",
   "dependencies": {
-    "axios": "^0.19.2",
-    "convert-units": "^2.3.4",
-    "dark-sky": "^1.1.5",
-    "form-data": "^3.0.0",
-    "sparkplug": "^0.3.1",
-    "tiny-s3": "0.0.3",
-    "xml-js": "^1.6.11"
-  },
-  "devDependencies": {
-    "dotenv": "^8.2.0"
+    "astro": "^5.12.8"
   }
 }
