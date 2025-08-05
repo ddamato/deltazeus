@@ -19,6 +19,7 @@ import Target from '@components/target.svg';
         gap: 8px;
         align-items: end;
         flex-wrap: wrap;
+        --control-height: 2.5lh;
     }
 
     form > * {
@@ -39,15 +40,40 @@ import Target from '@components/target.svg';
 
     input {
         flex: 1;
+        padding: 8px;
+        height: var(--control-height);
     }
 
-    input + button {
+    input ~ button {
         padding: 8px;
+        align-items: center;
+        justify-content: center;
+        font-weight: bolder;
+        height: var(--control-height);
+        transition: background-color .218s ease;
+    }
+
+    input ~ button:hover {
+        background-color: color-mix(in oklch, var(--accent-color), transparent 90%);
+    }
+
+    input ~ button:not(:has(*)) {
+        padding: 8px 16px;
+    }
+
+    input:not(:placeholder-shown) ~ #search,
+    input:placeholder-shown ~ #geolocation {
+        display: inline-flex;
+    }
+
+    input:not(:placeholder-shown) ~ #geolocation,
+    input:placeholder-shown ~ #search {
+        display: none;
     }
 
     button[type="submit"] {
-        padding: 10px;
-        line-height: 1.25em;
+        padding: 8px 16px;
+        height: calc(var(--control-height) + 2px);
         border: 1px solid transparent;
         border-radius: 4px;
         font-weight: bolder;
@@ -62,9 +88,10 @@ import Target from '@components/target.svg';
 
 <form id="form">
     <div>
-        <label for="search">Location search</label>
+        <label for="input">Location search</label>
         <div id="field">
-            <input type="text" list="results" id="search"/>
+            <input type="text" list="results" id="input" placeholder="New York, NY"/>
+            <button id="search">Search</button>
             <button id="geolocation" title="Use geolocation" aria-label="Use geolocation">
                 <Target/>
             </button>
