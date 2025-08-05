@@ -8,10 +8,10 @@ function clouds() {
     return;
   }
 
-  let width = $container.clientWidth;
-  let height = $container.clientHeight;
+  const width = $container.clientWidth;
+  const height = $container.clientHeight;
 
-  // Camera stays fixed
+  // Camera setup
   const camera = new THREE.PerspectiveCamera(45, width / height, 1, 4000);
   camera.position.z = 0;
 
@@ -20,13 +20,59 @@ function clouds() {
   const fog = new THREE.Fog(0x4584b4, 1, 4000);
   scene.fog = fog;
 
-  // Renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
-  renderer.setSize(width, height);
-  renderer.setClearColor(0x000000, 0);
-  $container.appendChild(renderer.domElement);
+  // Cloud texture
+  const texture = new THREE.TextureLoader().load('/clouds.png');
+  texture.magFilter = THREE.LinearMipMapLinearFilter;
+  texture.minFilter = THREE.LinearMipMapLinearFilter;
 
-  // Geometry
+  // Shader material with delayed near fade
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      map: { value: texture },
+      fogColor: { value: fog.color },
+      fogNear: { value: fog.near },
+      fogFar: { value: fog.far },
+      fadeFar: { value: 800.0 }, // fade region size
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D map;
+      uniform vec3 fogColor;
+      uniform float fogNear;
+      uniform float fogFar;
+      uniform float fadeFar;
+      varying vec2 vUv;
+
+      void main() {
+        float depth = gl_FragCoord.z / gl_FragCoord.w;
+
+        // Fog factor for distance haze
+        float fogFactor = smoothstep(fogNear, fogFar, depth);
+
+        // Sample the cloud texture
+        vec4 texColor = texture2D(map, vUv);
+
+        // Delay the fade near the camera
+        float fadeStart = fadeFar * -0.2;
+        float fadeFactor = smoothstep(fadeStart, fadeFar, depth);
+        texColor.a *= fadeFactor;
+
+        // Blend clouds with fog
+        gl_FragColor = mix(texColor, vec4(fogColor, texColor.a), fogFactor);
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    depthTest: false,
+  });
+
+  // Build merged geometry from many small planes
   const geometries = [];
   const basePlane = new THREE.PlaneGeometry(64, 64);
   const planeCount = 8000;
@@ -50,96 +96,52 @@ function clouds() {
   }
 
   const geometry = BufferGeometryUtils.mergeGeometries(geometries);
-
-  // Shader material
-  const material = new THREE.ShaderMaterial({
-    uniforms: {
-      map: { value: null }, // set after texture loads
-      fogColor: { value: fog.color },
-      fogNear: { value: fog.near },
-      fogFar: { value: fog.far },
-    },
-    vertexShader: `
-      varying vec2 vUv;
-      void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      uniform sampler2D map;
-      uniform vec3 fogColor;
-      uniform float fogNear;
-      uniform float fogFar;
-      varying vec2 vUv;
-      void main() {
-        float depth = gl_FragCoord.z / gl_FragCoord.w;
-        float fogFactor = smoothstep(fogNear, fogFar, depth);
-        vec4 texColor = texture2D(map, vUv);
-        texColor.a *= 0.8;
-        gl_FragColor = mix(texColor, vec4(fogColor, texColor.a), fogFactor);
-      }
-    `,
-    transparent: true,
-    depthWrite: false,
-    depthTest: false,
-  });
-
-  // Mesh that will scroll
   const cloudMesh = new THREE.Mesh(geometry, material);
   cloudMesh.position.z = -depthRange;
   scene.add(cloudMesh);
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let lastTime = Date.now();
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({
+    antialias: false,
+    alpha: true,
+    premultipliedAlpha: true
+  });
+  renderer.setSize(width, height);
+  renderer.setClearColor(0x000000, 0); // fully transparent background
+  $container.appendChild(renderer.domElement);
 
-  function renderScene() {
+  // Handle resize
+  window.addEventListener('resize', () => {
+    const newWidth = $container.clientWidth;
+    const newHeight = $container.clientHeight;
+    camera.aspect = newWidth / newHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(newWidth, newHeight);
+    renderFrame();
+  });
+
+  // Motion settings
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let startTime = Date.now();
+  const cycleLength = depthRange;
+
+  function renderFrame() {
     renderer.render(scene, camera);
   }
 
   function animate() {
     requestAnimationFrame(animate);
 
-    const now = Date.now();
-    const delta = (now - lastTime) * 0.03;
-    lastTime = now;
-
-    // Move the mesh toward the camera
-    cloudMesh.position.z += delta;
-
-    // Seamless wrap
-    if (cloudMesh.position.z > 0) {
-      cloudMesh.position.z = -depthRange;
+    if (!prefersReducedMotion) {
+      const elapsed = (Date.now() - startTime) * 0.03;
+      camera.position.z = -(elapsed % cycleLength);
     }
 
-    renderScene();
+    renderFrame();
   }
 
-  // Handle resize
-  window.addEventListener('resize', () => {
-    width = $container.clientWidth;
-    height = $container.clientHeight;
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    renderer.setSize(width, height);
-
-    if (prefersReducedMotion) {
-      renderScene();
-    }
-  });
-
-  // Load texture and start rendering
-  new THREE.TextureLoader().load('/clouds.png', (loadedTexture) => {
-    loadedTexture.magFilter = THREE.LinearMipMapLinearFilter;
-    loadedTexture.minFilter = THREE.LinearMipMapLinearFilter;
-    material.uniforms.map.value = loadedTexture;
-
-    if (prefersReducedMotion) {
-      renderScene();
-    } else {
-      animate();
-    }
-  });
+  animate();
 }
 
 document.addEventListener('DOMContentLoaded', clouds);
