@@ -11,11 +11,11 @@ function clouds() {
   let width = $container.clientWidth;
   let height = $container.clientHeight;
 
-  // Camera
+  // Camera stays fixed
   const camera = new THREE.PerspectiveCamera(45, width / height, 1, 4000);
   camera.position.z = 0;
 
-  // Scene & fog
+  // Scene and fog
   const scene = new THREE.Scene();
   const fog = new THREE.Fog(0x4584b4, 1, 4000);
   scene.fog = fog;
@@ -54,7 +54,7 @@ function clouds() {
   // Shader material
   const material = new THREE.ShaderMaterial({
     uniforms: {
-      map: { value: null }, // placeholder
+      map: { value: null }, // set after texture loads
       fogColor: { value: fog.color },
       fogNear: { value: fog.near },
       fogFar: { value: fog.far },
@@ -85,13 +85,13 @@ function clouds() {
     depthTest: false,
   });
 
+  // Mesh that will scroll
   const cloudMesh = new THREE.Mesh(geometry, material);
   cloudMesh.position.z = -depthRange;
   scene.add(cloudMesh);
 
-  // Animation settings
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let startTime = Date.now();
+  let lastTime = Date.now();
 
   function renderScene() {
     renderer.render(scene, camera);
@@ -100,12 +100,16 @@ function clouds() {
   function animate() {
     requestAnimationFrame(animate);
 
-    const elapsed = (Date.now() - startTime) * 0.03;
-    camera.position.z = -elapsed;
+    const now = Date.now();
+    const delta = (now - lastTime) * 0.03;
+    lastTime = now;
 
-    if (camera.position.z < -depthRange) {
-      startTime = Date.now();
-      camera.position.z = 0;
+    // Move the mesh toward the camera
+    cloudMesh.position.z += delta;
+
+    // Seamless wrap
+    if (cloudMesh.position.z > 0) {
+      cloudMesh.position.z = -depthRange;
     }
 
     renderScene();
@@ -124,14 +128,14 @@ function clouds() {
     }
   });
 
-  // Load texture and start appropriate mode
+  // Load texture and start rendering
   new THREE.TextureLoader().load('/clouds.png', (loadedTexture) => {
     loadedTexture.magFilter = THREE.LinearMipMapLinearFilter;
     loadedTexture.minFilter = THREE.LinearMipMapLinearFilter;
     material.uniforms.map.value = loadedTexture;
 
     if (prefersReducedMotion) {
-      renderScene(); // initial render
+      renderScene();
     } else {
       animate();
     }
