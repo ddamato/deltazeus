@@ -78,18 +78,24 @@ const schema = {
         box-sizing: border-box;
     }
 
-    .max-width {
-        max-width: 80ch;
-        margin-inline: auto;
+    :root {
+        --accent-color: #9ed4f3;
     }
 
     body {
         margin: 0;
+        padding: 16px;
         min-height: 100vh;
         line-height: 1.2;
         font-family: system-ui, sans-serif;
         display: flex;
         flex-direction: column;
+    }
+
+    :where(h1, h2, h3) {
+        font-weight: normal;
+        text-wrap: balance;
+        font-family: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
     }
 
     a {

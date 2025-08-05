@@ -1,6 +1,9 @@
 ---
 import Head from "@components/Head.astro";
 import Clouds from '@components/Clouds.astro';
+import Panel from "@components/Panel.astro";
+import Lockup from "@components/Lockup.astro";
+import Form from "@components/Form.astro";
 ---
 
 
@@ -8,7 +11,11 @@ import Clouds from '@components/Clouds.astro';
 <html lang="en">
   <Head/>
   <body>
-	<Clouds client:load/>
+	  <Clouds client:load/>
+    <Panel>
+      <Lockup/>
+      <Form/>
+    </Panel>
     <script async defer src="https://scripts.withcabin.com/hello.js"></script>
   </body>
 </html>

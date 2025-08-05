@@ -1,0 +1,38 @@
+---
+import Logo from '@components/logo.svg';
+---
+
+<style>
+
+    #lockup {
+        display: flex;
+        gap: 16px;
+        margin-block-end: 16px;
+        justify-content: space-between;
+    }
+
+    #lockup > :global(svg) {
+        font-size: 48px;
+        color: var(--accent-color);
+        flex-shrink: 0;
+    }
+
+    hgroup > * {
+        margin: 0;
+        text-wrap: balance;
+    }
+
+    p {
+        max-width: 30ch;
+    }
+
+</style>
+
+<div id="lockup">
+    
+    <hgroup>
+        <h1>deltazeus</h1>
+        <p>Get notified on significant weather changes.</p>
+    </hgroup>
+    <Logo/>
+</div>

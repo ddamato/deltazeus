@@ -1,0 +1,76 @@
+---
+import Target from '@components/target.svg';
+---
+
+<style>
+    input, button {
+        font: inherit;
+        border: 0;
+        background: transparent;
+        padding: 0;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    form {
+        display: flex;
+        gap: 8px;
+        align-items: end;
+        flex-wrap: wrap;
+        max-width: max-content;
+    }
+
+    form > * {
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
+
+    label {
+        font-weight: bolder;
+    }
+
+    #field {
+        display: flex;
+        border: 1px solid var(--accent-color);
+        margin-block-start: 8px;
+        border-radius: 4px;
+    }
+
+    input {
+        flex: 1;
+    }
+
+    input + button {
+        padding: 8px;
+    }
+
+    button[type="submit"] {
+        padding: 10px;
+        line-height: 1.25em;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        font-weight: bolder;
+        background-color: var(--accent-color);
+        color: color(from var(--accent-color) xyz
+            round(up, min(1, max(0, 0.18 - y)))
+            round(up, min(1, max(0, 0.18 - y)))
+            round(up, min(1, max(0, 0.18 - y)))
+        );
+    }
+</style>
+
+<form id="form">
+    <div>
+        <label for="search">Location search</label>
+        <div id="field">
+            <input type="text" list="results" id="search"/>
+            <button id="geolocation" title="Use geolocation" aria-label="Use geolocation">
+                <Target/>
+            </button>
+        </div>
+        <datalist id="results"></datalist>
+    </div>
+    <button type="submit" id="submit">Get RSS feed</button>
+</form>
