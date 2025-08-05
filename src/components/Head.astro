@@ -1,0 +1,98 @@
+---
+const title = 'deltazeus';
+const description = 'Subscribe for significant changes in your weather!'
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const image = "/og-image.png";
+
+const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: title,
+    description: description,
+    image: [image],
+    mainEntity: {
+        "@id": "#main-author",
+        "@type": "Person",
+        name: "Donnie D'Amato",
+        alternateName: "donniedamato",
+        description: "Design Systems Architect",
+        image: "http://donnie.damato.design/images/donnie.jpg",
+        sameAs: [
+            "https://twitter.com/donniedamato",
+            "https://linkedin.com/in/fauxserious",
+            "https://github.com/fauxserious",
+            "https://social.design.systems/@donnie",
+            "https://bsky.app/profile/donnie.damato.design",
+            "https://adplist.org/mentors/donnie-damato",
+            "https://www.threads.net/@donniedamato",
+        ],
+    },
+};
+---
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Wireframe" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <script async defer src="https://scripts.withcabin.com/hello.js"></script>
+</head>
+
+<style is:global>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    .max-width {
+        max-width: 80ch;
+        margin-inline: auto;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        line-height: 1.2;
+        font-family: system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+    }
+
+    a {
+        color: inherit;
+    }
+</style>
