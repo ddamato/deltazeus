@@ -30,7 +30,7 @@ function renderCloudSphere() {
 
   // Load cloud texture
   const texture = new THREE.TextureLoader().load('/clouds.png');
-  texture.magFilter = THREE.LinearMipMapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
   texture.minFilter = THREE.LinearMipMapLinearFilter;
 
   // Shader material with DoubleSide so planes show both sides
