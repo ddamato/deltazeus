@@ -3,6 +3,12 @@
         inset: 0;
         background: linear-gradient(to bottom, #90dffe 0%, #38a3d1 100%);
         position: fixed;
+        opacity: 0;
+        transition: opacity .218s ease;
+    }
+
+    #clouds:has(canvas) {
+        opacity: 1;
     }
 </style>
 
