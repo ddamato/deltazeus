@@ -1,25 +1,17 @@
 export async function handler(event) {
-  const { q, lat, lon } = event.queryStringParameters;
-
-  // Decide whether it's freeform text or lat/lon
-  let query;
-  if (q) {
-    query = q;
-  } else if (lat && lon) {
-    query = `${lat}+${lon}`;
-  } else {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'Provide either ?q=<place> or ?lat=<lat>&lon=<lon>' }),
-    };
-  }
+  const { q } = event.queryStringParameters;
+  if (!q) return {
+    statusCode: 400,
+    body: JSON.stringify({ error: 'Must provide a query param' }),
+  };
+  const isCoords = /^-?\d+(\.\d+)?\s*\+\s*-?\d+(\.\d+)?$/.test(q);
 
   try {
     // Build OpenCage request
     const url = new URL('https://api.opencagedata.com/geocode/v1/json');
-    url.searchParams.set('q', query);
+    url.searchParams.set('q', q);
     url.searchParams.set('key', process.env.OPENCAGE_API_KEY);
-    url.searchParams.set('limit', q ? 5 : 1);
+    url.searchParams.set('limit', isCoords ? 1 : 5);
     url.searchParams.set('language', 'en');
 
     const response = await fetch(url);
@@ -37,8 +29,8 @@ export async function handler(event) {
       const tz = result.annotations?.timezone || {};
       return {
         label: result.formatted,
-        lat: result.geometry.lat,
-        lon: result.geometry.lng,
+        lat: result.geometry.lat.toFixed(1),
+        lon: result.geometry.lng.toFixed(1),
         tzName: tz.name || null,
         tzOffset: tz.offset_sec ?? null,
         tzOffsetString: tz.offset_string || null,
@@ -46,18 +38,9 @@ export async function handler(event) {
       };
     });
 
-    // For reverse geocoding (lat/lon): return a single object
-    if (lat && lon) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify(results[0] || {}),
-      };
-    }
-
-    // For freeform input: return multiple suggestions
     return {
       statusCode: 200,
-      body: JSON.stringify({ suggestions: results }),
+      body: JSON.stringify(results),
     };
   } catch (error) {
     return {

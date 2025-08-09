@@ -84,19 +84,130 @@ import Target from '@components/target.svg';
             round(up, min(1, max(0, 0.18 - y)))
         );
     }
+
+    #error:empty {
+        display: none;
+    }
 </style>
 
-<form id="form">
+<form id="form" action="/feeds" method="post" autocomplete="off">
     <div>
         <label for="input">Location search</label>
         <div id="field">
             <input type="text" list="results" id="input" placeholder="New York, NY"/>
-            <button id="search">Search</button>
-            <button id="geolocation" title="Use geolocation" aria-label="Use geolocation">
+            <button id="search" type="button">Search</button>
+            <button
+                id="geolocation"
+                type="button"
+                title="Use geolocation"
+                aria-label="Use geolocation">
                 <Target/>
             </button>
         </div>
         <datalist id="results"></datalist>
+        <p id="error" aria-live="polite"></p>
     </div>
+    <input type="hidden" name="lat" value="" id="lat"/>
+    <input type="hidden" name="lon" value="" id="lon"/>
+    <input type="hidden" name="tzName" value="" id="tzName"/>
+    <input type="hidden" name="tzOffset" value="" id="tzOffset"/>
+    <input type="hidden" name="tzOffsetString" value="" id="tzOffsetString"/>
+    <input type="hidden" name="tzAbbr" value="" id="tzAbbr"/>
     <button type="submit" id="submit">Get RSS feed</button>
 </form>
+
+<script>
+
+    const $geolocation = document.getElementById('geolocation') as HTMLButtonElement;
+    const $input = document.getElementById('input') as HTMLInputElement;
+    const $search = document.getElementById('search') as HTMLButtonElement;
+    const $results = document.getElementById('results') as HTMLDataListElement;
+    const $form = document.getElementById('form') as HTMLFormElement;
+    const $error = document.getElementById('error') as HTMLParagraphElement;
+
+    $geolocation.addEventListener('click', onGeolocation);
+    $input.addEventListener('input', onInput);
+    $search.addEventListener('click', onSearch);
+
+    function onGeolocation() {
+        if (!navigator.geolocation) {
+            $error.textContent = 'Geolocation is not supported by your browser.';
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(getCurrentPosition);
+    }
+
+    async function onSearch() {
+        try {
+            const results = await onQuery($input.value.trim());
+            $results.innerHTML = results.map(renderOption).join('');
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+            $error.textContent = 'Failed to fetch search results. Please try again later.';
+        }
+    }
+
+    function onInput() {
+        // Check if the input includes a valid JSON string
+        try {
+            const parsed = JSON.parse($input.value.trim());
+            if (parsed && typeof parsed === 'object' && parsed.label) {
+                $input.value = parsed.label; // Set the input value to the label
+                setFormData(parsed); // Store the parsed object for submission
+            }
+        } catch (e) {
+            // Not a valid JSON, do nothing
+        }
+    }
+
+    function renderOption(data: { label: string }) {
+        return (
+            `<option value="${JSON.stringify(data)}">
+                ${data.label}
+            </option>`
+        )
+    }
+
+    function setFormData(data: Record<string, any>) {
+        const { lat, lon } = data;
+        $form.action = `/api/feeds/${lat}_${lon}`;
+        Object.entries(data).forEach(([key, value]) => {
+            const $input = document.getElementById(key) as HTMLInputElement | null;
+            if ($input) {
+                $input.value = value;
+            }
+        });
+    }
+
+    async function getCurrentPosition({ coords }: GeolocationPosition) {
+        const { latitude: lat, longitude: lon } = coords;
+        const [result] = await onQuery(`${lat}+${lon}`);
+        $input.value = result.label;
+        setFormData(result);
+    }
+
+    async function onQuery(q: string) {
+        if (!q) {
+            $error.textContent = 'Search query cannot be empty.';
+            return [];
+        }
+
+        const url = new URL('/api/location', window.location.origin);
+        url.search = new URLSearchParams({ q }).toString();
+
+        const res = await fetch(url.toString());
+        if (!res.ok) {
+            $error.textContent = 'An error occurred while fetching data.';
+        }
+        const data = await res.json();
+        if (data.error) {
+            $error.textContent = data.error;
+            return [];
+        }
+
+        return data;
+    }
+
+
+</script>

@@ -37,13 +37,16 @@ function generateEmptyFeedXml(lat, lon, timezone) {
   return builder.buildObject(feedObject);
 }
 
-export async function handler(event) {
+export async function handler(event, context) {
+
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
       body: 'Method Not Allowed',
     };
   }
+
+  const { latitude, longitude } = context.geo;
 
   let body;
   try {
