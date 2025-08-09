@@ -1,5 +1,7 @@
-import { get, set } from '@netlify/blobs';
+import { getStore } from '@netlify/blobs';
 import { Builder } from 'xml2js';
+
+const store = getStore('feeds'); // All blobs for feeds & metadata will live here
 
 function generateEmptyFeedXml(lat, lon, timezone) {
   const builder = new Builder({
@@ -11,7 +13,7 @@ function generateEmptyFeedXml(lat, lon, timezone) {
     rss: {
       $: {
         version: '2.0',
-        'xmlns:custom': 'http://example.com/custom', // add your custom namespace URI
+        'xmlns:custom': 'http://example.com/custom', // custom namespace URI
       },
       channel: {
         title: `Weather Feed for ${lat},${lon}`,
@@ -68,19 +70,15 @@ export async function handler(event) {
   }
 
   const feedId = `${lat}_${lon}`;
-  const feedXmlPath = `feeds/${feedId}.xml`;
+  const feedXmlKey = `${feedId}.xml`;
+  const feedMetaKey = `${feedId}.json`;
 
   try {
-    let existingFeed;
-    try {
-      existingFeed = await get(feedXmlPath);
-    } catch {
-      existingFeed = null;
-    }
+    const existingFeed = await store.get(feedXmlKey, { type: 'text' });
 
     if (!existingFeed) {
       const emptyFeedXml = generateEmptyFeedXml(lat, lon, timezone);
-      await set(feedXmlPath, emptyFeedXml, { contentType: 'application/rss+xml' });
+      await store.set(feedXmlKey, emptyFeedXml, { contentType: 'application/rss+xml' });
 
       const metadata = {
         latitude: lat,
@@ -88,7 +86,7 @@ export async function handler(event) {
         timezone,
         lastUpdated: null,
       };
-      await set(feedMetaPath, JSON.stringify(metadata), { contentType: 'application/json' });
+      await store.set(feedMetaKey, JSON.stringify(metadata), { contentType: 'application/json' });
     }
 
     return {
