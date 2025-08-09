@@ -40,10 +40,7 @@ function generateEmptyFeedXml(lat, lon, timezone) {
 export async function handler(event, context) {
 
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: 'Method Not Allowed',
-    };
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   const { latitude, longitude } = context.geo;
@@ -52,10 +49,7 @@ export async function handler(event, context) {
   try {
     body = JSON.parse(event.body || '{}');
   } catch {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'Invalid JSON' }),
-    };
+    return { statusCode: 400, body: 'Invalid JSON in request body' };
   }
 
   const { lat, lon, timezone } = body;
@@ -66,10 +60,7 @@ export async function handler(event, context) {
     typeof timezone !== 'string' ||
     !timezone.trim()
   ) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'lat, lon, and timezone are required' }),
-    };
+    return { statusCode: 400, body: 'lat, lon, and timezone are required' };
   }
 
   const feedId = `${lat}_${lon}`;
@@ -93,16 +84,14 @@ export async function handler(event, context) {
     }
 
     return {
-      statusCode: 201,
-      body: JSON.stringify({
-        feedId,
-        url: `/feeds/${feedId}`,
-      }),
+      statusCode: 302,
+      headers: {
+        Location: `/feeds/${feedId}`,
+      },
+      body: '',
     };
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
+  } catch (err) {
+    console.error('Feed creation error:', err);
+    return { statusCode: 500, body: 'Internal Server Error' };
   }
 }

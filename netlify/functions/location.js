@@ -3,6 +3,9 @@ export async function handler(event) {
   if (!q) return {
     statusCode: 400,
     body: JSON.stringify({ error: 'Must provide a query param' }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   };
   const isCoords = /^-?\d+(\.\d+)?\s*\+\s*-?\d+(\.\d+)?$/.test(q);
 
@@ -19,6 +22,9 @@ export async function handler(event) {
       return {
         statusCode: response.status,
         body: JSON.stringify({ error: 'Failed to fetch from API' }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       };
     }
 
@@ -29,8 +35,8 @@ export async function handler(event) {
       const tz = result.annotations?.timezone || {};
       return {
         label: result.formatted,
-        lat: result.geometry.lat.toFixed(1),
-        lon: result.geometry.lng.toFixed(1),
+        lat: Number(result.geometry.lat.toFixed(1)),
+        lon: Number(result.geometry.lng.toFixed(1)),
         tzName: tz.name || null,
         tzOffset: tz.offset_sec ?? null,
         tzOffsetString: tz.offset_string || null,
@@ -41,11 +47,17 @@ export async function handler(event) {
     return {
       statusCode: 200,
       body: JSON.stringify(results),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     };
   } catch (error) {
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     };
   }
 }

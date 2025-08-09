@@ -3,7 +3,21 @@
   command = "npm run build"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/location"
+  to = "/.netlify/functions/location"
   status = 200
 
+[[redirects]]
+  from = "/feeds"
+  to = "/.netlify/functions/feeds"
+  status = 200
+
+[[redirects]]
+  from = "/feeds/*"
+  to = "/.netlify/functions/feeds/:splat"
+  status = 200
+
+[dev]
+  command = "npm run dev" # The command to start your application's dev server
+  targetPort = 4321       # The port your application's dev server is running on
+  port = 8888             # The port Netlify Dev will listen on (optional, defaults to 8888)

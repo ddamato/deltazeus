@@ -153,6 +153,7 @@ import Target from '@components/target.svg';
         try {
             const parsed = JSON.parse($input.value.trim());
             if (parsed && typeof parsed === 'object' && parsed.label) {
+                console.log('Parsed object:', parsed);
                 $input.value = parsed.label; // Set the input value to the label
                 setFormData(parsed); // Store the parsed object for submission
             }
@@ -162,11 +163,11 @@ import Target from '@components/target.svg';
     }
 
     function renderOption(data: { label: string }) {
-        return (
-            `<option value="${JSON.stringify(data)}">
+        return (`
+            <option value="${JSON.stringify(data)}" label="${data.label}">
                 ${data.label}
-            </option>`
-        )
+            </option>
+        `);
     }
 
     function setFormData(data: Record<string, any>) {
