@@ -206,7 +206,6 @@ import Target from '@components/target.svg';
         $form.setAttribute('aria-busy', 'true');
         $error.textContent = '';
 
-
         if (!navigator.geolocation) {
             $form.setAttribute('aria-busy', 'false');
             $error.textContent = 'Geolocation is not supported by your browser.';
@@ -214,6 +213,12 @@ import Target from '@components/target.svg';
         }
 
         navigator.geolocation.getCurrentPosition(getCurrentPosition);
+    }
+
+    function updateInput(result: { label: string }) {
+        $input.value = result.label;
+        $input.title = result.label;
+        setFormData(result);
     }
 
     async function onSearch() {
@@ -225,11 +230,7 @@ import Target from '@components/target.svg';
             const results = await onQuery($input.value.trim());
             $results.innerHTML = results.map(renderOption).join('');
             $results.querySelectorAll('button').forEach((button, index) => {
-                button.addEventListener('click', () => {
-                    const result = results[index];
-                    $input.value = result.label;
-                    setFormData(result);
-                });
+                button.addEventListener('click', () => updateInput(results[index]));
             });
         } catch (error) {
             console.error('Error fetching search results:', error);
@@ -251,20 +252,17 @@ import Target from '@components/target.svg';
     function setFormData(data: Record<string, any>) {
         const { lat, lon } = data;
         $submit.dataset.coords = `${lat}, ${lon}`;
-        $form.action = `/api/feeds/${lat}_${lon}`;
-        Object.entries(data).forEach(([key, value]) => {
-            const $input = document.getElementById(key) as HTMLInputElement | null;
-            if ($input) {
-                $input.value = value;
-            }
+        $form.action = `/feeds/${lat}_${lon}`;
+        Object.entries(data).forEach(([id, data]) => {
+            const $target = document.getElementById(id) as HTMLInputElement | null;
+            $target?.setAttribute('value', data);
         });
     }
 
     async function getCurrentPosition({ coords }: GeolocationPosition) {
         const { latitude: lat, longitude: lon } = coords;
         const [result] = await onQuery(`${lat}+${lon}`);
-        $input.value = result.label;
-        setFormData(result);
+        updateInput(result);
     }
 
     async function onQuery(q: string) {
@@ -276,7 +274,7 @@ import Target from '@components/target.svg';
         }
 
         const url = new URL('/api/location', window.location.origin);
-        url.search = new URLSearchParams({ q }).toString();
+        url.searchParams.set('q', q);
 
         const res = await fetch(url.toString());
         $form.setAttribute('aria-busy', 'false');
