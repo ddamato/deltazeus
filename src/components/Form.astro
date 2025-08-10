@@ -1,9 +1,11 @@
 ---
-import Target from '@components/target.svg';
+import Target from "@components/target.svg";
+import Rss from "@components/rss.svg";
 ---
 
 <style>
-    input, button {
+    input,
+    button {
         font: inherit;
         border: 0;
         background: transparent;
@@ -28,6 +30,7 @@ import Target from '@components/target.svg';
 
     label {
         font-weight: bolder;
+        display: block;
     }
 
     #field {
@@ -48,11 +51,15 @@ import Target from '@components/target.svg';
         align-items: center;
         justify-content: center;
         font-weight: bolder;
-        transition: background-color .218s ease;
+        transition: background-color 0.218s ease;
     }
 
     input ~ button:hover {
-        background-color: color-mix(in oklch, var(--accent-color), transparent 90%);
+        background-color: color-mix(
+            in oklch,
+            var(--accent-color),
+            transparent 90%
+        );
     }
 
     input ~ button:not(:has(*)) {
@@ -70,24 +77,40 @@ import Target from '@components/target.svg';
     }
 
     button[type="submit"] {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
         padding: 8px 16px;
+        text-align: center;
+        justify-content: center;
         border: 1px solid transparent;
         border-radius: 4px;
         font-weight: bolder;
         background-color: var(--accent-color);
-        color: color(from var(--accent-color) xyz
-            round(up, min(1, max(0, 0.18 - y)))
-            round(up, min(1, max(0, 0.18 - y)))
-            round(up, min(1, max(0, 0.18 - y)))
+        color: color(
+            from var(--accent-color) xyz round(up, min(1, max(0, 0.18 - y)))
+                round(up, min(1, max(0, 0.18 - y)))
+                round(up, min(1, max(0, 0.18 - y)))
         );
     }
 
     button[type="submit"][data-coords]:after {
-        content: " for " attr(data-coords);
+        content: "(" attr(data-coords) ")";
+        font-family: monospace;
+    }
+
+    #error {
+        color: red;
     }
 
     #error:empty {
         display: none;
+    }
+
+    fieldset {
+        border: 0;
+        padding: 0;
+        margin: 0;
     }
 
     #results {
@@ -103,7 +126,7 @@ import Target from '@components/target.svg';
         margin-block-start: 16px;
     }
 
-    #results :global(button) {
+    #results :global(li) {
         display: flex;
         flex-direction: column;
         padding: 8px;
@@ -114,37 +137,55 @@ import Target from '@components/target.svg';
         cursor: pointer;
         background: transparent;
         font: inherit;
-        transition: background-color .218s ease;
+        transition: background-color 0.218s ease;
     }
 
-    #results :global(button:hover) {
-        background-color: color-mix(in oklch, var(--accent-color), transparent 90%);
+    #results :global(li:hover) {
+        background-color: color-mix(
+            in oklch,
+            var(--accent-color),
+            transparent 90%
+        );
     }
 
-    #results :global(button > *) {
-        pointer-events: none;
+    #results :global(li > div) {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: monospace;
     }
 
-    #results :global(li) {
-        display: contents;
+    #results :global(input[type="radio"]) {
+        accent-color: var(--accent-color);
+        margin: 0;
+        flex-shrink: 0;
+        cursor: pointer;
+        width: 1lh;
+        aspect-ratio: 1;
+    }
+
+    #results :global(label) {
+        font-weight: bolder;
+        cursor: inherit;
     }
 
     #results :global(small) {
-        margin-block-start: auto;
+        pointer-events: none;
     }
 
     form[aria-busy="true"] #field {
-        background-image: repeating-linear-gradient(45deg,
+        background-image: repeating-linear-gradient(
+            45deg,
             var(--accent-color),
             var(--accent-color) 25%,
-            color-mix(in oklch,var(--accent-color),transparent 25%) 25%,
-            color-mix(in oklch,var(--accent-color),transparent 25%) 50%
+            color-mix(in oklch, var(--accent-color), transparent 25%) 25%,
+            color-mix(in oklch, var(--accent-color), transparent 25%) 50%
         );
         color: transparent;
         background-size: 1.5em 1.5em;
         background-position: 1.5em 0;
         animation: standby 1s linear infinite paused;
-    
+
         & > * {
             opacity: 0;
             pointer-events: none;
@@ -152,7 +193,9 @@ import Target from '@components/target.svg';
     }
 
     @keyframes standby {
-        to { background-position: 0 0; }
+        to {
+            background-position: 0 0;
+        }
     }
 
     @media (prefers-reduced-motion: no-preference) {
@@ -162,100 +205,142 @@ import Target from '@components/target.svg';
     }
 </style>
 
-<form id="form" action="/feeds" method="post" autocomplete="off">
+<form id="form" action="" method="post" autocomplete="off">
     <div>
         <label for="input">Location search</label>
+        <small id="error" aria-live="polite"></small>
         <div id="field">
-            <input type="text" id="input" placeholder="New York, NY"/>
+            <input type="text" id="input" placeholder="New York, NY" />
             <button id="search" type="button">Search</button>
             <button
                 id="geolocation"
                 type="button"
                 title="Use geolocation"
-                aria-label="Use geolocation">
-                <Target/>
+                aria-label="Use geolocation"
+            >
+                <Target />
             </button>
         </div>
-        <p id="error" aria-live="polite"></p>
     </div>
-    <input type="hidden" name="lat" value="" id="lat"/>
-    <input type="hidden" name="lon" value="" id="lon"/>
-    <input type="hidden" name="tzName" value="" id="tzName"/>
-    <input type="hidden" name="tzOffset" value="" id="tzOffset"/>
-    <input type="hidden" name="tzOffsetString" value="" id="tzOffsetString"/>
-    <input type="hidden" name="tzAbbr" value="" id="tzAbbr"/>
-    <button type="submit" id="submit">Get RSS feed</button>
+    <input type="hidden" name="lat" value="" id="lat" />
+    <input type="hidden" name="lon" value="" id="lon" />
+    <input type="hidden" name="tzName" value="" id="tzName" />
+    <input type="hidden" name="tzOffset" value="" id="tzOffset" />
+    <input type="hidden" name="tzOffsetString" value="" id="tzOffsetString" />
+    <input type="hidden" name="tzAbbr" value="" id="tzAbbr" />
+    <button
+        type="submit"
+        id="submit"
+        aria-label="Get RSS feed"
+        title="Get RSS feed"
+    >
+        <Rss />
+    </button>
 </form>
-<ul id="results"></ul>
+<fieldset>
+    <ul id="results"></ul>
+</fieldset>
 
 <script>
+    const $geolocation = document.getElementById(
+        "geolocation",
+    ) as HTMLButtonElement;
+    const $input = document.getElementById("input") as HTMLInputElement;
+    const $search = document.getElementById("search") as HTMLButtonElement;
+    const $results = document.getElementById("results") as HTMLUListElement;
+    const $form = document.getElementById("form") as HTMLFormElement;
+    const $error = document.getElementById("error") as HTMLSpanElement;
+    const $submit = document.getElementById("submit") as HTMLButtonElement;
 
-    const $geolocation = document.getElementById('geolocation') as HTMLButtonElement;
-    const $input = document.getElementById('input') as HTMLInputElement;
-    const $search = document.getElementById('search') as HTMLButtonElement;
-    const $results = document.getElementById('results') as HTMLDataListElement;
-    const $form = document.getElementById('form') as HTMLFormElement;
-    const $error = document.getElementById('error') as HTMLParagraphElement;
-    const $submit = document.getElementById('submit') as HTMLButtonElement;
+    $geolocation.addEventListener("click", onGeolocation);
+    $search.addEventListener("click", onSearch);
+    $form.addEventListener("submit", (ev) => {
+        if (!$form.getAttribute("action")) {
+            ev.preventDefault();
+            $error.textContent =
+                "Please enter a location before getting a feed.";
+            return;
+        }
+    });
+    $results.addEventListener("click", (ev) => {
+        const $radio = (ev.target as HTMLElement).querySelector('input[type="radio"]') as HTMLInputElement;
+        $radio?.click();
+    });
 
-    $geolocation.addEventListener('click', onGeolocation);
-    $search.addEventListener('click', onSearch);
+    function slugify(text: string): string {
+        return text
+            .toString()
+            .toLowerCase()
+            .trim()
+            .replace(/[\s\W-]+/g, "-") // Replace spaces and non-word chars with dash
+            .replace(/^-+|-+$/g, ""); // Remove leading/trailing dashes
+    }
 
     function onGeolocation() {
-        if ($form.getAttribute('aria-busy') === 'true') return;
-        $form.setAttribute('aria-busy', 'true');
-        $error.textContent = '';
+        if ($form.getAttribute("aria-busy") === "true") return;
+        $form.setAttribute("aria-busy", "true");
+        $error.textContent = "";
 
         if (!navigator.geolocation) {
-            $form.setAttribute('aria-busy', 'false');
-            $error.textContent = 'Geolocation is not supported by your browser.';
+            $form.setAttribute("aria-busy", "false");
+            $error.textContent =
+                "Geolocation is not supported by your browser.";
             return;
         }
 
         navigator.geolocation.getCurrentPosition(getCurrentPosition);
     }
 
-    function updateInput(result: { label: string }) {
+    function updateInput(result: any) {
         $input.value = result.label;
         $input.title = result.label;
         setFormData(result);
     }
 
     async function onSearch() {
-        if ($form.getAttribute('aria-busy') === 'true') return;
-        $form.setAttribute('aria-busy', 'true');
-        $error.textContent = '';
+        if ($form.getAttribute("aria-busy") === "true") return;
+        $form.setAttribute("aria-busy", "true");
+        $error.textContent = "";
 
         try {
             const results = await onQuery($input.value.trim());
-            $results.innerHTML = results.map(renderOption).join('');
-            $results.querySelectorAll('button').forEach((button, index) => {
-                button.addEventListener('click', () => updateInput(results[index]));
-            });
+            $results.innerHTML = results.map(renderOption).join("");
+            $results
+                .querySelectorAll('input[type="radio"]')
+                .forEach((item, index) => {
+                    item.addEventListener("change", () =>
+                        updateInput(results[index]),
+                    );
+                });
+            updateInput(results[0])
         } catch (error) {
-            console.error('Error fetching search results:', error);
-            $error.textContent = 'Failed to fetch search results. Please try again later.';
+            console.error("Error fetching search results:", error);
+            $error.textContent =
+                "Failed to fetch search results. Please try again later.";
         }
     }
 
-    function renderOption(result: any) {
-        return (`
+    function renderOption(result: any, index: number): string {
+        const id = slugify(result.label);
+        const checked = index === 0 ? ' checked' : "";
+        return `
             <li>
-                <button type="button">
-                    <strong>${result.label}</strong>
+                <div>
+                    <input type="radio" name="result" id="${id}" ${checked}/>
                     <small>${result.lat}, ${result.lon}</small>
-                </button>
+                </div>
+                <label for="${id}">${result.label}</label>
             </li>
-        `);
+        `;
     }
 
-    function setFormData(data: Record<string, any>) {
+    function setFormData(data: any) {
         const { lat, lon } = data;
         $submit.dataset.coords = `${lat}, ${lon}`;
         $form.action = `/feeds/${lat}_${lon}`;
-        Object.entries(data).forEach(([id, data]) => {
-            const $target = document.getElementById(id) as HTMLInputElement | null;
-            $target?.setAttribute('value', data);
+        Object.entries(data).forEach(([id, value]) => {
+            const $target = document.getElementById(id);
+            $target?.setAttribute("value", String(value));
         });
     }
 
@@ -265,21 +350,20 @@ import Target from '@components/target.svg';
         updateInput(result);
     }
 
-    async function onQuery(q: string) {
-
+    async function onQuery(q: string): Promise<any[]> {
         if (!q) {
-            $form.setAttribute('aria-busy', 'false');
-            $error.textContent = 'Search query cannot be empty.';
+            $form.setAttribute("aria-busy", "false");
+            $error.textContent = "Search query cannot be empty.";
             return [];
         }
 
-        const url = new URL('/api/location', window.location.origin);
-        url.searchParams.set('q', q);
+        const url = new URL("/api/location", window.location.origin);
+        url.searchParams.set("q", q);
 
         const res = await fetch(url.toString());
-        $form.setAttribute('aria-busy', 'false');
+        $form.setAttribute("aria-busy", "false");
         if (!res.ok) {
-            $error.textContent = 'An error occurred while fetching data.';
+            $error.textContent = "An error occurred while fetching data.";
         }
         const data = await res.json();
         if (data.error) {
@@ -289,6 +373,4 @@ import Target from '@components/target.svg';
 
         return data;
     }
-
-
 </script>

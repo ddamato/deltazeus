@@ -3,28 +3,32 @@ import { Builder } from 'xml2js';
 
 const store = getStore('feeds'); // All blobs for feeds & metadata will live here
 
-function generateEmptyFeedXml(lat, lon, timezone) {
+function generateEmptyFeedXml(metadata) {
+  const { lat, lon } = metadata;
+  const url = new URL(process.env.URL); // Base URL for the feed
+  const NS = 'deltazeus'; // Custom namespace for the feed
+  const link = new URL(`/feeds/${lat}_${lon}`, url).toString();
+
   const builder = new Builder({
     xmldec: { version: '1.0', encoding: 'UTF-8' },
     renderOpts: { pretty: true },
   });
 
+  const customNS = Object.entries(metadata).reduce((acc, [key, value]) => {
+    return Object.assign(acc, {[[NS, key].join(':')]: value});
+  }, {});
+
   const feedObject = {
     rss: {
       $: {
         version: '2.0',
-        'xmlns:custom': 'http://example.com/custom', // custom namespace URI
+        'xmlns:custom': `${new URL(NS, url).toString()}`, // custom namespace URI
       },
       channel: {
-        title: `Weather Feed for ${lat},${lon}`,
-        link: `https://yourdomain.com/feeds/${lat}_${lon}`,
-        description: `Empty weather feed for ${lat},${lon}`,
-        'custom:metadata': {
-          'custom:latitude': lat,
-          'custom:longitude': lon,
-          'custom:timezone': timezone,
-          'custom:lastUpdated': '',
-        },
+        title: `Weather Feed for ${lat}, ${lon}`,
+        link,
+        description: `Empty weather feed for ${lat}, ${lon}`,
+        ...customNS,
         item: {
           title: 'No updates yet',
           description: 'Feed will be updated daily at 5am local time.',
