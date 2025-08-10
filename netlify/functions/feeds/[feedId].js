@@ -1,9 +1,15 @@
 import { getStore } from '@netlify/blobs';
 import { parseStringPromise, Builder } from 'xml2js';
 
-const store = getStore('feeds'); // all blobs will live in this "feeds" store
+const store = getStore({
+  name: 'feeds',
+  siteID: process.env.NETLIFY_SITE_ID,
+  token: process.env.NETLIFY_API_TOKEN,
+});
 
 export async function handler(event) {
+  console.log('HTTP method:', event.httpMethod, 'pathParameters:', event.pathParameters);
+
   const feedId = event.pathParameters?.feedId;
   if (!feedId) {
     return {
@@ -24,6 +30,8 @@ export async function handler(event) {
     }
   }
 
+  console.log(event, event.httpMethod, feedId, body);
+
   switch (event.httpMethod) {
     case 'GET':
       return handleGet(feedId);
@@ -37,7 +45,7 @@ export async function handler(event) {
     default:
       return {
         statusCode: 405,
-        body: 'Method Not Allowed',
+        body: event.httpMethod,
       };
   }
 }

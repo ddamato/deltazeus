@@ -206,7 +206,12 @@ import Rss from "@components/rss.svg";
     }
 </style>
 
-<form id="form" action="" method="post" autocomplete="off">
+<form
+    id="form"
+    action=""
+    method="post"
+    enctype="multipart/form-data"
+    autocomplete="off">
     <div>
         <label for="input">Location search</label>
         <small id="error" aria-live="polite"></small>
@@ -225,10 +230,7 @@ import Rss from "@components/rss.svg";
     </div>
     <input type="hidden" name="lat" value="" id="lat" />
     <input type="hidden" name="lon" value="" id="lon" />
-    <input type="hidden" name="tzName" value="" id="tzName" />
     <input type="hidden" name="tzOffset" value="" id="tzOffset" />
-    <input type="hidden" name="tzOffsetString" value="" id="tzOffsetString" />
-    <input type="hidden" name="tzAbbr" value="" id="tzAbbr" />
     <button
         type="submit"
         id="submit"
