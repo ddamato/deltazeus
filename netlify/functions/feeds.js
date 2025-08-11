@@ -37,6 +37,32 @@ function contextMeta(context) {
   };
 }
 
+async function updateActive(feedId) {
+  const fileName = 'active.json';
+  const contentType = 'application/json';
+  try {
+    const active = await ensureStore({ fileName, contentType });
+    active[feedId] = new Date().toISOString();
+    console.log('Updating active feeds:', active);
+    await store.set(fileName, JSON.stringify(active), { contentType });
+  } catch (err) {}
+}
+
+async function getFeed(feedId) {
+  const xml = await store.get(`${feedId}.xml`, { type: 'text' });
+  if (!xml) {
+    throw new Error(`Feed XML not found for ID: ${feedId}`);
+  }
+  return new FeedXml(xml);
+}
+
+async function ensureStore({ fileName, content = '', contentType = 'application/xml' }) {
+  const type = contentType?.endsWith('json') ? 'json' : 'text';
+  const existing = await store.get(fileName, { type });
+  if (!existing) await store.set(fileName, content, { contentType });
+  return existing || await store.get(fileName, { type: 'text' });
+}
+
 async function handlePost(event, context) {
   let parsed;
   try {
@@ -49,25 +75,19 @@ async function handlePost(event, context) {
   const metadata = Object.assign({}, contextMeta(context), parsed);
   delete metadata.files;
   const feedId = `${metadata.lat}_${metadata.lon}`;
-  const feedXmlKey = `${feedId}.xml`;
-
-  // For debugging.
-  // await store.delete(`${feedId}.xml`);
+  const fileName = `${feedId}.xml`;
 
   try {
-    const existingFeedXml = await store.get(feedXmlKey, { type: 'text' });
-  
-    if (!existingFeedXml) {
-      const feed = new FeedXml(null, metadata);
-      // Add default "no updates" item
-      feed.addItem({
-        title: 'No updates yet',
-        description: 'Feed will be updated daily at 5am local time.',
-        pubDate: new Date().toUTCString(),
-      });
 
-      await store.set(feedXmlKey, feed.xml, { contentType: 'application/rss+xml' });
-    }
+    const feed = new FeedXml(null, metadata);
+
+    feed.addItem({
+      title: 'No updates yet',
+      description: 'Feed will be updated daily at 5am local time.',
+      pubDate: new Date().toUTCString(),
+    });
+
+    await ensureStore({ fileName, content: feed.xml });
 
     return {
       statusCode: 302,
@@ -77,62 +97,50 @@ async function handlePost(event, context) {
       body: '',
     };
   } catch (err) {
-    console.error('Feed creation error:', err);
-    return { statusCode: 500, body: 'Internal Server Error' };
+    return {
+      statusCode: 500,
+      body: 'Feed creation error'
+    };
   }
 }
 
 async function handleGet(feedId) {
-  const feedXml = await store.get(`${feedId}.xml`, { type: 'text' });
-  if (!feedXml) {
-    return { statusCode: 404, body: 'Feed not found' };
+  try {
+    const feed = await getFeed(feedId);
+    await updateActive(feedId);
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/xml',
+      },
+      body: feed.xml,
+    }
+  } catch (err) {
+    return {
+      statusCode: 404,
+      body: 'Feed not found'
+    };
   }
-
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/xml',
-    },
-    body: feedXml,
-  };
 }
 
 async function handlePut(feedId, event) {
-  let metadata;
   try {
-    metadata = JSON.parse(event.body);
-  } catch {
-    return { statusCode: 400, body: 'Invalid JSON body' };
-  }
-  if (!metadata || typeof metadata !== 'object') {
-    return { statusCode: 400, body: 'Valid JSON body required' };
-  }
+    const metadata = JSON.parse(event?.body || '{}');
+    const feed = await getFeed(feedId);
+    feed.addItem(metadata);
+    await ensureStore({ fileName: `${feedId}.xml`, content: feed.xml });
 
-  const feedXml = await store.get(`${feedId}.xml`, { type: 'text' });
-  if (!feedXml) {
-    return { statusCode: 404, body: 'Feed XML not found' };
-  }
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Feed XML updated' }),
+    };
 
-  // Load existing feed XML into FeedXml class
-  let feed;
-  try {
-    feed = new FeedXml(feedXml);
   } catch (err) {
-    console.error('Failed to parse existing feed XML:', err);
-    return { statusCode: 500, body: 'Malformed feed XML' };
+    return {
+      statusCode: 500,
+      body: 'Server error, failed to update feed',
+    };
   }
-
-  // Add new item from metadata
-  feed.addItem(metadata);
-
-  const updatedXml = feed.xml;
-
-  await store.set(`${feedId}.xml`, updatedXml, { contentType: 'application/rss+xml' });
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: 'Feed XML updated' }),
-  };
 }
 
 async function handleDelete(feedId) {

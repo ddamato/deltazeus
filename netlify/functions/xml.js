@@ -63,6 +63,7 @@ export class FeedXml {
   }
 
   addItem(item) {
+    if (!item || typeof item !== 'object') return;
     const $item = this.doc.createElement('item');
     Object.entries(item).forEach(([key, value]) => {
       const el = this.createTextElement(key, value);
