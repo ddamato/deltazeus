@@ -37,15 +37,32 @@ function contextMeta(context) {
   };
 }
 
+async function ensureStore({ fileName, content = '', contentType = 'application/xml' }) {
+  const isJson = contentType?.endsWith('json');
+  const type = isJson ? 'json' : 'text';
+
+  const existing = await store.get(fileName, { type });
+
+  if (!existing) {
+    await store.set(fileName, isJson ? JSON.stringify(content || {}) : content, { contentType });
+    return await store.get(fileName, { type });
+  }
+
+  return existing;
+}
+
+
 async function updateActive(feedId) {
+  if (process.env.CONTEXT !== 'production') return;
   const fileName = 'active.json';
   const contentType = 'application/json';
   try {
     const active = await ensureStore({ fileName, contentType });
     active[feedId] = new Date().toISOString();
-    console.log('Updating active feeds:', active);
     await store.set(fileName, JSON.stringify(active), { contentType });
-  } catch (err) {}
+  } catch (err) {
+    console.error('Failed to update active.json:', err);
+  }
 }
 
 async function getFeed(feedId) {
@@ -54,13 +71,6 @@ async function getFeed(feedId) {
     throw new Error(`Feed XML not found for ID: ${feedId}`);
   }
   return new FeedXml(xml);
-}
-
-async function ensureStore({ fileName, content = '', contentType = 'application/xml' }) {
-  const type = contentType?.endsWith('json') ? 'json' : 'text';
-  const existing = await store.get(fileName, { type });
-  if (!existing) await store.set(fileName, content, { contentType });
-  return existing || await store.get(fileName, { type: 'text' });
 }
 
 async function handlePost(event, context) {
@@ -78,7 +88,6 @@ async function handlePost(event, context) {
   const fileName = `${feedId}.xml`;
 
   try {
-
     const feed = new FeedXml(null, metadata);
 
     feed.addItem({
@@ -97,6 +106,7 @@ async function handlePost(event, context) {
       body: '',
     };
   } catch (err) {
+    console.error('Feed creation error:', err);
     return {
       statusCode: 500,
       body: 'Feed creation error'
@@ -114,7 +124,7 @@ async function handleGet(feedId) {
         'Content-Type': 'application/xml',
       },
       body: feed.xml,
-    }
+    };
   } catch (err) {
     return {
       statusCode: 404,
@@ -134,7 +144,6 @@ async function handlePut(feedId, event) {
       statusCode: 200,
       body: JSON.stringify({ message: 'Feed XML updated' }),
     };
-
   } catch (err) {
     return {
       statusCode: 500,
