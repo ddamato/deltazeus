@@ -1,12 +1,6 @@
-import { getStore } from '@netlify/blobs';
 import multipartParser from 'lambda-multipart-parser';
 import { FeedXml } from './xml.js';
-
-const store = getStore({
-  name: 'feeds',
-  siteID: process.env.NETLIFY_SITE_ID,
-  token: process.env.NETLIFY_API_TOKEN,
-});
+import { create, update } from './track.js';
 
 function timeZoneOffset(tz) {
   const now = new Date();
@@ -37,41 +31,6 @@ function contextMeta(context) {
   };
 }
 
-async function ensureStore({ fileName, content = '', contentType = 'application/xml' }) {
-  const isJson = contentType?.endsWith('json');
-  const type = isJson ? 'json' : 'text';
-
-  const existing = await store.get(fileName, { type });
-
-  if (!existing) {
-    await store.set(fileName, isJson ? JSON.stringify(content || {}) : content, { contentType });
-    return await store.get(fileName, { type });
-  }
-
-  return existing;
-}
-
-
-async function updateActive(feedId) {
-  if (process.env.CONTEXT !== 'production') return;
-  const fileName = 'active.json';
-  const contentType = 'application/json';
-  try {
-    const active = await ensureStore({ fileName, contentType });
-    active[feedId] = new Date().toISOString();
-    await store.set(fileName, JSON.stringify(active), { contentType });
-  } catch (err) {
-    console.error('Failed to update active.json:', err);
-  }
-}
-
-async function getFeed(feedId) {
-  const xml = await store.get(`${feedId}.xml`, { type: 'text' });
-  if (!xml) {
-    throw new Error(`Feed XML not found for ID: ${feedId}`);
-  }
-  return new FeedXml(xml);
-}
 
 async function handlePost(event, context) {
   let parsed;
@@ -82,21 +41,19 @@ async function handlePost(event, context) {
     return { statusCode: 400, body: 'Invalid multipart form data' };
   }
 
-  const metadata = Object.assign({}, contextMeta(context), parsed);
-  delete metadata.files;
-  const feedId = `${metadata.lat}_${metadata.lon}`;
-  const fileName = `${feedId}.xml`;
+  const { lat, lon, tzOffset } = Object.assign({}, contextMeta(context), parsed);
+  const feedId = `${lat}_${lon}`;
 
   try {
-    const feed = new FeedXml(null, metadata);
+    const feed = await new FeedXml(feedId, true);
 
-    feed.addItem({
+    await feed.addItem({
       title: 'No updates yet',
       description: 'Feed will be updated daily at 5am local time.',
       pubDate: new Date().toUTCString(),
     });
 
-    await ensureStore({ fileName, content: feed.xml });
+    await create(tzOffset, feedId);
 
     return {
       statusCode: 302,
@@ -116,8 +73,8 @@ async function handlePost(event, context) {
 
 async function handleGet(feedId) {
   try {
-    const feed = await getFeed(feedId);
-    await updateActive(feedId);
+    const feed = await new FeedXml(feedId);
+    await update(feedId);
     return {
       statusCode: 200,
       headers: {
@@ -133,33 +90,6 @@ async function handleGet(feedId) {
   }
 }
 
-async function handlePut(feedId, event) {
-  try {
-    const metadata = JSON.parse(event?.body || '{}');
-    const feed = await getFeed(feedId);
-    feed.addItem(metadata);
-    await ensureStore({ fileName: `${feedId}.xml`, content: feed.xml });
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: 'Feed XML updated' }),
-    };
-  } catch (err) {
-    return {
-      statusCode: 500,
-      body: 'Server error, failed to update feed',
-    };
-  }
-}
-
-async function handleDelete(feedId) {
-  await store.delete(`${feedId}.xml`);
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: 'Feed deleted' }),
-  };
-}
-
 export async function handler(event, context) {
   const path = event.path; // "/.netlify/functions/feeds/40.7_-73.6"
   const parts = path.split('/');
@@ -171,12 +101,6 @@ export async function handler(event, context) {
 
     case 'GET':
       return handleGet(feedId);
-
-    case 'PUT':
-      return handlePut(feedId, event);
-
-    case 'DELETE':
-      return handleDelete(feedId);
 
     default:
       return {

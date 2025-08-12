@@ -1,90 +1,90 @@
 // xml.js
-import { DOMImplementation, XMLSerializer, DOMParser } from 'xmldom';
+import { getStore } from '@netlify/blobs';
+import { DOMImplementation, XMLSerializer, DOMParser } from 'xmldom';};
 
-const NS = 'deltazeus';
-
-const defaultChannel = {
-  title: 'Weather Feed',
-  link: 'https://example.com/feeds',
-  description: 'Weather feed for Delta Zeus',
-  lastBuildDate: new Date().toUTCString(),
-};
+const store = getStore({
+    name: 'feeds',
+    siteID: process.env.NETLIFY_SITE_ID,
+    token: process.env.NETLIFY_API_TOKEN,
+});
 
 export class FeedXml {
-  /**
-   * Constructs the FeedXml instance.
-   * If inputXml is provided, parses it.
-   * Otherwise, creates new empty feed, optional metadata.
-   *
-   * @param {string|null} inputXml
-   * @param {Object} metadata
-   */
-  constructor(inputXml = null, metadata = {}) {
-    if (inputXml) {
-      // Load from existing XML string
-      const parser = new DOMParser();
-      this.doc = parser.parseFromString(inputXml, 'application/xml');
-      this.channel = this.doc.getElementsByTagName('channel')[0];
-      if (!this.channel) throw new Error('Malformed feed XML: missing <channel>');
-    } else {
-      // Create new document with metadata
-      const impl = new DOMImplementation();
-      this.doc = impl.createDocument(null, 'rss', null);
-      const rss = this.doc.documentElement;
-      rss.setAttribute('version', '2.0');
+    /**
+     * @param {string} feedId - Unique identifier for the feed.
+     * @param {boolean} ensure - If true, create a new feed if one does not exist.
+     * @param {Object} metadata
+     */
+    constructor(feedId, create) {
+        this.fileName = `${feedId}.xml`;
 
-      const baseURL = new URL(process.env.URL);
-      const nsUri = new URL(NS, baseURL).toString();
-      rss.setAttribute(`xmlns:${NS}`, nsUri);
+        return (async () => {
+            try {
+                // Get
+                const xml = await store.get(this.fileName, { type: 'text' });
+                const parser = new DOMParser();
+                this.doc = parser.parseFromString(xml, 'application/xml');
+                this.channel = this.doc.getElementsByTagName('channel')[0];
+                if (!this.channel) throw new Error('Malformed feed XML: missing <channel>');
 
-      this.channel = this.doc.createElement('channel');
-      rss.appendChild(this.channel);
+            } catch (err) {
 
-      // Add default channel elements
-      Object.entries(defaultChannel).forEach(([key, value]) => {
-        const el = this.doc.createElement(key);
-        el.appendChild(this.doc.createTextNode(value));
-        this.channel.appendChild(el);
-      });
+                if (!create) throw err;
 
-      // Add metadata as namespaced elements
-      Object.entries(metadata).forEach(([key, value]) => {
-        const nsEl = this.doc.createElement(`${NS}:${key}`);
-        nsEl.appendChild(this.doc.createTextNode(String(value)));
-        this.channel.appendChild(nsEl);
-      });
+                // Prepare for post
+                const impl = new DOMImplementation();
+                this.doc = impl.createDocument(null, 'rss', null);
+                const rss = this.doc.documentElement;
+                rss.setAttribute('version', '2.0');
+
+                this.channel = this.doc.createElement('channel');
+                rss.appendChild(this.channel);
+
+                const defaultChannel = {
+                    title: 'deltazeus',
+                    link: `https://deltazeus.com/feeds/${feedId}`,
+                    description: 'Weather feed for deltazeus',
+                    lastBuildDate: new Date().toUTCString()
+                }
+
+                // Add default channel elements
+                Object.entries(defaultChannel).forEach(([key, value]) => {
+                    const el = this.doc.createElement(key);
+                    el.appendChild(this.doc.createTextNode(value));
+                    this.channel.appendChild(el);
+                });
+            }
+
+            return this;
+        })();
     }
-  }
 
-  createTextElement(tag, text) {
-    const el = this.doc.createElement(tag);
-    el.appendChild(this.doc.createTextNode(text));
-    return el;
-  }
-
-  addItem(item) {
-    if (!item || typeof item !== 'object') return;
-    const $item = this.doc.createElement('item');
-    Object.entries(item).forEach(([key, value]) => {
-      const el = this.createTextElement(key, value);
-      $item.appendChild(el);
-    });
-    this.channel.appendChild($item);
-  }
-
-  addItems(items) {
-    [].concat(items).forEach(item => this.addItem(item));
-  }
-
-  get xml() {
-    const serializer = new XMLSerializer();
-    let xml = serializer.serializeToString(this.doc);
-
-    if (!xml.startsWith('<?xml')) {
-      const xmlDeclaration = '<?xml version="1.0" encoding="UTF-8"?>';
-      const stylesheetPI = '<?xml-stylesheet type="text/css" href="/feed.css"?>';
-      xml = [xmlDeclaration, stylesheetPI, xml].join('\n');
+    createTextElement(tag, text) {
+        const el = this.doc.createElement(tag);
+        el.appendChild(this.doc.createTextNode(text));
+        return el;
     }
-    return xml;
-  }
+
+    addItem(item) {
+        if (!item || typeof item !== 'object') return;
+        const $item = this.doc.createElement('item');
+        Object.entries(item).forEach(([key, value]) => {
+            const el = this.createTextElement(key, value);
+            $item.appendChild(el);
+        });
+        this.channel.appendChild($item);
+        return store.set(this.fileName, this.xml, { contentType: 'application/xml' });
+    }
+
+    get xml() {
+        const serializer = new XMLSerializer();
+        let xml = serializer.serializeToString(this.doc);
+
+        if (!xml.startsWith('<?xml')) {
+            const xmlDeclaration = '<?xml version="1.0" encoding="UTF-8"?>';
+            const stylesheetPI = '<?xml-stylesheet type="text/css" href="/feed.css"?>';
+            xml = [xmlDeclaration, stylesheetPI, xml].join('\n');
+        }
+
+        return xml;
+    }
 }
