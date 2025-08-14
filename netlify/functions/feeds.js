@@ -46,11 +46,13 @@ async function handlePost(event, context) {
 
   try {
     const feed = await new FeedXml(feedId, true);
+    const d = new Date();
 
     await feed.addItem({
       title: 'No updates yet',
       description: 'Feed will be updated daily at 5am local time.',
-      pubDate: new Date().toUTCString(),
+      pubDate: d.toUTCString(),
+      guid: d.toISOString()
     });
 
     await create(tzOffset, feedId);

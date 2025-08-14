@@ -1,4 +1,3 @@
-// xml.js
 import { getStore } from '@netlify/blobs';
 import { DOMImplementation, XMLSerializer, DOMParser } from 'xmldom';};
 
@@ -9,11 +8,7 @@ const store = getStore({
 });
 
 export class FeedXml {
-    /**
-     * @param {string} feedId - Unique identifier for the feed.
-     * @param {boolean} ensure - If true, create a new feed if one does not exist.
-     * @param {Object} metadata
-     */
+
     constructor(feedId, create) {
         this.fileName = `${feedId}.xml`;
 
@@ -68,8 +63,7 @@ export class FeedXml {
         if (!item || typeof item !== 'object') return;
         const $item = this.doc.createElement('item');
         Object.entries(item).forEach(([key, value]) => {
-            const el = this.createTextElement(key, value);
-            $item.appendChild(el);
+            $item.appendChild(this.createTextElement(key, value));
         });
         this.channel.appendChild($item);
         return store.set(this.fileName, this.xml, { contentType: 'application/xml' });

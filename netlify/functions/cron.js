@@ -1,15 +1,13 @@
 import { get, remove } from './track.js';
 import { FeedXml } from './xml.js';
 
-const API_KEY = process.env.WEATHERAPI_KEY;
-
 const store = getStore({
     name: 'feeds',
     siteID: process.env.NETLIFY_SITE_ID,
     token: process.env.NETLIFY_API_TOKEN,
 });
 
-const metrics = {
+const significantDiffs = {
     'avgtemp_c': 5,
     'avgtemp_f': 9,
     'maxwind_kph': 15,
@@ -47,9 +45,9 @@ function getDateRange(atHour) {
 }
 
 function isSignificant(metricKey, yesterday, today) {
-    if (!(metricKey in metrics)) return NaN;
+    if (!(metricKey in significantDiffs)) return NaN;
     const diff = today[metricKey] - yesterday[metricKey];
-    return Math.abs(diff) >= metrics[metricKey] ? diff : NaN;
+    return Math.abs(diff) >= significantDiffs[metricKey] ? diff : NaN;
 }
 
 function formatChange(label, emoji, diff1, unit1, diff2, unit2) {
@@ -68,7 +66,7 @@ async function weatherDiffs(feedId, dateRange) {
 
     const url = new URL('https://api.weatherapi.com/v1/history.json');
     url.search = new URLSearchParams({
-        key: API_KEY,
+        key: process.env.WEATHER_API_KEY,
         q: feedId.split('_').join(','),
         ...dateRange,
     }).toString();
