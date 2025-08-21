@@ -1,11 +1,8 @@
+import { useStore } from './store.js';
 import { get, remove } from './track.js';
 import { FeedXml } from './xml.js';
 
-const store = getStore({
-    name: 'feeds',
-    siteID: process.env.NETLIFY_SITE_ID,
-    token: process.env.NETLIFY_API_TOKEN,
-});
+const store = useStore();
 
 const significantDiffs = {
     'avgtemp_c': 5,

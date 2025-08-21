@@ -1,9 +1,9 @@
-import { getStore } from '@netlify/blobs';
+import { useStore } from "./store";
 
 const fileName = 'active.json';
 const contentType = 'application/json';
 
-const store = getStore('feeds');
+const store = useStore();
 
 export async function create(tzOffset, feedId) {
   let active = (await store.get(fileName, { type: 'json' })) || Array.from({ length: 24 }, () => ({}));

@@ -1,7 +1,7 @@
-import { getStore } from '@netlify/blobs';
+import { useStore } from './store.js';
 import { DOMImplementation, XMLSerializer, DOMParser } from 'xmldom';
 
-const store = getStore('feeds');
+const store = useStore();
 
 /**
  * Creates a new feed,
