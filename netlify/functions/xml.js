@@ -1,12 +1,12 @@
 import { getStore } from '@netlify/blobs';
-import { DOMImplementation, XMLSerializer, DOMParser } from 'xmldom';};
+import { DOMImplementation, XMLSerializer, DOMParser } from 'xmldom';
 
-const store = getStore({
-    name: 'feeds',
-    siteID: process.env.NETLIFY_SITE_ID,
-    token: process.env.NETLIFY_API_TOKEN,
-});
+const store = getStore('feeds');
 
+/**
+ * Creates a new feed,
+ * requires an await to retrieve the feed from the store.
+ */
 export class FeedXml {
 
     constructor(feedId, create) {

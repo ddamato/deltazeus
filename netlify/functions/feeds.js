@@ -55,7 +55,7 @@ async function handlePost(event, context) {
       guid: d.toISOString()
     });
 
-    await create(tzOffset, feedId);
+    // await create(tzOffset, feedId);
 
     return {
       statusCode: 302,
@@ -76,7 +76,7 @@ async function handlePost(event, context) {
 async function handleGet(feedId) {
   try {
     const feed = await new FeedXml(feedId);
-    await update(feedId);
+    // await update(feedId);
     return {
       statusCode: 200,
       headers: {

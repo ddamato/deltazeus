@@ -1,3 +1,10 @@
+/**
+ * Handles querying with a location,
+ * returns lat, lon, tzOffset as array of results
+ * 
+ * @param {Request} event - Request event object
+ * @returns {Response}
+ */
 export async function handler(event) {
   const { q } = event.queryStringParameters;
   if (!q) return {
@@ -7,6 +14,7 @@ export async function handler(event) {
       'Content-Type': 'application/json',
     },
   };
+
   const isCoords = /^-?\d+(\.\d+)?\s*\+\s*-?\d+(\.\d+)?$/.test(q);
 
   try {
