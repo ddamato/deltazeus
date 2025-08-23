@@ -71,6 +71,9 @@ async function weatherDiffs(feedId, dateRange) {
 
     const data = await res.json();
 
+    console.log({ data, dateRange, search: url.search });
+    console.log(data.forecast.forecastday);
+
     const [{ day: yesterday }, { day: today }] = data.forecast.forecastday;
     return { yesterday, today };
 }
@@ -123,6 +126,8 @@ export default async function handler() {
     const offset = null; // 5 - utcHour;
     const feeds = await get(offset);
 
+    console.log({ feeds });
+
     for (const [feedId, lastUpdated] of Object.entries(feeds)) {
         if (isExpired(lastUpdated, 5)) {
             await store.delete(`${feedId}.xml`);
@@ -153,5 +158,5 @@ export default async function handler() {
 }
 
 export const config = {
-    schedule: "@hourly"
+    // schedule: "@hourly"
 }

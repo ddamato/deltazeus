@@ -31,32 +31,26 @@ function contextMeta(netlifyContext) {
 }
 
 async function handlePost(req, netlifyContext) {
-  let parsed = {};
-  try {
-    const form = await req.formData();
-    for (const [key, val] of form.entries()) {
-      parsed[key] = val;
-    }
-  } catch (err) {
-    console.error('Failed to parse multipart form:', err);
-    return new Response('Invalid multipart form data', { status: 400 });
-  }
-
+  const parsed = Object.fromEntries(await req.formData());
   const { lat, lon, tzOffset } = Object.assign({}, contextMeta(netlifyContext), parsed);
   const feedId = `${lat}_${lon}`;
 
   try {
     const feed = await new FeedXml(feedId, true);
-    const d = new Date();
 
-    await feed.addItem({
-      title: 'No updates yet',
-      description: 'Feed will be updated daily at 5am local time if there are significant changes.',
-      pubDate: d.toUTCString(),
-      guid: d.toISOString()
-    });
+    if (feed.isNew) {
+      const d = new Date();
 
-    await create(tzOffset, feedId);
+      await feed.addItem({
+        title: 'No updates yet',
+        description: 'Feed will be updated daily at 5am local time if there are significant changes.',
+        pubDate: d.toUTCString(),
+        guid: d.toISOString()
+      });
+
+      const tzOffsetHours = Math.round(tzOffset / 3600);
+      await create(tzOffsetHours, feedId);
+    }
 
     return new Response(null, {
       status: 302,

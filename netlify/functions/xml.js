@@ -23,6 +23,8 @@ export class FeedXml {
 
                 if (!create) throw err;
 
+                this.isNew = create;
+
                 // Prepare for post
                 const impl = new DOMImplementation();
                 this.doc = impl.createDocument(null, 'rss', null);
