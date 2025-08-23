@@ -2,6 +2,7 @@
 import Head from "@components/Head.astro";
 import Clouds from "@components/Clouds.astro";
 import Panel from "@components/Panel.astro";
+import Footer from "@components/Footer.astro";
 ---
 
 <!doctype html>
@@ -11,6 +12,7 @@ import Panel from "@components/Panel.astro";
         <Clouds />
         <Panel>
             <slot/>
+            <Footer/>
         </Panel>
         <script async defer src="https://scripts.withcabin.com/hello.js"
         ></script>

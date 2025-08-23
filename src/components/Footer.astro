@@ -1,0 +1,57 @@
+---
+import Cloudy from '@components/cloudy.svg';
+import Stormy from '@components/stormy.svg';
+const mapping = {
+    '/': {
+        label: 'Learn about deltazeus',
+        link: '/about'
+    },
+    '/about': {
+        label: 'Get your feed',
+        link: '/'
+    }
+}
+const { pathname } = Astro.url;
+const { link, label } = mapping[pathname];
+---
+
+<style>
+    footer {
+        display: flex;
+        gap: 16px;
+        margin-block-start: 8px;
+        font-size: .8em;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    footer > * {
+        cursor: pointer;
+    }
+
+    button {
+        background: transparent;
+        color: inherit;
+        padding: 0;
+        border: 0;
+    }
+</style>
+
+<footer>
+    <a href={ link }>{ label }</a>
+    <button id="toggle" aria-label="toggle cloudy and stormy">
+        <Cloudy/>
+        <Stormy/>
+    </button>
+</footer>
+
+<script>
+    const $toggle = document.getElementById('toggle') as HTMLButtonElement;
+    $toggle.addEventListener('click', () => {
+        if (document.body.hasAttribute('data-storm')) {
+            document.body.removeAttribute('data-storm')
+        } else {
+            document.body.setAttribute('data-storm', '');
+        }
+    })
+</script>

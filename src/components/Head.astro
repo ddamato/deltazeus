@@ -99,8 +99,18 @@ const schema = {
     }
 
     body[data-storm] {
-        --accent-color: #9ed4f3;
+        --accent-color: #483549;
         --bg-color: #0e0c12;
+    }
+
+    body[data-storm] #cloudy,
+    body:not([data-storm]) #stormy {
+        display: flex;
+    }
+
+    body[data-storm] #stormy,
+    body:not([data-storm]) #cloudy {
+        display: none;
     }
 
     :where(h1, h2, h3) {
