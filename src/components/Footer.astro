@@ -10,9 +10,9 @@ const mapping = {
         label: 'Get your feed',
         link: '/'
     }
-}
-const { pathname } = Astro.url;
-const { link, label } = mapping[pathname];
+} as Record<string, { label: string, link: string }>
+const path = String(Astro.url.pathname);
+const { link, label } = mapping[path] || {};
 ---
 
 <style>
