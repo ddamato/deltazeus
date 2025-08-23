@@ -1,3 +1,77 @@
+rss {
+    background: linear-gradient(to bottom, #90dffe 0%, #38a3d1 100%);
+    min-height: 100dvh;
+    padding: 32px;
+    box-sizing: border-box;
+}
+
+channel {
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+    margin-inline: auto;
+    font-family: system-ui, sans-serif;
+}
+
 title {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
+    font-weight: bolder;
+}
+
+channel > title {
     font-size: 2em;
+}
+
+channel > description {
+    font-size: 1.2em;
+}
+
+channel > link,
+channel > lastBuildDate,
+item > pubDate {
+    font-size: .8em;
+}
+
+lastBuildDate {
+    margin-block-end: 32px;
+}
+
+lastBuildDate:before {
+    content: "Last Updated: "
+}
+
+item {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+item:first-of-type {
+    border: 1px solid lightblue;
+    border-radius: 4px;
+    background: white;
+}
+
+item:first-of-type:before {
+    content: "Latest update";
+    margin-block-end: 16px;
+    font-size: .8em;
+    font-style: italic;
+}
+
+item > title {
+    font-size: 1.2em;
+}
+
+item > pubDate {
+    margin-block-start: 16px;
+}
+
+item > pubDate:before {
+    content: "Posted: "
+}
+
+guid {
+    display: none;
 }

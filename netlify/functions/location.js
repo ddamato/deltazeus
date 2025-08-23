@@ -1,39 +1,43 @@
 /**
  * Handles querying with a location,
  * returns lat, lon, tzOffset as array of results
- * 
- * @param {Request} event - Request event object
+ *
+ * @param {Request} req - Fetch API Request
  * @returns {Response}
  */
-export async function handler(event) {
-  const { q } = event.queryStringParameters;
-  if (!q) return {
-    statusCode: 400,
-    body: JSON.stringify({ error: 'Must provide a query param' }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
+export default async function (req) {
+  const urlObj = new URL(req.url);
+  const q = urlObj.searchParams.get("q");
+
+  if (!q) {
+    return new Response(
+      JSON.stringify({ error: "Must provide a query param" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
 
   const isCoords = /^-?\d+(\.\d+)?\s*\+\s*-?\d+(\.\d+)?$/.test(q);
 
   try {
     // Build OpenCage request
-    const url = new URL('https://api.opencagedata.com/geocode/v1/json');
-    url.searchParams.set('q', q);
-    url.searchParams.set('key', process.env.OPENCAGE_API_KEY);
-    url.searchParams.set('limit', isCoords ? 1 : 5);
-    url.searchParams.set('language', 'en');
+    const apiUrl = new URL("https://api.opencagedata.com/geocode/v1/json");
+    apiUrl.searchParams.set("q", q);
+    apiUrl.searchParams.set("key", process.env.OPENCAGE_API_KEY);
+    apiUrl.searchParams.set("limit", isCoords ? 1 : 5);
+    apiUrl.searchParams.set("language", "en");
 
-    const response = await fetch(url);
+    const response = await fetch(apiUrl);
     if (!response.ok) {
-      return {
-        statusCode: response.status,
-        body: JSON.stringify({ error: 'Failed to fetch from API' }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch from API" }),
+        {
+          status: response.status,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     const data = await response.json();
@@ -52,20 +56,14 @@ export async function handler(event) {
       };
     });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify(results),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+    return new Response(JSON.stringify(results), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }

@@ -25,5 +25,4 @@
   targetPort = 4321
   port = 8888
 
-[functions.cron]
-  schedule = "@hourly"
+

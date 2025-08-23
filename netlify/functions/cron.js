@@ -1,8 +1,6 @@
-import { useStore } from './store.js';
+import { getStore } from '@netlify/blobs';
 import { get, remove } from './track.js';
 import { FeedXml } from './xml.js';
-
-const store = useStore();
 
 const significantDiffs = {
     'avgtemp_c': 5,
@@ -117,10 +115,13 @@ function createUpdate(yesterday, today) {
     return messages.join('\n').trim();
 }
 
-export default async function handler(req) {
+export default async function handler() {
+    const store = getStore('feeds');
     const utcHour = new Date().getUTCHours();
     // All feeds where the current time would be 5am based on their tzOffset and server time.
-    const feeds = await get(5 - utcHour);
+    
+    const offset = null; // 5 - utcHour;
+    const feeds = await get(offset);
 
     for (const [feedId, lastUpdated] of Object.entries(feeds)) {
         if (isExpired(lastUpdated, 5)) {
@@ -142,9 +143,15 @@ export default async function handler(req) {
                         guid: d.toISOString()
                     });
                 }
-            } catch (e) {
-                console.error(`Failed to update feed ${feedId}:`, e);
+                return new Response('Feeds updated', { status: 200 });
+            } catch (err) {
+                console.error(`Failed to update feed ${feedId}:`, err);
+                return new Response('Internal Server Error', { status: 500 });
             }
         }
     }
+}
+
+export const config = {
+    schedule: "@hourly"
 }

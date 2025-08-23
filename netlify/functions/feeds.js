@@ -1,4 +1,3 @@
-import multipartParser from 'lambda-multipart-parser';
 import { FeedXml } from './xml.js';
 import { create, update } from './track.js';
 
@@ -21,9 +20,9 @@ function timeZoneOffset(tz) {
   return hours * 100 + Math.sign(hours) * minutes;
 }
 
-function contextMeta(context) {
-  if (!context.geo) return {};
-  const { latitude, longitude, timezone } = context.geo;
+function contextMeta(netlifyContext) {
+  if (!netlifyContext?.geo) return {};
+  const { latitude, longitude, timezone } = netlifyContext.geo;
   return {
     lat: Number(latitude.toFixed(1)),
     lon: Number(longitude.toFixed(1)),
@@ -31,17 +30,19 @@ function contextMeta(context) {
   };
 }
 
-
-async function handlePost(event, context) {
-  let parsed;
+async function handlePost(req, netlifyContext) {
+  let parsed = {};
   try {
-    parsed = await multipartParser.parse(event);
+    const form = await req.formData();
+    for (const [key, val] of form.entries()) {
+      parsed[key] = val;
+    }
   } catch (err) {
     console.error('Failed to parse multipart form:', err);
-    return { statusCode: 400, body: 'Invalid multipart form data' };
+    return new Response('Invalid multipart form data', { status: 400 });
   }
 
-  const { lat, lon, tzOffset } = Object.assign({}, contextMeta(context), parsed);
+  const { lat, lon, tzOffset } = Object.assign({}, contextMeta(netlifyContext), parsed);
   const feedId = `${lat}_${lon}`;
 
   try {
@@ -50,64 +51,47 @@ async function handlePost(event, context) {
 
     await feed.addItem({
       title: 'No updates yet',
-      description: 'Feed will be updated daily at 5am local time.',
+      description: 'Feed will be updated daily at 5am local time if there are significant changes.',
       pubDate: d.toUTCString(),
       guid: d.toISOString()
     });
 
-    // await create(tzOffset, feedId);
+    await create(tzOffset, feedId);
 
-    return {
-      statusCode: 302,
-      headers: {
-        Location: `/feeds/${feedId}`,
-      },
-      body: '',
-    };
+    return new Response(null, {
+      status: 302,
+      headers: { Location: `/feeds/${feedId}` }
+    });
   } catch (err) {
     console.error('Feed creation error:', err);
-    return {
-      statusCode: 500,
-      body: 'Feed creation error'
-    };
+    return new Response('Feed creation error', { status: 500 });
   }
 }
 
 async function handleGet(feedId) {
   try {
     const feed = await new FeedXml(feedId);
-    // await update(feedId);
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/xml',
-      },
-      body: feed.xml,
-    };
-  } catch (err) {
-    return {
-      statusCode: 404,
-      body: 'Feed not found'
-    };
+    await update(feedId);
+    return new Response(feed.xml, {
+      status: 200,
+      headers: { 'Content-Type': 'application/xml' }
+    });
+  } catch {
+    return new Response('Feed not found', { status: 404 });
   }
 }
 
-export async function handler(event, context) {
-  const path = event.path; // "/.netlify/functions/feeds/40.7_-73.6"
-  const parts = path.split('/');
+export default async (req, netlifyContext) => {
+  const url = new URL(req.url);
+  const parts = url.pathname.split('/');
   const feedId = parts.at(-1);
 
-  switch (event.httpMethod) {
+  switch (req.method) {
     case 'POST':
-      return handlePost(event, context);
-
+      return handlePost(req, netlifyContext);
     case 'GET':
       return handleGet(feedId);
-
     default:
-      return {
-        statusCode: 405,
-        body: 'Method Not Allowed',
-      };
+      return new Response('Method Not Allowed', { status: 405 });
   }
-}
+};

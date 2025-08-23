@@ -1,7 +1,5 @@
-import { useStore } from './store.js';
+import { getStore } from '@netlify/blobs';
 import { DOMImplementation, XMLSerializer, DOMParser } from 'xmldom';
-
-const store = useStore();
 
 /**
  * Creates a new feed,
@@ -15,7 +13,7 @@ export class FeedXml {
         return (async () => {
             try {
                 // Get
-                const xml = await store.get(this.fileName, { type: 'text' });
+                const xml = await this.store.get(this.fileName, { type: 'text' });
                 const parser = new DOMParser();
                 this.doc = parser.parseFromString(xml, 'application/xml');
                 this.channel = this.doc.getElementsByTagName('channel')[0];
@@ -34,10 +32,12 @@ export class FeedXml {
                 this.channel = this.doc.createElement('channel');
                 rss.appendChild(this.channel);
 
+                const coords = feedId.split('_').join(', ');
+
                 const defaultChannel = {
                     title: 'deltazeus',
+                    description: `Weather feed for ${coords}`,
                     link: `https://deltazeus.com/feeds/${feedId}`,
-                    description: 'Weather feed for deltazeus',
                     lastBuildDate: new Date().toUTCString()
                 }
 
@@ -53,6 +53,10 @@ export class FeedXml {
         })();
     }
 
+    get store() {
+        return getStore('feeds');
+    }
+
     createTextElement(tag, text) {
         const el = this.doc.createElement(tag);
         el.appendChild(this.doc.createTextNode(text));
@@ -66,7 +70,7 @@ export class FeedXml {
             $item.appendChild(this.createTextElement(key, value));
         });
         this.channel.appendChild($item);
-        return store.set(this.fileName, this.xml, { contentType: 'application/xml' });
+        return this.store.set(this.fileName, this.xml, { contentType: 'application/xml' });
     }
 
     get xml() {

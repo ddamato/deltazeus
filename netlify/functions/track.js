@@ -1,12 +1,13 @@
-import { useStore } from "./store";
+import { getStore } from '@netlify/blobs';
 
 const fileName = 'active.json';
 const contentType = 'application/json';
 
-const store = useStore();
-
 export async function create(tzOffset, feedId) {
-  let active = (await store.get(fileName, { type: 'json' })) || Array.from({ length: 24 }, () => ({}));
+  const store = getStore('feeds');
+  const active = (await store.get(fileName, { type: 'json' })) || Array.from({ length: 24 }, () => ({}));
+
+  console.log({ active, tzOffset, feedId });
 
   const tzOffsetHour = Math.max(0, Math.min(23, parseInt(tzOffset, 10)));
   active[tzOffsetHour][feedId] = new Date().toISOString();
@@ -15,6 +16,7 @@ export async function create(tzOffset, feedId) {
 }
 
 export async function update(feedId) {
+  const store = getStore('feeds');
   const active = await store.get(fileName, { type: 'json' });
 
   for (const hourObj of active) {
@@ -28,15 +30,18 @@ export async function update(feedId) {
 }
 
 export async function get(tzOffsetHour) {
-  const active = await store.get(fileName, { type: 'json' })
+  const store = getStore('feeds');
+  const active = await store.get(fileName, { type: 'json' });
 
   if (tzOffsetHour == null) {
+    // If given no offset, return all { [feedId]: lastUpdated } in one object
     return active.reduce((acc, hourObj) => Object.assign(acc, hourObj), {});
   }
   return active[tzOffsetHour] || {};
 }
 
 export async function remove(feedId) {
+  const store = getStore('feeds');
   const active = await store.get(fileName, { type: 'json' })
 
   for (const hourObj of active) {
