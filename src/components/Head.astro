@@ -78,15 +78,9 @@ const schema = {
         box-sizing: border-box;
     }
 
-    :root {
-        --accent-color: #9ed4f3;
-    }
-
-    html {
-        background: linear-gradient(to bottom, #90dffe 0%, #38a3d1 100%);
-    }
-
     body {
+        --accent-color: #9ed4f3;
+        --bg-color: #38a3d1;
         margin: 0;
         padding: 16px;
         min-height: 100vh;
@@ -94,6 +88,19 @@ const schema = {
         font-family: system-ui, sans-serif;
         display: flex;
         flex-direction: column;
+        background: linear-gradient(to bottom, var(--bg-color) 0%, hsl(from var(--bg-color) h s calc(l + 30)) 100%);
+        transition: background .218s ease;
+        color: color(from var(--bg-color) xyz
+            min((0.18 - y) * 10, alpha)
+            min((0.18 - y) * 10, alpha)
+            min((0.18 - y) * 10, alpha)
+            / 1
+        );
+    }
+
+    body[data-storm] {
+        --accent-color: #9ed4f3;
+        --bg-color: #0e0c12;
     }
 
     :where(h1, h2, h3) {

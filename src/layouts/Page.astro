@@ -1,0 +1,18 @@
+---
+import Head from "@components/Head.astro";
+import Clouds from "@components/Clouds.astro";
+import Panel from "@components/Panel.astro";
+---
+
+<!doctype html>
+<html lang="en">
+    <Head />
+    <body>
+        <Clouds />
+        <Panel>
+            <slot/>
+        </Panel>
+        <script async defer src="https://scripts.withcabin.com/hello.js"
+        ></script>
+    </body>
+</html>

@@ -1,21 +1,18 @@
 ---
-import Head from "@components/Head.astro";
-import Clouds from '@components/Clouds.astro';
-import Panel from "@components/Panel.astro";
+import Page from '@layouts/Page.astro';
 import Lockup from "@components/Lockup.astro";
 import Form from "@components/Form.astro";
 ---
+<style>
+  a {
+    display: inline-block;
+    margin-block-start: 8px;
+    font-size: .8em;
+  }
+</style>
 
-
-<!doctype html>
-<html lang="en">
-  <Head/>
-  <body>
-	  <Clouds/>
-    <Panel>
-      <Lockup/>
-      <Form/>
-    </Panel>
-    <script async defer src="https://scripts.withcabin.com/hello.js"></script>
-  </body>
-</html>
+<Page>
+  <Lockup/>
+  <Form/>
+  <a href="/about">Learn about deltazeus</a>
+</Page>
