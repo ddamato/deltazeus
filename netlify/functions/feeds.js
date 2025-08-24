@@ -70,7 +70,8 @@ async function handleGet(feedId) {
       status: 200,
       headers: { 'Content-Type': 'application/xml' }
     });
-  } catch {
+  } catch (err) {
+    console.error(`Request for unknown feed: ${feedId}`, err);
     return new Response('Feed not found', { status: 404 });
   }
 }
