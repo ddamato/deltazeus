@@ -11,10 +11,8 @@
   "dependencies": {
     "@netlify/blobs": "^10.0.8",
     "astro": "^5.12.8",
-    "lambda-multipart-parser": "^1.0.1",
     "slug": "^11.0.0",
     "three": "^0.179.1",
-    "xml2js": "^0.6.2",
     "xmldom": "^0.6.0"
   }
 }

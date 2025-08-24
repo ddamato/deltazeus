@@ -50,6 +50,7 @@ async function handlePost(req, netlifyContext) {
 
       const tzOffsetHours = Math.round(tzOffset / 3600);
       await create(tzOffsetHours, feedId);
+      await update(feedId).catch(() => console.error('Still waiting for update'));
     }
 
     return new Response(null, {
