@@ -46,12 +46,17 @@ const { link, label } = mapping[path] || {};
 </footer>
 
 <script>
+    const STORAGE = 'storm';
+    const ATTR = 'data-storm';
     const $toggle = document.getElementById('toggle') as HTMLButtonElement;
     $toggle.addEventListener('click', () => {
-        if (document.body.hasAttribute('data-storm')) {
-            document.body.removeAttribute('data-storm')
-        } else {
-            document.body.setAttribute('data-storm', '');
-        }
+        window.localStorage.setItem(STORAGE, String(window.localStorage.getItem(STORAGE) !== 'true'))
+        updateUI();
     })
+
+    function updateUI() {
+        document.body.setAttribute(ATTR, String(window.localStorage.getItem(STORAGE)))
+    }
+
+    updateUI();
 </script>

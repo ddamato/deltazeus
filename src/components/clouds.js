@@ -140,7 +140,7 @@ function renderCloudSphere() {
   function animate() {
     requestAnimationFrame(animate);
 
-    const stormActive = document.body.hasAttribute('data-storm');
+    const stormActive = document.body.getAttribute('data-storm') === 'true';
 
     if (!prefersReducedMotion) {
       const xAxis = new THREE.Vector3(1, 0, 0);

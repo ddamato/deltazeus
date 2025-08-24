@@ -89,27 +89,32 @@ const schema = {
         display: flex;
         flex-direction: column;
         background: linear-gradient(to bottom, var(--bg-color) 0%, hsl(from var(--bg-color) h s calc(l + 30)) 100%);
-        transition: background .218s ease;
+        transition: opacity .218s ease;
         color: color(from var(--bg-color) xyz
             min((0.18 - y) * 10, alpha)
             min((0.18 - y) * 10, alpha)
             min((0.18 - y) * 10, alpha)
             / 1
         );
+        opacity: 1;
     }
 
-    body[data-storm] {
+    body:not([data-storm]) {
+        opacity: 0;
+    }
+
+    body[data-storm="true"] {
         --accent-color: #483549;
         --bg-color: #0e0c12;
     }
 
-    body[data-storm] #cloudy,
-    body:not([data-storm]) #stormy {
+    body[data-storm="true"] #cloudy,
+    body:not([data-storm="true"]) #stormy {
         display: flex;
     }
 
-    body[data-storm] #stormy,
-    body:not([data-storm]) #cloudy {
+    body[data-storm="true"] #stormy,
+    body:not([data-storm="true"]) #cloudy {
         display: none;
     }
 
