@@ -2,11 +2,17 @@
 layout: '@layouts/Page.astro'
 ---
 
-## About deltazeus
+## What is deltazeus?
 
-Unlike other weather app projects, deltazeus is different because it changes the way you are meant to review the weather.
+Most of us check to prepare for the day. If the weather never changed, we'd probably never check. But it changes nearly everyday! How do you keep up? That's where **deltazeus** comes in handy.
 
-Traditional weather apps require you to actively go to your weather app, look at the current data, and try to make a determination about what each data point means. Instead, deltazeus will send a notification to your preferred syndication (ie., email, RSS, push) _only_ when the change in weather is significant.
+Traditional weather apps require you to actively go to your weather app, look at the current data, and try to make a determination about what each data point means. Instead, **deltazeus** will provide a link to an RSS feed for weather updates in your area. The feed will only update if the changes are significant.
+
+## What is RSS?
+
+The acronym Really Simple Syndication describes a file format used for providing users with frequently updated content. Content distributors syndicate an RSS feed, thereby allowing users to subscribe a channel for content. For example, most blogs are powered by RSS behind the scenes. You could subscribe to updates via their RSS feed rather than visiting the site and checking for updates.
+
+There are different services that help subscribe to RSS feeds. Personally, I like to use [feedly](https://feedly.com) for news but for **deltazeus**, I'll recommend hooking up your RSS feed to a service like [Zapier](https://zapier.com/) as it will allow for email or push notifications for each new feed item.
 
 ## History
 

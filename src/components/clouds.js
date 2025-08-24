@@ -153,7 +153,7 @@ function renderCloudSphere() {
 
         if (stormActive) {
           // Reduce flash frequency by lowering the probability
-          if (plane.userData.flashTime <= 0 && Math.random() < 0.0001) {
+          if (plane.userData.flashTime <= 0 && Math.random() < 0.0003) {
             plane.userData.flashTarget = plane.userData.flashPeak;
             plane.userData.flashTime = Math.floor(Math.random() * 5 + 5);
           }

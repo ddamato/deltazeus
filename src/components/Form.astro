@@ -176,6 +176,11 @@ import Rss from "@components/rss.svg";
         pointer-events: none;
     }
 
+    #results :global(img) {
+        border-radius: 4px;
+        mix-blend-mode: multiply;
+    }
+
     form[aria-busy="true"] #field {
         background-image: repeating-linear-gradient(
             45deg,
@@ -325,6 +330,17 @@ import Rss from "@components/rss.svg";
         }
     }
 
+    function constructTile(lat: number, lon: number) {
+        const zoom = 14;
+        const n = 2 ** zoom;
+        const xtile = Math.floor((lon + 180.0) / 360.0 * n)
+        const ytile = Math.floor(
+        (1.0 - Math.log(Math.tan(lat * Math.PI / 180.0) +
+                        1 / Math.cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * n
+        );
+        return `https://tile.openstreetmap.org/${zoom}/${xtile}/${ytile}.png`;
+    }
+
     function renderOption(result: any, index: number): string {
         const id = slugify(result.label);
         const checked = index === 0 ? ' checked' : "";
@@ -334,6 +350,7 @@ import Rss from "@components/rss.svg";
                     <input type="radio" name="result" id="${id}" ${checked}/>
                     <small>${result.lat}, ${result.lon}</small>
                 </div>
+                <img src="${constructTile(result.lat, result.lon)}"/>
                 <label for="${id}">${result.label}</label>
             </li>
         `;
