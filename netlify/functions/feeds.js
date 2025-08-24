@@ -73,7 +73,7 @@ async function handleGet(feedId) {
     });
   } catch (err) {
     console.error(`Request for unknown feed: ${feedId}`, err);
-    return new Response('Feed not found', { status: 404 });
+    return new Response('Feed not found. If it was just created, try refreshing this page', { status: 404 });
   }
 }
 
