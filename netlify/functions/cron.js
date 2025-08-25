@@ -83,7 +83,7 @@ export default async function handler() {
       const description = createUpdate(yesterday, today);
 
       if (description) {
-        const feed = new FeedXml(feedId);
+        const feed = await new FeedXml(feedId);
         const d = new Date();
         await feed.addItem({
           title: `Significant Weather Update for ${date}`,
@@ -101,5 +101,5 @@ export default async function handler() {
 }
 
 export const config = {
-  // schedule: "@hourly"
+  schedule: "@hourly"
 };

@@ -71,7 +71,13 @@ export class FeedXml {
         Object.entries(item).forEach(([key, value]) => {
             $item.appendChild(this.createTextElement(key, value));
         });
-        this.channel.appendChild($item);
+        const $items = this.channel.getElementsByTagName('item');
+        // Always insert as the first item in the list
+        if (!$items.length) {
+            this.channel.appendChild($item);
+        } else {
+            this.channel.insertBefore($item, $items[0])
+        }
         return this.store.set(this.fileName, this.xml, { contentType: 'application/xml' });
     }
 

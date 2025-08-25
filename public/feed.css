@@ -72,6 +72,10 @@ item > pubDate:before {
     content: "Posted: "
 }
 
+item > description {
+    white-space: pre-line;
+}
+
 guid {
     display: none;
 }

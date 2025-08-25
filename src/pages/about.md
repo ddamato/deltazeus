@@ -21,3 +21,5 @@ This project first debuted in 2015 as a way for me to learn how to create a full
 In 2020, the stack was updated to use serverless.com through an AWS configuration. This allowed the majority of the backend to be written in JavaScript.
 
 In 2025, the stack was updated again to rely on Netlify's infrastructure instead of getting lost within AWS configurations and cryptic system warnings.
+
+Created by [Donnie D'Amato](https://donnie.damato.design)
