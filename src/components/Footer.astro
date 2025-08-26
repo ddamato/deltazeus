@@ -1,6 +1,12 @@
 ---
 import Cloudy from '@components/cloudy.svg';
 import Stormy from '@components/stormy.svg';
+
+const normalize = (url: string) => {
+  if (url === "/") return url;
+  return url.replace(/\/$/, "");
+};
+
 const mapping = {
     '/': {
         label: 'Learn about deltazeus',
@@ -11,7 +17,7 @@ const mapping = {
         link: '/'
     }
 } as Record<string, { label: string, link: string }>
-const path = String(Astro.url.pathname);
+const path = normalize(Astro.url.pathname);
 const { link, label } = mapping[path] || {};
 ---
 
