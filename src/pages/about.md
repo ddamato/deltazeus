@@ -6,7 +6,7 @@ layout: '@layouts/Page.astro'
 
 Most of us check to prepare for the day. If the weather never changed, we'd probably never check. But it changes nearly everyday! How do you keep up? That's where **deltazeus** comes in handy.
 
-Traditional weather apps require you to actively go to your weather app, look at the current data, and try to make a determination about what each data point means. Instead, **deltazeus** will provide a link to an RSS feed for weather updates in your area. The feed will only update if the changes are significant.
+**deltazeus** makes weather effortless. Instead of checking forecasts every day, it only notifies you when today's weather feels significantly different from yesterday at your location. If nothing changes, you hear nothing. And with RSS, you choose how to get alerts—through text, email, or even your smart home.
 
 ## What is RSS?
 
