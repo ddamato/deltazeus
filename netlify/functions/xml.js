@@ -37,7 +37,7 @@ export class FeedXml {
                 const coords = feedId.split('_').join(', ');
 
                 const defaultChannel = {
-                    title: 'deltazeus',
+                    title: `deltazeus (${coords})`,
                     description: `Weather feed for ${coords}`,
                     link: `https://deltazeus.com/feeds/${feedId}`,
                     lastBuildDate: new Date().toUTCString()
