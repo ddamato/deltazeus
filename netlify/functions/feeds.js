@@ -40,7 +40,7 @@ async function poll(endpoint) {
       const res = await fetch(url);
       if (res.ok) return;
     } catch (err) {
-      console.warn(`Attempt ${attempt + 1} failed for ${url}`);
+      console.warn(`Attempt ${attempt + 1} failed for ${endpoint}`);
     }
 
     if (attempt < retries - 1) {
@@ -48,7 +48,7 @@ async function poll(endpoint) {
     }
   }
 
-  throw new Error(`${url} not available after ${retries} attempts`);
+  throw new Error(`${endpoint} not available after ${retries} attempts`);
 }
 
 async function handlePost(req, netlifyContext) {
