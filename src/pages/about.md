@@ -16,7 +16,7 @@ There are different services that help subscribe to RSS feeds. Personally, I lik
 
 ## Location Precision
 
-The latitude and longitude for each feed is saved at a level of precision that represents an area of roughly 111km/70mi, or about the size of the country of Andorra located between Spain and France in Europe.
+The latitude and longitude for each feed is saved at a level of precision that represents an area of roughly 111km/70mi, or about the size of the country of Switzerland located in Europe. Weather isn't often so different within a region of this size. This also reduces the calls needed to fetch weather for shared locations.
 
 ## History
 
