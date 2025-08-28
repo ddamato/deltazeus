@@ -4,7 +4,6 @@ import path from 'node:path';
 import { FeedXml } from './xml.js';
 import { create, update } from './track.js';
 
-
 function contextMeta(netlifyContext) {
   if (!netlifyContext?.geo) return {};
   const { latitude, longitude, timezone } = netlifyContext.geo;
@@ -25,6 +24,7 @@ async function handlePost(req, netlifyContext) {
   const feedId = `${lat}_${lon}`;
 
   try {
+    console.log(`Creating feed: ${feedId} at ${tzName}`);
     const feed = await new FeedXml(feedId, tzName);
 
     if (feed.isNew) {
@@ -38,7 +38,6 @@ async function handlePost(req, netlifyContext) {
       });
 
       await create(tzName, feedId);
-      await update(feedId);
 
       // Write feed XML to /tmp to guarantee availability
       await fs.promises.writeFile(getTmpPath(feedId), feed.xml, 'utf-8');
@@ -58,12 +57,18 @@ async function handlePost(req, netlifyContext) {
 
 async function handleGet(feedId) {
   // Look in tmp directory first
-  return fs.promises.readFile(getTmpPath(feedId), 'utf-8').catch((err) => {
+  return fs.promises.readFile(getTmpPath(feedId), 'utf-8').catch(async (notmp) => {
     // If it doesn't exist there
     console.log(`${feedId} does not exist in tmp`);
-    if (err.code !== 'ENOENT') throw err;
+    if (notmp.code !== 'ENOENT') throw notmp;
+
     // Try getting from blobs
-    return new FeedXml(feedId).then((feed) => update(feedId).then(() => feed.xml));
+    try {
+      const feed = await new FeedXml(feedId);
+      await update(feedId);
+      return feed.xml;
+    } catch (err) { throw err }
+
   }).then((xml) => {
     return new Response(xml, {
       status: 200,

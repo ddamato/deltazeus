@@ -13,7 +13,7 @@ function getLocalHour(tzName) {
     );
 }
 
-export async function create(tzName, feedId, fileName, contentType) {
+export async function create(tzName, feedId) {
   const store = getStore('feeds');
   const active = (await store.get(fileName, { type: 'json' })) || {};
 

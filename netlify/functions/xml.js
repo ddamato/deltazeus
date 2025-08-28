@@ -47,7 +47,7 @@ export class FeedXml {
 
                 const defaultChannel = {
                     title: `deltazeus (${locationDMS(feedId)})`,
-                    description: `Weather feed for ${tzName}`,
+                    description: `Weather feed updated for ${tzName}`,
                     link: `https://deltazeus.com/feeds/${feedId}`,
                     lastBuildDate: new Date().toUTCString()
                 }
