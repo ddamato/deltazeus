@@ -4,24 +4,6 @@ import path from 'node:path';
 import { FeedXml } from './xml.js';
 import { create, update } from './track.js';
 
-function timeZoneOffset(tz) {
-  const now = new Date();
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: tz,
-    timeZoneName: "shortOffset"
-  });
-
-  const parts = formatter.formatToParts(now);
-  const offsetPart = parts.find(p => p.type === "timeZoneName");
-
-  const match = offsetPart?.value.match(/GMT([+-]\d{1,2})(?::(\d{2}))?/);
-  if (!match) return null;
-
-  const hours = parseInt(match[1], 10);
-  const minutes = parseInt(match[2] || "0", 10);
-
-  return hours * 100 + Math.sign(hours) * minutes;
-}
 
 function contextMeta(netlifyContext) {
   if (!netlifyContext?.geo) return {};
@@ -29,7 +11,7 @@ function contextMeta(netlifyContext) {
   return {
     lat: Number(latitude.toFixed(0)),
     lon: Number(longitude.toFixed(0)),
-    tzOffset: timeZoneOffset(timezone),
+    tzName: timezone,
   };
 }
 
@@ -39,11 +21,11 @@ function getTmpPath(feedId) {
 
 async function handlePost(req, netlifyContext) {
   const parsed = Object.fromEntries(await req.formData());
-  const { lat, lon, tzOffset } = Object.assign({}, contextMeta(netlifyContext), parsed);
+  const { lat, lon, tzName } = Object.assign({}, contextMeta(netlifyContext), parsed);
   const feedId = `${lat}_${lon}`;
 
   try {
-    const feed = await new FeedXml(feedId, true);
+    const feed = await new FeedXml(feedId, tzName);
 
     if (feed.isNew) {
       const d = new Date();
@@ -55,8 +37,7 @@ async function handlePost(req, netlifyContext) {
         guid: d.toISOString()
       });
 
-      const tzOffsetHours = Math.round(tzOffset / 3600);
-      await create(tzOffsetHours, feedId);
+      await create(tzName, feedId);
       await update(feedId);
 
       // Write feed XML to /tmp to guarantee availability

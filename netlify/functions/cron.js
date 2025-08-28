@@ -72,11 +72,10 @@ function createUpdate(yesterday, today) {
 }
 
 export default async function handler() {
-  const utcHour = new Date().getUTCHours();
   const store = getStore('feeds');
-  const feeds = await get(5 - utcHour); // feeds representing 5am local time
+  const feeds = await get(5); // feeds representing 5am local time
 
-  console.log(`Target feeds for UTC ${utcHour}`, JSON.stringify(feeds));
+  console.log(`Target feeds to update:`, JSON.stringify(feeds));
 
   for (const [feedId, lastUpdated] of Object.entries(feeds)) {
     // If feed has not been updated in 5 days, remove

@@ -3,11 +3,23 @@ import { getStore } from '@netlify/blobs';
 const fileName = 'active.json';
 const contentType = 'application/json';
 
-export async function create(tzOffsetHour, feedId) {
-  const store = getStore('feeds');
-  const active = (await store.get(fileName, { type: 'json' })) || Array.from({ length: 24 }, () => ({}));
+function getLocalHour(tzName) {
+    return Number(
+        new Intl.DateTimeFormat("en-US", {
+            hour: "numeric",
+            hour12: false,
+            timeZone: tzName,
+        }).format(new Date())
+    );
+}
 
-  active.at(tzOffsetHour)[feedId] = new Date().toISOString();
+export async function create(tzName, feedId) {
+  const store = getStore('feeds');
+  const active = await store.get(fileName, { type: 'json' }) || {};
+
+  let existing = active[tzName];
+  if (!existing) { active[tzName] = {}; }
+  Object.assign(active[tzName], {[feedId]: new Date().toISOString()});
 
   await store.set(fileName, JSON.stringify(active), { contentType });
 }
@@ -16,35 +28,31 @@ export async function update(feedId) {
   const store = getStore('feeds');
   const active = await store.get(fileName, { type: 'json' });
 
-  for (const hourObj of active) {
-    if (hourObj[feedId]) {
-      hourObj[feedId] = new Date().toISOString();
-      break;
+  for (const tzName in active) {
+    if (active[tzName].feedId === feedId) {
+      active[tzName].lastRequested = new Date().toISOString();
     }
   }
 
   await store.set(fileName, JSON.stringify(active), { contentType });
 }
 
-export async function get(tzOffsetHour) {
+export async function get(atHour) {
   const store = getStore('feeds');
   const active = await store.get(fileName, { type: 'json' });
 
-  if (tzOffsetHour == null) {
-    // If given no offset, return all { [feedId]: lastUpdated } in one object
-    return active.reduce((acc, hourObj) => Object.assign(acc, hourObj), {});
-  }
-  return active.at(tzOffsetHour) || {};
+  return Object.entries(active).reduce((acc, [tzName, entry]) => {
+    return typeof atHour !== 'number' || getLocalHour(tzName) === atHour ? Object.assign(acc, entry) : acc;
+  }, {});
 }
 
 export async function remove(feedId) {
   const store = getStore('feeds');
   const active = await store.get(fileName, { type: 'json' })
 
-  for (const hourObj of active) {
-    if (hourObj[feedId]) {
-      delete hourObj[feedId];
-      break;
+  for (const tzName in active) {
+    if (active[tzName].feedId === feedId) {
+      delete active[tzName];
     }
   }
 

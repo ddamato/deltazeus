@@ -7,7 +7,7 @@ import { DOMImplementation, XMLSerializer, DOMParser } from 'xmldom';
  */
 export class FeedXml {
 
-    constructor(feedId, create) {
+    constructor(feedId, tzName) {
         this.fileName = `${feedId}.xml`;
 
         return (async () => {
@@ -21,9 +21,9 @@ export class FeedXml {
 
             } catch (err) {
 
-                if (!create) throw err;
+                if (!tzName) throw err;
 
-                this.isNew = create;
+                this.isNew = Boolean(tzName);
 
                 // Prepare for post
                 const impl = new DOMImplementation();
@@ -38,7 +38,7 @@ export class FeedXml {
 
                 const defaultChannel = {
                     title: `deltazeus (${coords})`,
-                    description: `Weather feed for ${coords}`,
+                    description: `Weather feed for ${tzName}`,
                     link: `https://deltazeus.com/feeds/${feedId}`,
                     lastBuildDate: new Date().toUTCString()
                 }

@@ -49,10 +49,7 @@ export default async function (req) {
         label: result.formatted,
         lat: Number(result.geometry.lat.toFixed(0)),
         lon: Number(result.geometry.lng.toFixed(0)),
-        tzName: tz.name || null,
-        tzOffset: tz.offset_sec ?? null,
-        tzOffsetString: tz.offset_string || null,
-        tzAbbr: tz.short_name || null,
+        tzName: tz.name || null
       };
     });
 
