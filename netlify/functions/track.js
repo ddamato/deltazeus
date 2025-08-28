@@ -13,13 +13,13 @@ function getLocalHour(tzName) {
     );
 }
 
-export async function create(tzName, feedId) {
+export async function create(tzName, feedId, fileName, contentType) {
   const store = getStore('feeds');
-  const active = await store.get(fileName, { type: 'json' }) || {};
+  const active = (await store.get(fileName, { type: 'json' })) || {};
 
-  let existing = active[tzName];
-  if (!existing) { active[tzName] = {}; }
-  Object.assign(active[tzName], {[feedId]: new Date().toISOString()});
+  // Ensure tzName object exists, create timestamp
+  if (!active[tzName]) active[tzName] = {};
+  active[tzName][feedId] = new Date().toISOString();
 
   await store.set(fileName, JSON.stringify(active), { contentType });
 }
