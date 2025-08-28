@@ -27,8 +27,8 @@ function contextMeta(netlifyContext) {
   if (!netlifyContext?.geo) return {};
   const { latitude, longitude, timezone } = netlifyContext.geo;
   return {
-    lat: Number(latitude.toFixed(1)),
-    lon: Number(longitude.toFixed(1)),
+    lat: Number(latitude.toFixed(0)),
+    lon: Number(longitude.toFixed(0)),
     tzOffset: timeZoneOffset(timezone),
   };
 }

@@ -47,8 +47,8 @@ export default async function (req) {
       const tz = result.annotations?.timezone || {};
       return {
         label: result.formatted,
-        lat: Number(result.geometry.lat.toFixed(1)),
-        lon: Number(result.geometry.lng.toFixed(1)),
+        lat: Number(result.geometry.lat.toFixed(0)),
+        lon: Number(result.geometry.lng.toFixed(0)),
         tzName: tz.name || null,
         tzOffset: tz.offset_sec ?? null,
         tzOffsetString: tz.offset_string || null,
