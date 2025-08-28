@@ -47,8 +47,6 @@ async function poll(endpoint) {
       await new Promise((r) => setTimeout(r, delay));
     }
   }
-
-  throw new Error(`${endpoint} not available after ${retries} attempts`);
 }
 
 async function handlePost(req, netlifyContext) {
