@@ -1,6 +1,17 @@
 import { getStore } from '@netlify/blobs';
 import { DOMImplementation, XMLSerializer, DOMParser } from 'xmldom';
 
+function locationDMS(latLonStr) {
+  const [latStr, lonStr] = latLonStr.split('_');
+  const lat = parseInt(latStr, 10);
+  const lon = parseInt(lonStr, 10);
+
+  const latDir = lat >= 0 ? 'N' : 'S';
+  const lonDir = lon >= 0 ? 'E' : 'W';
+
+  return `${Math.abs(lat)}° ${latDir}, ${Math.abs(lon)}° ${lonDir}`;
+}
+
 /**
  * Creates a new feed,
  * requires an await to retrieve the feed from the store.
@@ -34,10 +45,8 @@ export class FeedXml {
                 this.channel = this.doc.createElement('channel');
                 rss.appendChild(this.channel);
 
-                const coords = feedId.split('_').join(', ');
-
                 const defaultChannel = {
-                    title: `deltazeus (${coords})`,
+                    title: `deltazeus (${locationDMS(feedId)})`,
                     description: `Weather feed for ${tzName}`,
                     link: `https://deltazeus.com/feeds/${feedId}`,
                     lastBuildDate: new Date().toUTCString()
