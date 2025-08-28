@@ -44,6 +44,8 @@ async function weatherDiffs(feedId) {
     throw new Error('Not enough daily data returned');
   }
 
+  console.log(`Weather data received for ${feedId}`);
+
   return Object.keys(data.daily).reduce(
     (acc, key) => {
       if (key === 'time') return acc;
@@ -57,7 +59,7 @@ async function weatherDiffs(feedId) {
 
 function createUpdate(yesterday, today) {
   return Object.keys(weatherMetrics)
-    .map(key => {
+    .map((key) => {
       const diff = isSignificant(key, yesterday, today);
       if (!isNaN(diff)) return formatChange(diff, weatherMetrics[key]);
     })
@@ -70,17 +72,23 @@ export default async function handler() {
   const store = getStore('feeds');
   const feeds = await get(5 - utcHour); // feeds representing 5am local time
 
+  console.log(`Target feeds for UTC ${utcHour}`, JSON.stringify(feeds));
+
   for (const [feedId, lastUpdated] of Object.entries(feeds)) {
     // If feed has not been updated in 5 days, remove
     if (isExpired(lastUpdated, 5)) {
+      console.log(`Deleting ${feedId} due to inactivity...`);
       await store.delete(`${feedId}.xml`);
       await remove(feedId);
       continue;
     }
 
     try {
+      console.log(`Retrieving weather for ${feedId}`);
       const { yesterday, today, date } = await weatherDiffs(feedId);
+      console.log(`Weather retrieved for ${feedId}`);
       const description = createUpdate(yesterday, today);
+      console.log(`Updates created for ${feedId}:`, description);
 
       if (description) {
         const feed = await new FeedXml(feedId);

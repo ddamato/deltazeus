@@ -30,6 +30,27 @@ function contextMeta(netlifyContext) {
   };
 }
 
+async function poll(endpoint) {
+  const retries = 5;
+  const delay = 200;
+
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const url = new URL(endpoint, process.env.URL);
+      const res = await fetch(url);
+      if (res.ok) return;
+    } catch (err) {
+      console.warn(`Attempt ${attempt + 1} failed for ${url}`);
+    }
+
+    if (attempt < retries - 1) {
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+
+  throw new Error(`${url} not available after ${retries} attempts`);
+}
+
 async function handlePost(req, netlifyContext) {
   const parsed = Object.fromEntries(await req.formData());
   const { lat, lon, tzOffset } = Object.assign({}, contextMeta(netlifyContext), parsed);
@@ -50,12 +71,15 @@ async function handlePost(req, netlifyContext) {
 
       const tzOffsetHours = Math.round(tzOffset / 3600);
       await create(tzOffsetHours, feedId);
-      await update(feedId).catch(() => console.error('Still waiting for update'));
+      await update(feedId);
     }
+
+    const endpoint = `/feeds/${feedId}`;
+    await poll(endpoint);
 
     return new Response(null, {
       status: 302,
-      headers: { Location: `/feeds/${feedId}` }
+      headers: { Location: endpoint }
     });
   } catch (err) {
     console.error('Feed creation error:', err);
