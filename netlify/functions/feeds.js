@@ -32,7 +32,7 @@ function contextMeta(netlifyContext) {
 
 async function poll(endpoint) {
   const retries = 5;
-  const delay = 200;
+  const delay = 1000;
 
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
