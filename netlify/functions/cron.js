@@ -9,6 +9,12 @@ function isSignificant(key, yesterday, today) {
   const metric = weatherMetrics[key];
   if (!metric) return NaN;
   const diff = today[key] - yesterday[key];
+  const log = {
+    today: today[key],
+    yesterday: yesterday[key],
+    diff: today[key] - yesterday[key]
+  };
+  console.log(`Data for ${key}: ${JSON.stringify(log)}`);
   return Math.abs(diff) >= metric.threshold ? diff : NaN;
 }
 
@@ -43,8 +49,6 @@ async function weatherDiffs(feedId) {
   if (!data.daily || data.daily.time.length < 2) {
     throw new Error('Not enough daily data returned');
   }
-
-  console.log(`Weather data received for ${feedId}`);
 
   return Object.keys(data.daily).reduce(
     (acc, key) => {
