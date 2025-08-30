@@ -4,6 +4,12 @@ import path from 'node:path';
 import { FeedXml } from './xml.js';
 import { create, update } from './track.js';
 
+/**
+ * Creates a payload from the Netlify Context as a backup.
+ * 
+ * @param {Object} netlifyContext - Context from Netlify handler
+ * @returns {Object} - A similar payload in case it is malformed 
+ */
 function contextMeta(netlifyContext) {
   if (!netlifyContext?.geo) return {};
   const { latitude, longitude, timezone } = netlifyContext.geo;
@@ -14,10 +20,23 @@ function contextMeta(netlifyContext) {
   };
 }
 
+/**
+ * Gets the temporary filepath for an XML file.
+ * 
+ * @param {String} feedId - lat_lon identifier
+ * @returns {String} - Filepath for temp file
+ */
 function getTmpPath(feedId) {
   return path.join(os.tmpdir(), `${feedId}.xml`);
 }
 
+/**
+ * Creates a new feed.
+ * 
+ * @param {Request} req - HTTP Request
+ * @param {Object} netlifyContext - Netlify Context
+ * @returns {Response} - HTTP Response, redirect to GET
+ */
 async function handlePost(req, netlifyContext) {
   const parsed = Object.fromEntries(await req.formData());
   const { lat, lon, tzName } = Object.assign({}, contextMeta(netlifyContext), parsed);
@@ -55,6 +74,12 @@ async function handlePost(req, netlifyContext) {
   }
 }
 
+/**
+ * Gets the feed XML.
+ * 
+ * @param {String} feedId - lat_lon identifier
+ * @returns {Response} - The feed XML
+ */
 async function handleGet(feedId) {
   // Look in tmp directory first
   return fs.promises.readFile(getTmpPath(feedId), 'utf-8').catch(async (notmp) => {

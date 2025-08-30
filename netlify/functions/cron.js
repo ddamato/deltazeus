@@ -3,8 +3,24 @@ import { get, remove } from './track.js';
 import { FeedXml } from './xml.js';
 import { weatherMetrics } from './weather.js';
 
+/**
+ * Determines if the given date is outside the threshold.
+ * 
+ * @param {String} iso - ISO8601 Date
+ * @param {Number} days - Threshold of days to determine expiry
+ * @returns {Boolean} - True if expired
+ */
 const isExpired = (iso, days) => Date.now() - new Date(iso).getTime() > days * 864e5;
 
+/**
+ * Determines the difference between yesterday and today for a metric.
+ * Returns NaN if not significant.
+ * 
+ * @param {String} key - Weather metric
+ * @param {Object} yesterday - Collection of weather data for yesterday
+ * @param {Object} today - Collection of weather data for today
+ * @returns {Number} - The diff between yesterday and today if significant, NaN if not
+ */
 function isSignificant(key, yesterday, today) {
   const metric = weatherMetrics[key];
   if (!metric) return NaN;
@@ -18,6 +34,13 @@ function isSignificant(key, yesterday, today) {
   return Math.abs(diff) >= metric.threshold ? diff : NaN;
 }
 
+/**
+ * Creates a sentence describing the significant change.
+ * 
+ * @param {Number} diff - The amount of difference for this metric
+ * @param {String} metric - A weather metric
+ * @returns {String} - A human readable message about the change in weather
+ */
 function formatChange(diff, metric) {
   const trendEmoji = diff > 0 ? '📈' : '📉';
   const arrow = diff > 0 ? '↑' : '↓';
@@ -25,6 +48,12 @@ function formatChange(diff, metric) {
   return `${metric.emoji} ${trendEmoji} ${metric.label} ${arrow}: ${Math.abs(diffMetric)}${metric.unitMetric} / ${Math.abs(diffImperial)}${metric.unitImperial}`;
 }
 
+/**
+ * Gets the weather for the given lat, lon.
+ * 
+ * @param {String} feedId - lat_lon identifier
+ * @returns {Object} - { date, today, yesterday }
+ */
 async function weatherDiffs(feedId) {
   const now = new Date();
   const [end_date] = now.toISOString().split('T');
@@ -61,6 +90,13 @@ async function weatherDiffs(feedId) {
   );
 }
 
+/**
+ * Creates the messaging for the weather feed.
+ * 
+ * @param {Object} yesterday - A collection of weather data for yesterday
+ * @param {Object} today - A collection of weather data for today
+ * @returns {String} - A collection of sentences describing significant changes
+ */
 function createUpdate(yesterday, today) {
   return Object.keys(weatherMetrics)
     .map((key) => {

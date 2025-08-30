@@ -1,5 +1,6 @@
 import { getStore } from '@netlify/blobs';
 
+// temp function while debugging
 export default async function () {
     const store = getStore('feeds');
     

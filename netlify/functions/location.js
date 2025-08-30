@@ -3,7 +3,7 @@
  * returns lat, lon, tzOffset as array of results
  *
  * @param {Request} req - Fetch API Request
- * @returns {Response}
+ * @returns {Response} - A collection of lat, lon, tzName, and label
  */
 export default async function (req) {
   const urlObj = new URL(req.url);
