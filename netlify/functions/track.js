@@ -79,7 +79,7 @@ export async function get(atHour) {
 
   // Return object of { [feedId]: lastUpdated }
   return Object.entries(active).reduce((acc, [tzName, entry]) => {
-    return typeof include(tzName) ? Object.assign(acc, entry) : acc;
+    return include(tzName) ? Object.assign(acc, entry) : acc;
   }, {});
 }
 
