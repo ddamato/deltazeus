@@ -35,6 +35,17 @@ function isSignificant(key, yesterday, today) {
 }
 
 /**
+ * Normalizes value and units.
+ * 
+ * @param {Number} value - Value to write 
+ * @param {String} unit - Units of value
+ * @returns {String} - Stringified result
+ */
+function normalize(value, unit) {
+  return `${Math.abs(value).toFixed(0)}${unit}`;
+}
+
+/**
  * Creates a sentence describing the significant change.
  * 
  * @param {Number} diff - The amount of difference for this metric
@@ -45,7 +56,7 @@ function formatChange(diff, metric) {
   const trendEmoji = diff > 0 ? '📈' : '📉';
   const arrow = diff > 0 ? '↑' : '↓';
   const [diffMetric, diffImperial] = metric.convert(diff);
-  return `${metric.emoji} ${trendEmoji} ${metric.label} ${arrow}: ${Math.abs(diffMetric)}${metric.unitMetric} / ${Math.abs(diffImperial)}${metric.unitImperial}`;
+  return `${metric.emoji} ${trendEmoji} ${metric.label} ${arrow}: ${normalize(diffMetric, metric.unitMetric)} / ${normalize(diffImperial, metric.unitImperial)}`;
 }
 
 /**
