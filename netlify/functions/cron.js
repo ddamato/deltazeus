@@ -56,7 +56,7 @@ function formatChange(diff, metric) {
   const trendEmoji = diff > 0 ? '📈' : '📉';
   const arrow = diff > 0 ? '↑' : '↓';
   const [diffMetric, diffImperial] = metric.convert(diff);
-  return `${metric.emoji} ${trendEmoji} ${metric.label} ${arrow}: ${normalize(diffMetric, metric.unitMetric)} / ${normalize(diffImperial, metric.unitImperial)}`;
+  return `${metric.emoji} ${trendEmoji} ${metric.label}: ${arrow} ${normalize(diffMetric, metric.unitMetric)} / ${arrow} ${normalize(diffImperial, metric.unitImperial)}`;
 }
 
 /**
