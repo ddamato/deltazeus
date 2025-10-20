@@ -6,7 +6,7 @@ export const weatherMetrics = {
     unitMetric: '°C',
     unitImperial: '°F',
     threshold: 5,
-    convert: diffC => [diffC, (diffC * 1.8).toFixed(1)],
+    convert: diffC => [diffC, (diffC * 1.8)],
   },
   temperature_2m_min: {
     label: 'Min temperature',
@@ -14,7 +14,7 @@ export const weatherMetrics = {
     unitMetric: '°C',
     unitImperial: '°F',
     threshold: 5,
-    convert: diffC => [diffC, (diffC * 1.8).toFixed(1)],
+    convert: diffC => [diffC, (diffC * 1.8)],
   },
   windspeed_10m_max: {
     label: 'Wind speed',
@@ -22,7 +22,7 @@ export const weatherMetrics = {
     unitMetric: 'km/h',
     unitImperial: 'mph',
     threshold: 15,
-    convert: diffKph => [diffKph, (diffKph / 1.609).toFixed(1)],
+    convert: diffKph => [diffKph, (diffKph / 1.609)],
   },
   precipitation_sum: {
     label: 'Precipitation',
@@ -30,6 +30,6 @@ export const weatherMetrics = {
     unitMetric: 'mm',
     unitImperial: 'in',
     threshold: 10,
-    convert: diffMm => [diffMm, (diffMm / 25.4).toFixed(2)],
+    convert: diffMm => [diffMm, (diffMm / 25.4)],
   },
 };

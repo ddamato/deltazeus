@@ -42,7 +42,7 @@ function isSignificant(key, yesterday, today) {
  * @returns {String} - Stringified result
  */
 function normalize(value, unit) {
-  return `${Math.abs(value).toFixed(0)}${unit}`;
+  return `${Math.abs(value).toFixed(1)}${unit}`;
 }
 
 /**
