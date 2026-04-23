@@ -51,19 +51,13 @@ export async function update(feedId) {
   const store = getStore('feeds');
   const active = await store.get(fileName, { type: 'json' });
 
-  let needsWrite = false;
+  const now = Date.now();
   for (const tzName in active) {
-    if (active[tzName][feedId]) {
-      const age = Date.now() - new Date(active[tzName][feedId]).getTime();
-      if (age > 23 * 3600 * 1000) {
-        active[tzName][feedId] = new Date().toISOString();
-        needsWrite = true;
-      }
-    }
-  }
-
-  if (needsWrite) {
+    const ts = active[tzName][feedId];
+    if (!ts || now - new Date(ts).getTime() <= 23 * 3600 * 1000) continue;
+    active[tzName][feedId] = new Date(now).toISOString();
     await store.set(fileName, JSON.stringify(active), { contentType });
+    return;
   }
 }
 
