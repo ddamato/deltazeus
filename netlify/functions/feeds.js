@@ -97,7 +97,12 @@ async function handleGet(feedId) {
   }).then((xml) => {
     return new Response(xml, {
       status: 200,
-      headers: { 'Content-Type': 'application/xml' }
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=300',
+        'Netlify-CDN-Cache-Control': 'public, s-maxage=3600, durable',
+        'Netlify-Cache-Tag': `feed-${feedId}`,
+      }
     })
   }).catch((err) => {
     // Feed isn't available, either missing in /tmp or not available in blobs

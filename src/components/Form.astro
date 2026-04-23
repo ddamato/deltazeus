@@ -379,6 +379,18 @@ import Rss from "@components/rss.svg";
             return [];
         }
 
+        const cacheKey = `location:${q}`;
+        try {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                const { data, ts } = JSON.parse(cached);
+                if (Date.now() - ts < 86_400_000) {
+                    $form.setAttribute("aria-busy", "false");
+                    return data;
+                }
+            }
+        } catch {}
+
         const url = new URL("/api/location", window.location.origin);
         url.searchParams.set("q", q);
 
@@ -392,6 +404,10 @@ import Rss from "@components/rss.svg";
             $error.textContent = data.error;
             return [];
         }
+
+        try {
+            localStorage.setItem(cacheKey, JSON.stringify({ data, ts: Date.now() }));
+        } catch {}
 
         return data;
     }

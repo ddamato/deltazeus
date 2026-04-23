@@ -1,4 +1,5 @@
 import { getStore } from '@netlify/blobs';
+import { purgeCache } from '@netlify/functions';
 import { get, remove } from './track.js';
 import { FeedXml } from './xml.js';
 import { weatherMetrics } from './weather.js';
@@ -149,6 +150,7 @@ export default async function handler() {
           pubDate: d.toUTCString(),
           guid: d.toISOString(),
         });
+        await purgeCache({ tags: [`feed-${feedId}`] });
       }
     } catch (err) {
       console.error(`Failed to update feed ${feedId}:`, err);
