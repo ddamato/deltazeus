@@ -51,15 +51,14 @@ export async function update(feedId) {
   const store = getStore('feeds');
   const active = await store.get(fileName, { type: 'json' });
 
-  // For each tz, look for feedId and update
+  const now = Date.now();
   for (const tzName in active) {
-    if (active[tzName][feedId]) {
-      active[tzName][feedId] = new Date().toISOString();
-    }
+    const ts = active[tzName][feedId];
+    if (!ts || now - new Date(ts).getTime() <= 23 * 3600 * 1000) continue;
+    active[tzName][feedId] = new Date(now).toISOString();
+    await store.set(fileName, JSON.stringify(active), { contentType });
+    return;
   }
-
-  // Store update
-  await store.set(fileName, JSON.stringify(active), { contentType });
 }
 
 /**
