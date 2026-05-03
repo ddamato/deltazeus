@@ -82,29 +82,22 @@ async function handlePost(req, netlifyContext) {
  * @returns {Response} - The feed XML
  */
 async function handleGet(feedId) {
-  // Look in tmp directory first
-  return fs.promises.readFile(getTmpPath(feedId), 'utf-8').catch(async (notmp) => {
-    // If it doesn't exist there
-    console.log(`${feedId} does not exist in tmp`);
-    if (notmp.code !== 'ENOENT') throw notmp;
-
-    // Try getting from blobs
-    try {
-      const feed = await new FeedXml(feedId);
-      await update(feedId);
-      return feed.xml;
-    } catch (err) { throw err }
-
-  }).then((xml) => {
-    return new Response(xml, {
+  try {
+    const feed = await new FeedXml(feedId);
+    await update(feedId);
+    return new Response(feed.xml, {
       status: 200,
-      headers: { 'Content-Type': 'application/xml' }
-    })
-  }).catch((err) => {
-    // Feed isn't available, either missing in /tmp or not available in blobs
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=300',
+        'Netlify-CDN-Cache-Control': 'public, s-maxage=3600, durable',
+        'Netlify-Cache-Tag': `feed-${feedId}`,
+      }
+    });
+  } catch (err) {
     console.error(`Request for unknown feed: ${feedId}`, err);
     return new Response('Feed not found. If it was just created, try refreshing this page', { status: 404 });
-  });
+  }
 }
 
 export default async (req, netlifyContext) => {
