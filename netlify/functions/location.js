@@ -1,3 +1,5 @@
+import { PAUSED, pausedResponse } from './_paused.js';
+
 /**
  * Handles querying with a location,
  * returns lat, lon, tzOffset as array of results
@@ -6,6 +8,7 @@
  * @returns {Response} - A collection of lat, lon, tzName, and label
  */
 export default async function (req) {
+  if (PAUSED) return pausedResponse();
   const urlObj = new URL(req.url);
   const q = urlObj.searchParams.get("q");
 

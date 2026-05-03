@@ -2,6 +2,7 @@ import { getStore } from '@netlify/blobs';
 import { get, remove } from './track.js';
 import { FeedXml } from './xml.js';
 import { weatherMetrics } from './weather.js';
+import { PAUSED, pausedResponse } from './_paused.js';
 
 /**
  * Determines if the given date is outside the threshold.
@@ -119,6 +120,7 @@ function createUpdate(yesterday, today) {
 }
 
 export default async function handler() {
+  if (PAUSED) return pausedResponse();
   const store = getStore('feeds');
   const feeds = await get(5); // feeds representing 5am local time
 
@@ -158,6 +160,6 @@ export default async function handler() {
   return new Response(`Feeds updated: ${Object.keys(feeds).join(', ')}`, { status: 200 });
 }
 
-export const config = {
+export const config = PAUSED ? {} : {
   schedule: "@hourly"
 };

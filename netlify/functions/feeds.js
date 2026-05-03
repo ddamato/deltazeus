@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { FeedXml } from './xml.js';
 import { create, update } from './track.js';
+import { PAUSED, pausedResponse } from './_paused.js';
 
 /**
  * Creates a payload from the Netlify Context as a backup.
@@ -107,6 +108,7 @@ async function handleGet(feedId) {
 }
 
 export default async (req, netlifyContext) => {
+  if (PAUSED) return pausedResponse();
   const url = new URL(req.url);
   const parts = url.pathname.split('/');
   const feedId = parts.at(-1);
